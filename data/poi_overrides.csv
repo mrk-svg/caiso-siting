@@ -1,0 +1,5 @@
+# Hand-verified POI coordinates. Overrides any OSM match in nodes.py.
+# Fill from utility one-line diagrams / CAISO maps / satellite imagery, then cite in `note`.
+# Priority list (unmatched, by pipeline MW): TROUT CANYON, DRY LAKE SW STA, MANNING, MOSS LANDING,
+#   TRANQUILITY, HOODOO WASH, HARLAN SW STA, CIELO AZUL, ARCO, CALCITE, DELANEY, GAMEBIRD
+poi,lat,lon,note

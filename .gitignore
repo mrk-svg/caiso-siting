@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.DS_Store
+.idea/
+# raw downloads are re-fetchable; keep the repo small
+data/*.xlsx
+data/osm_substations.csv
+outputs/projects_all.csv
+outputs/cluster15_projects.csv
