@@ -17,6 +17,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from common import clean_county, norm_poi, poi_base
+
 C15_URL = "https://www.caiso.com/documents/cluster-15-interconnection-requests.xlsx"
 
 RENAME = {
@@ -40,21 +42,6 @@ RENAME = {
     "Service Type": "service_type",
 }
 
-# CAISO's county field is hand-typed. Fix the ones that matter.
-COUNTY_FIX = {
-    "SAN BERNADINO": "SAN BERNARDINO",
-    "KING": "KINGS",
-    "LA": "LOS ANGELES",
-    "SAN LUIS OBISPO COUNTY": "SAN LUIS OBISPO",
-}
-
-
-def _clean_county(s: pd.Series) -> pd.Series:
-    s = s.fillna("").str.strip().str.upper()
-    s = s.str.replace(r"\s+COUNTY$", "", regex=True).str.replace(r"\s+", " ", regex=True)
-    return s.replace(COUNTY_FIX)
-
-
 def load(path: Path) -> pd.DataFrame:
     frames = []
     xls = pd.ExcelFile(path)
@@ -77,7 +64,7 @@ def load(path: Path) -> pd.DataFrame:
         if c in df:
             df[c] = pd.to_datetime(df[c], errors="coerce")
 
-    df["county"] = _clean_county(df["county"])
+    df["county"] = clean_county(df["county"])
     for c in ("state", "utility", "poi", "study_area", "service_type"):
         df[c] = df[c].fillna("").str.strip().str.upper()
 
@@ -104,7 +91,9 @@ def load(path: Path) -> pd.DataFrame:
     df["study_process"] = "C15"
     df["queue_year"] = df["queue_date"].dt.year
     df["withdrawn_year"] = df["withdrawn_date"].dt.year if "withdrawn_date" in df else pd.NA
-    df["poi_base"] = df["poi"].str.replace(r"\s*\d{2,3}\s*KV.*$", "", regex=True).str.strip()
+    df["withdrew_post_phase2"] = False   # C15 Phase I results only landed mid-2026; no Phase II yet
+    df["poi_base"] = poi_base(df["poi"])
+    df["node_key"] = df["poi"].map(norm_poi)
     return df
 
 

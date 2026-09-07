@@ -1,0 +1,11 @@
+# Official statements about whether a POI can accept Cluster 16 requests. One row per POI per source.
+# status: AVAILABLE | UNAVAILABLE | CONDITIONAL | RELIEVED (a prior restriction lifted)
+# Only encode what a source says by name. The 2026-01-15 notice says stations exceeding 63 kA short-circuit
+# duty (Table G2) are restricted but does NOT enumerate them — so they are not listed here.
+poi,utility,status,note,source,date
+METCALF-MANNING,PGAE,UNAVAILABLE,"500 kV line has no project sponsor; not available as a POI until a sponsor is selected",https://www.caiso.com/notices/pg-e-information-on-poi-availability-for-cluster-16,2026-01-15
+DRY LAKE SW STA,PGAE,AVAILABLE,"New 500 kV switching station; stated as a viable POI option for C16",https://www.caiso.com/notices/pg-e-information-on-poi-availability-for-cluster-16,2026-01-15
+HARLAN SW STA,PGAE,AVAILABLE,"New 500 kV switching station designed with future expansion capability",https://www.caiso.com/notices/pg-e-information-on-poi-availability-for-cluster-16,2026-01-15
+BITTERWATER SW STA,PGAE,AVAILABLE,"New 230 kV switching station designed with future expansion capability",https://www.caiso.com/notices/pg-e-information-on-poi-availability-for-cluster-16,2026-01-15
+GATES,PGAE,RELIEVED,"500 kV removed from Table G2-A space limitation per revised plan",https://www.caiso.com/notices/pg-e-information-on-poi-availability-for-cluster-16,2026-01-15
+TESLA,PGAE,CONDITIONAL,"Conceptual layout modification enables new 230 kV terminals",https://www.caiso.com/notices/pg-e-information-on-poi-availability-for-cluster-16,2026-01-15

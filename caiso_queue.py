@@ -28,6 +28,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from common import clean_county, norm_poi, poi_base
+
 QUEUE_URL = "https://www.caiso.com/documents/publicqueuereport.xlsx"
 HEADER_ROW = 3  # 0-indexed: row 4 in Excel holds the column names on every sheet
 
@@ -117,10 +119,11 @@ def normalize(df: pd.DataFrame) -> pd.DataFrame:
         if c in df:
             df[c] = pd.to_datetime(df[c], errors="coerce")
 
-    for c in ("county", "poi", "utility", "study_process", "deliverability",
+    for c in ("poi", "utility", "study_process", "deliverability",
               "tpd_group", "pto_region", "status"):
         if c in df:
             df[c] = df[c].fillna("").str.strip().str.upper()
+    df["county"] = clean_county(df["county"])
 
     # Technology flags
     types = df[[c for c in ("type_1", "type_2", "type_3") if c in df]].fillna("")
@@ -149,8 +152,13 @@ def normalize(df: pd.DataFrame) -> pd.DataFrame:
     if "withdrawn_date" in df:
         df["withdrawn_year"] = df["withdrawn_date"].dt.year
 
-    # POI cleanup: strip voltage suffix for a coarser grouping key
-    df["poi_base"] = df["poi"].str.replace(r"\s*\d{2,3}\s*KV.*$", "", regex=True).str.strip()
+    # Withdrew after Phase II / Facilities Study results were in hand. Not a cause,
+    # but the only stage signal the file offers.
+    df["withdrew_post_phase2"] = (df["sheet_status"] == "WITHDRAWN") & \
+        (df.get("study_fas_phase2", pd.Series("", index=df.index)).fillna("").str.upper() == "COMPLETE")
+
+    df["poi_base"] = poi_base(df["poi"])      # display label
+    df["node_key"] = df["poi"].map(norm_poi)  # join key shared with cluster15.py
     return df
 
 

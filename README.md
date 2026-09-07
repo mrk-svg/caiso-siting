@@ -7,11 +7,26 @@ Not a "Grid-Ready Score". Transparent, sourced layers — every number traceable
 
 ## Layout
 
+    common.py            shared normalizers: county cleanup, POI node key, line-endpoint split
     caiso_queue.py       Public Queue Report parser (Cluster 14 and earlier + completed + withdrawn)
-    cluster15.py         Cluster 15 report parser (different schema, dirty county names — normalized)
-    nodes.py             unify both per node, geocode vs OpenStreetMap, emit map + node_watch.md
-    data/                raw downloads (gitignored) + poi_overrides.csv (hand-verified coordinates)
+    cluster15.py         Cluster 15 report parser (different schema)
+    nodes.py             unify both per node, geocode, join POI-availability statements, emit map + node_watch.md
+    data/                raw downloads (gitignored), poi_overrides.csv (hand-verified coordinates),
+                         poi_availability.csv (official per-POI Cluster 16 statements, each row sourced)
     outputs/             CSVs, nodes_map.html, node_watch.md
+
+## Metrics — which one you may quote
+
+| metric            | definition                                                            | quote it? |
+|-------------------|-----------------------------------------------------------------------|-----------|
+| `storage_churn`   | storage MW withdrawn in last 5 yrs ÷ (active + operating storage MW)  | yes       |
+| `wd_post_phase2_mw` | MW that withdrew after Phase II / FAS results were in hand           | yes, as a stage signal, never as a cause |
+| `c15_survival`    | C15 active ÷ (C15 active + C15 withdrawn)                             | yes       |
+| `churn_alltime`   | all withdrawn MW since 2006 ÷ surviving MW                            | historical color only — it mostly counts dead 2008–2015 wind/solar |
+
+Why this matters: Whirlwind reads 1.32 all-time (looks like a graveyard) but 0.25 storage churn with 2.1 GW operating.
+Colorado River reads 2.11 all-time and 0.14 on storage. Red Bluff (1.62), Lugo (2.18) and Los Banos (1.30) are bad on both.
+The CAISO files contain no withdrawal reason beyond "IC Request"; never state a cause.
 
 ## Run (weekly)
 
@@ -58,8 +73,18 @@ Not a "Grid-Ready Score". Transparent, sourced layers — every number traceable
   so coverage is incomplete: current match is ~52% of nodes / ~69% of pipeline MW.
 - `outputs/poi_geocode.csv` lists every POI, the OSM feature it matched, the score and method
   (`exact`, `fuzzy`, `line-midpoint`, `line-one-end`, `override`, `none`). Audit anything not `exact`.
-- Fill `data/poi_overrides.csv` for the unmatched heavy nodes (Trout Canyon, Dry Lake, Manning, Moss Landing,
-  Tranquility, Hoodoo Wash, Harlan, Cielo Azul, Arco, Calcite, Delaney, Gamebird). Cite the source in `note`.
+- `data/poi_overrides.csv` already carries Dry Lake, Harlan and Bitterwater from the coordinates CAISO published in its
+  2026-01-15 PG&E POI-availability notice. Still to fill by hand: Trout Canyon, Manning, Moss Landing, Tranquility,
+  Hoodoo Wash, Cielo Azul, Arco, Calcite, Delaney, Gamebird — and the second endpoint of every `line-one-end` row.
+- `line-one-end` markers sit at one end of a transmission line, not at the tap. The map draws them dashed and pale;
+  `node_watch.md` lists every >500 MW node whose position is approximate or missing.
+
+## Official POI-availability layer
+
+CAISO and the PTOs publish prose notices saying which POIs can or cannot take Cluster 16 requests (short-circuit duty,
+terminal space, unsponsored lines, new switching stations). No spreadsheet tool ingests these. `data/poi_availability.csv`
+encodes them one row per POI per source, with status AVAILABLE / UNAVAILABLE / CONDITIONAL / RELIEVED and the source URL.
+Rule: only encode a POI a source names. Add a row every time a new notice appears; the latest date wins in the join.
 
 ## Known limitations
 

@@ -1,5 +1,7 @@
-# Hand-verified POI coordinates. Overrides any OSM match in nodes.py.
-# Fill from utility one-line diagrams / CAISO maps / satellite imagery, then cite in `note`.
-# Priority list (unmatched, by pipeline MW): TROUT CANYON, DRY LAKE SW STA, MANNING, MOSS LANDING,
-#   TRANQUILITY, HOODOO WASH, HARLAN SW STA, CIELO AZUL, ARCO, CALCITE, DELANEY, GAMEBIRD
+# Hand-verified POI coordinates. Overrides any OSM match in nodes.py. Cite the source in `note`.
+# Remaining priority list (unmatched, by pipeline MW): TROUT CANYON, MANNING, MOSS LANDING, TRANQUILITY,
+#   HOODOO WASH, CIELO AZUL, ARCO, CALCITE, DELANEY, GAMEBIRD — and the second endpoint of every `line-one-end` row in outputs/poi_geocode.csv
 poi,lat,lon,note
+DRY LAKE SW STA,35.753928,-119.744631,"CAISO notice 2026-01-15 'PG&E information on POI availability for Cluster 16': proposed Dry Lake 500 kV Sw Sta 35°45'14.14""N 119°44'40.67""W"
+HARLAN SW STA,36.423475,-120.407322,"CAISO notice 2026-01-15: Harlan 500 kV Sw Sta 36°25'24.51""N 120°24'26.36""W"
+BITTERWATER SW STA,35.124694,-119.298414,"CAISO notice 2026-01-15: Bitterwater 230 kV Sw Sta 35°7'28.90""N 119°17'54.29""W"
