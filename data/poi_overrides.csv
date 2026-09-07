@@ -1,7 +1,12 @@
-# Hand-verified POI coordinates. Overrides any OSM match in nodes.py. Cite the source in `note`.
-# Remaining priority list (unmatched, by pipeline MW): TROUT CANYON, MANNING, MOSS LANDING, TRANQUILITY,
-#   HOODOO WASH, CIELO AZUL, ARCO, CALCITE, DELANEY, GAMEBIRD — and the second endpoint of every `line-one-end` row in outputs/poi_geocode.csv
-poi,lat,lon,note
-DRY LAKE SW STA,35.753928,-119.744631,"CAISO notice 2026-01-15 'PG&E information on POI availability for Cluster 16': proposed Dry Lake 500 kV Sw Sta 35°45'14.14""N 119°44'40.67""W"
-HARLAN SW STA,36.423475,-120.407322,"CAISO notice 2026-01-15: Harlan 500 kV Sw Sta 36°25'24.51""N 120°24'26.36""W"
-BITTERWATER SW STA,35.124694,-119.298414,"CAISO notice 2026-01-15: Bitterwater 230 kV Sw Sta 35°7'28.90""N 119°17'54.29""W"
+# Hand-verified POI coordinates. Overrides any OSM name match in nodes.py. Cite the source in `note`.
+# approx=yes marks a position known only to a few km (plant centroid, line end) — the map draws it dashed.
+# Still unlocated after OSM name/ref/description search (2026-09-07): TROUT CANYON (GLW, Clark NV), MANNING (LSPC/PG&E 500 kV,
+#   Fresno), CALCITE (SCE, San Bernardino), CIELO AZUL (DCRT, La Paz AZ), ARCO (Kern), DELANEY (DCRT/APS, Maricopa), HOODOO WASH (APS/SDGE, Yuma).
+#   Sources to try: PG&E/SCE one-line diagrams in CAISO study reports, CEC Transmission_Line FeatureServer endpoints, satellite imagery.
+poi,lat,lon,approx,note
+DRY LAKE SW STA,35.753928,-119.744631,no,"CAISO notice 2026-01-15 'PG&E information on POI availability for Cluster 16': proposed Dry Lake 500 kV Sw Sta 35°45'14.14""N 119°44'40.67""W"
+HARLAN SW STA,36.423475,-120.407322,no,"CAISO notice 2026-01-15: Harlan 500 kV Sw Sta 36°25'24.51""N 120°24'26.36""W"
+BITTERWATER SW STA,35.124694,-119.298414,no,"CAISO notice 2026-01-15: Bitterwater 230 kV Sw Sta 35°7'28.90""N 119°17'54.29""W"
+MOSS LANDING,36.80832,-121.77800,no,"OSM: convergence of Moss Landing 115 kV line ends (ways 974695020, 974462217, 974698588) at the plant switchyard; plant polygon way 643024351"
+GAMEBIRD SUBSTATION,36.16197,-115.89944,no,"OSM way 439012890 'Gamebird Switchard' power=substation 230 kV (Valley Electric Association)"
+TRANQUILITY,36.57799,-120.40699,yes,"OSM relation 8376979 'Tranquillity Solar Project' plant centroid (Recurrent Energy); PG&E Tranquillity 230 kV switching station is adjacent — verify"

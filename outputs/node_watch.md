@@ -118,26 +118,24 @@ These developers had upgrade cost estimates in hand when they left. That is the 
 
 ## Positions to audit before publishing a map (>500 MW, approximate or missing)
 
-| poi_base                           | county          |   pipeline_mw | geo_method   |   geo_score |
-|:-----------------------------------|:----------------|--------------:|:-------------|------------:|
-| DELANEY-COLORADO RIVER             | MARICOPA        |          3200 | line-one-end |        0.7  |
-| TROUT CANYON SUBSTATION            | CLARK           |          3000 | none         |        0.78 |
-| MANNING                            | FRESNO          |          2662 | none         |        0.67 |
-| MOSS LANDING                       | MONTEREY        |          2449 | none         |        0.8  |
-| TRANQUILITY                        | FRESNO          |          1575 | none         |        0.67 |
-| EAST COUNTY SUBSTATION             | BAJA CALIFORNIA |          1573 | none         |        0.8  |
-| HOODOO WASH SWITCHYARD             | YUMA            |          1570 | none         |        0.56 |
-| CIELO AZUL SUBSTATION              | LA PAZ          |          1350 | none         |        0.53 |
-| MANNING-MIDWAY                     | FRESNO          |          1150 | line-one-end |        0.7  |
-| COLORADO RIVER - PALO VERDE        | LA PAZ          |          1000 | line-one-end |        0.7  |
-| ARCO                               | KERN            |           915 | none         |        0.67 |
-| CALCITE SUBSTATION                 | SAN BERNARDINO  |           893 | none         |        0.62 |
-| DELANEY SUBSTATION                 | MARICOPA        |           850 | none         |        0.71 |
-| LOS BANOS - GATES #3               | FRESNO          |           800 | line-one-end |        0.7  |
-| GAMEBIRD SUBSTATION                | NYE             |           744 | none         |        0.62 |
-| HASSAYAMPA                         | MARICOPA        |           700 | none         |        0.63 |
-| TEHACHAPI CONCEPTUAL SUBSTATION #1 | KERN            |           600 | none         |        0.09 |
-| OTAY MESA SWITCHYARD               | SAN DIEGO       |           550 | none         |        0.62 |
+| poi_base                           | county          |   pipeline_mw | geo_method      |   geo_score |
+|:-----------------------------------|:----------------|--------------:|:----------------|------------:|
+| DELANEY-COLORADO RIVER             | MARICOPA        |          3200 | line-one-end    |        0.7  |
+| TROUT CANYON SUBSTATION            | CLARK           |          3000 | none            |        0.78 |
+| MANNING                            | FRESNO          |          2662 | none            |        0.67 |
+| TRANQUILITY                        | FRESNO          |          1575 | override-approx |        0.8  |
+| EAST COUNTY SUBSTATION             | BAJA CALIFORNIA |          1573 | none            |        0.8  |
+| HOODOO WASH SWITCHYARD             | YUMA            |          1570 | none            |        0.56 |
+| CIELO AZUL SUBSTATION              | LA PAZ          |          1350 | none            |        0.53 |
+| MANNING-MIDWAY                     | FRESNO          |          1150 | line-one-end    |        0.7  |
+| COLORADO RIVER - PALO VERDE        | LA PAZ          |          1000 | line-one-end    |        0.7  |
+| ARCO                               | KERN            |           915 | none            |        0.67 |
+| CALCITE SUBSTATION                 | SAN BERNARDINO  |           893 | none            |        0.62 |
+| DELANEY SUBSTATION                 | MARICOPA        |           850 | none            |        0.71 |
+| LOS BANOS - GATES #3               | FRESNO          |           800 | line-one-end    |        0.7  |
+| HASSAYAMPA                         | MARICOPA        |           700 | none            |        0.63 |
+| TEHACHAPI CONCEPTUAL SUBSTATION #1 | KERN            |           600 | none            |        0.09 |
+| OTAY MESA SWITCHYARD               | SAN DIEGO       |           550 | none            |        0.62 |
 
 ## Caveats (say these out loud to any reader)
 

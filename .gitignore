@@ -7,3 +7,5 @@ data/*.xlsx
 data/osm_substations.csv
 outputs/projects_all.csv
 outputs/cluster15_projects.csv
+# snapshots: keep projects.csv (small, the diff needs it), drop the raw xlsx copies
+data/snapshots/*/*.xlsx

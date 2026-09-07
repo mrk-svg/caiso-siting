@@ -11,6 +11,8 @@ Not a "Grid-Ready Score". Transparent, sourced layers — every number traceable
     caiso_queue.py       Public Queue Report parser (Cluster 14 and earlier + completed + withdrawn)
     cluster15.py         Cluster 15 report parser (different schema)
     nodes.py             unify both per node, geocode, join POI-availability statements, emit map + node_watch.md
+    diff.py              weekly snapshot + diff of both CAISO files -> outputs/diff_latest.md (the newsletter engine)
+    parcels.py           parcels / zoning / general plan within N km of a POI from public county ArcGIS services
     data/                raw downloads (gitignored), poi_overrides.csv (hand-verified coordinates),
                          poi_availability.csv (official per-POI Cluster 16 statements, each row sourced)
     outputs/             CSVs, nodes_map.html, node_watch.md
@@ -28,17 +30,34 @@ Why this matters: Whirlwind reads 1.32 all-time (looks like a graveyard) but 0.2
 Colorado River reads 2.11 all-time and 0.14 on storage. Red Bluff (1.62), Lugo (2.18) and Los Banos (1.30) are bad on both.
 The CAISO files contain no withdrawal reason beyond "IC Request"; never state a cause.
 
-## Run (weekly)
+## Run (weekly — this is the whole newsletter workflow)
 
     # 1. refresh the two CAISO files (browser download if your network blocks caiso.com)
     #    https://www.caiso.com/documents/publicqueuereport.xlsx              -> data/publicqueuereport.xlsx
     #    https://www.caiso.com/documents/cluster-15-interconnection-requests.xlsx -> data/cluster15.xlsx
-    # 2. refresh substations (only occasionally; OSM changes slowly) — see "Substation coordinates"
+    # 2. refresh substations only occasionally (OSM changes slowly) — see "Substation coordinates"
     pip install -r requirements.txt
     python3 caiso_queue.py
     python3 cluster15.py
-    python3 nodes.py
+    python3 nodes.py                 # nodes.csv, map, node_watch.md
+    python3 diff.py snapshot         # store this week's rows under data/snapshots/YYYY-MM-DD/
+    python3 diff.py                  # compare the two latest snapshots -> outputs/diff_latest.md
     open outputs/nodes_map.html
+
+Snapshot zero is 2026-09-07. The first real diff exists after the second weekly download.
+`diff.py` reports NEW, WITHDRAWN, COMPLETED, MW_CHANGE, COD_SLIP / COD_PULLED_IN, IA_STATUS, DELIV_CHANGE, POI_CHANGE, GONE —
+each as the difference between two CAISO rows. Self-tested against a mutated snapshot (all classes fire).
+
+## Parcels around a stated-available POI
+
+    python3 parcels.py "DRY LAKE SW STA" --km 5      # needs normal internet; run from your own terminal
+    python3 parcels.py --all-available --km 5
+
+Public layers wired in (verified live 2026-09-07): Kings County parcels + general plan; Kern County zoning.
+Live check: 40 Kings parcels within 5 km of the proposed Dry Lake 500 kV station, all agricultural, 160–320-acre sections;
+Kern zoning around Bitterwater returns Exclusive Agriculture plus a "South Kern Industrial Specific Plan" polygon.
+Not public: Kern countywide parcels (the Assessor sells them), Fresno County parcel REST (not found). Ownership is redacted
+by statute in every California county layer — parcel + APN is what you get; owner lookup is the broker's job.
 
 ## What the data says (2026-09-07 run)
 
@@ -73,9 +92,10 @@ The CAISO files contain no withdrawal reason beyond "IC Request"; never state a 
   so coverage is incomplete: current match is ~52% of nodes / ~69% of pipeline MW.
 - `outputs/poi_geocode.csv` lists every POI, the OSM feature it matched, the score and method
   (`exact`, `fuzzy`, `line-midpoint`, `line-one-end`, `override`, `none`). Audit anything not `exact`.
-- `data/poi_overrides.csv` already carries Dry Lake, Harlan and Bitterwater from the coordinates CAISO published in its
-  2026-01-15 PG&E POI-availability notice. Still to fill by hand: Trout Canyon, Manning, Moss Landing, Tranquility,
-  Hoodoo Wash, Cielo Azul, Arco, Calcite, Delaney, Gamebird — and the second endpoint of every `line-one-end` row.
+- `data/poi_overrides.csv` carries Dry Lake, Harlan, Bitterwater (CAISO notice coordinates), Moss Landing and Gamebird
+  (OSM ways, cited), and Tranquility as `approx=yes` (plant centroid). Coverage: 78% of pipeline MW, 39 of the top 50 nodes.
+  Still unlocated after an OSM name/ref/description search: Trout Canyon, Manning, East County (Baja), Hoodoo Wash, Cielo Azul,
+  Arco, Calcite, Delaney, Hassayampa — and the second endpoint of every `line-one-end` row.
 - `line-one-end` markers sit at one end of a transmission line, not at the tap. The map draws them dashed and pale;
   `node_watch.md` lists every >500 MW node whose position is approximate or missing.
 

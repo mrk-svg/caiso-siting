@@ -73,7 +73,8 @@ class Geocoder:
             ov = pd.read_csv(overrides_path, dtype=str, comment="#").dropna(subset=["poi", "lat", "lon"])
             for _, r in ov.iterrows():
                 self.overrides[norm_poi(r["poi"])] = dict(lat=float(r["lat"]), lon=float(r["lon"]),
-                                                          note=str(r.get("note", "manual"))[:80])
+                                                          note=str(r.get("note", "manual"))[:80],
+                                                          approx=str(r.get("approx", "no")).strip().lower() == "yes")
 
     def _pick(self, idxs):
         return self.osm.loc[idxs].sort_values("kv", ascending=False, na_position="last").iloc[0]
@@ -100,7 +101,8 @@ class Geocoder:
         k = norm_poi(poi)
         if k in self.overrides:
             o = self.overrides[k]
-            return dict(lat=o["lat"], lon=o["lon"], osm_name=o["note"], score=1.0, method="override")
+            return dict(lat=o["lat"], lon=o["lon"], osm_name=o["note"],
+                        score=0.8 if o["approx"] else 1.0, method="override-approx" if o["approx"] else "override")
         whole, ws = self.match(poi)                       # "VACA-DIXON" is one substation
         if whole is not None and ws == 1.0:
             return dict(lat=whole.lat, lon=whole.lon, osm_name=whole["name"], score=1.0, method="exact")
@@ -246,7 +248,7 @@ L.tileLayer('https://tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png',{{attribution
 const col=c=> c==null?'#9a9a9a': c<0.25?'#2a9d8f': c<1?'#e9c46a':'#e63946';
 for(const p of pts){{
   const mw=p.legacy+p.c15; const r=Math.max(4,Math.sqrt(mw)/2.2);
-  const approx = p.method==='line-one-end' || p.method==='fuzzy';
+  const approx = p.method==='line-one-end' || p.method==='fuzzy' || p.method==='override-approx';
   const ring = p.st==='UNAVAILABLE'?'#000': p.st==='AVAILABLE'?'#1d4ed8':'#222';
   L.circleMarker([p.lat,p.lon],{{radius:r,color:ring,weight:p.st?3:1,dashArray:approx?'3,3':null,fillColor:col(p.sc),fillOpacity:approx?.25:.75}})
    .bindPopup(`<b>${{p.poi}}</b><br>${{p.county}} / ${{p.utility}}`+
@@ -285,7 +287,7 @@ def write_node_watch(nodes: pd.DataFrame, pq: pd.DataFrame, c15: pd.DataFrame) -
     clean = nodes[(nodes.c15_active_mw > 0) & (nodes.wd_recent_mw < 300)].sort_values("c15_active_mw", ascending=False).head(8)
     survivors = nodes[nodes.c15_withdrawn_mw + nodes.c15_active_mw > 500].sort_values("c15_survival").head(8)
     avail = nodes[nodes.c16_poi_status != ""].sort_values("c16_poi_status")
-    approx = nodes[(nodes.pipeline_mw > 500) & nodes.geo_method.isin(["line-one-end", "fuzzy", "none"])] \
+    approx = nodes[(nodes.pipeline_mw > 500) & nodes.geo_method.isin(["line-one-end", "fuzzy", "override-approx", "none"])] \
         .sort_values("pipeline_mw", ascending=False)
 
     whirl = nodes[nodes.node_key == "WHIRLWIND"].iloc[0] if (nodes.node_key == "WHIRLWIND").any() else None
