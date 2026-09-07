@@ -260,7 +260,13 @@ def write_node_watch(nodes: pd.DataFrame, pq: pd.DataFrame, c15: pd.DataFrame) -
     survivors = nodes[nodes.c15_withdrawn_mw + nodes.c15_active_mw > 500].sort_values("c15_survival").head(8)
 
     def tbl(df, cols):
-        return df[cols].round(0).to_markdown(index=False)
+        d = df[cols].copy()
+        for c in cols:
+            if c.endswith("_mw"):
+                d[c] = d[c].round(0).astype(int)
+            elif c in ("churn_ratio", "c15_survival"):
+                d[c] = d[c].round(2)
+        return d.to_markdown(index=False)
 
     md = f"""# CAISO Node Watch — draft {pd.Timestamp.today():%Y-%m-%d}
 

@@ -24,31 +24,31 @@ OpenStreetMap substations (ODbL). All figures are net MW to grid as filed.
 
 | poi_base                | county         | utility   |   legacy_active_mw |   c15_active_mw |   total_withdrawn_mw |   churn_ratio |   c15_survival |
 |:------------------------|:---------------|:----------|-------------------:|----------------:|---------------------:|--------------:|---------------:|
-| WINDHUB SUBSTATION      | KERN           | SCE       |               4050 |             550 |                11044 |             2 |              1 |
-| RED BLUFF SUBSTATION    | RIVERSIDE      | SCE       |               2867 |             725 |                10482 |             2 |              1 |
-| VINCENT SUBSTATION      | LOS ANGELES    | SCE       |               2070 |            1450 |                 5240 |             1 |              1 |
-| WHIRLWIND SUBSTATION    | KERN           | SCE       |               2472 |             801 |                 7115 |             1 |              1 |
-| DELANEY-COLORADO RIVER  | MARICOPA       | DCRT      |               3200 |               0 |                 1472 |             0 |            nan |
-| TROUT CANYON SUBSTATION | CLARK          | GLW       |               3000 |               0 |                 1500 |             0 |              0 |
-| DRY LAKE SW STA         | KINGS          | PGAE      |                  0 |            2950 |                    0 |             0 |              1 |
-| MANNING                 | FRESNO         | LSPC      |                  0 |            2662 |                 1782 |             1 |              1 |
-| GATES SUBSTATION        | FRESNO         | PGAE      |               2521 |               0 |                 5233 |             2 |              0 |
-| MOSS LANDING            | MONTEREY       | PGAE      |               2250 |             199 |                 1000 |             0 |              1 |
-| LUGO                    | SAN BERNARDINO | SCE       |                500 |            1798 |                 5153 |             2 |              0 |
-| TESLA                   | ALAMEDA        | PGAE      |               1280 |            1000 |                 3635 |             1 |              0 |
+| WINDHUB SUBSTATION      | KERN           | SCE       |               4050 |             550 |                11044 |          1.61 |           0.55 |
+| RED BLUFF SUBSTATION    | RIVERSIDE      | SCE       |               2867 |             725 |                10482 |          2.01 |           1    |
+| VINCENT SUBSTATION      | LOS ANGELES    | SCE       |               2070 |            1450 |                 5240 |          1.41 |           0.54 |
+| WHIRLWIND SUBSTATION    | KERN           | SCE       |               2472 |             801 |                 7115 |          1.32 |           1    |
+| DELANEY-COLORADO RIVER  | MARICOPA       | DCRT      |               3200 |               0 |                 1472 |          0.4  |         nan    |
+| TROUT CANYON SUBSTATION | CLARK          | GLW       |               3000 |               0 |                 1500 |          0.5  |           0    |
+| DRY LAKE SW STA         | KINGS          | PGAE      |                  0 |            2950 |                    0 |          0    |           1    |
+| MANNING                 | FRESNO         | LSPC      |                  0 |            2662 |                 1782 |          0.67 |           0.6  |
+| GATES SUBSTATION        | FRESNO         | PGAE      |               2521 |               0 |                 5233 |          1.57 |           0    |
+| MOSS LANDING            | MONTEREY       | PGAE      |               2250 |             199 |                 1000 |          0.3  |           1    |
+| LUGO                    | SAN BERNARDINO | SCE       |                500 |            1798 |                 5153 |          2.24 |           0.29 |
+| TESLA                   | ALAMEDA        | PGAE      |               1280 |            1000 |                 3635 |          1.34 |           0.33 |
 
 ## Graveyard nodes (>2 GW withdrawn, ranked by churn)
 
 | poi_base                   | county          | utility   |   pipeline_mw |   total_withdrawn_mw |   churn_ratio |
 |:---------------------------|:----------------|:----------|--------------:|---------------------:|--------------:|
-| ELDORADO SUBSTATION        | CLARK           | SCE       |           250 |                10697 |            43 |
-| JOHANNA SUBSTATION         | ORANGE          | SCE       |           100 |                 2541 |            25 |
-| HIGHWIND SUBSTATION        | KERN            | SCE       |             0 |                 3660 |            23 |
-| PISGAH SUBSTATION          | SAN BERNARDINO  | SCE       |           600 |                 7799 |            13 |
-| DIABLO CANYON              | SAN LUIS OBISPO | PGAE      |          1000 |                 9451 |             9 |
-| ETIWANDA SUBSTATION        | SAN BERNARDINO  | SCE       |           412 |                 2927 |             6 |
-| IMPERIAL VALLEY SUBSTATION | IMPERIAL        | SDGE      |           875 |                12100 |             5 |
-| PITTSBURG                  | CONTRA COSTA    | PGAE      |           500 |                 2851 |             5 |
+| ELDORADO SUBSTATION        | CLARK           | SCE       |           250 |                10697 |         42.79 |
+| JOHANNA SUBSTATION         | ORANGE          | SCE       |           100 |                 2541 |         25.41 |
+| HIGHWIND SUBSTATION        | KERN            | SCE       |             0 |                 3660 |         22.59 |
+| PISGAH SUBSTATION          | SAN BERNARDINO  | SCE       |           600 |                 7799 |         13    |
+| DIABLO CANYON              | SAN LUIS OBISPO | PGAE      |          1000 |                 9451 |          9.45 |
+| ETIWANDA SUBSTATION        | SAN BERNARDINO  | SCE       |           412 |                 2927 |          5.71 |
+| IMPERIAL VALLEY SUBSTATION | IMPERIAL        | SDGE      |           875 |                12100 |          5.45 |
+| PITTSBURG                  | CONTRA COSTA    | PGAE      |           500 |                 2851 |          4.98 |
 
 ## Cluster 15 nodes with little historical wreckage (<500 MW ever withdrawn)
 
@@ -67,14 +67,14 @@ OpenStreetMap substations (ODbL). All figures are net MW to grid as filed.
 
 | poi_base                       | county         | utility   |   c15_active_mw |   c15_withdrawn_mw |   c15_survival |
 |:-------------------------------|:---------------|:----------|----------------:|-------------------:|---------------:|
-| MIDWAY - VINCENT               | KERN           | SCE       |               0 |               1150 |              0 |
-| VIEJO                          | ORANGE         | SCE       |               0 |               1000 |              0 |
-| BEATTY                         | NYE            | GLW       |               0 |               1350 |              0 |
-| TROUT CANYON SUBSTATION        | CLARK          | GLW       |               0 |               1500 |              0 |
-| SLOAN CANYON SWITCHING STATION | CLARK          | GLW       |               0 |                550 |              0 |
-| MOHAVE SUBSTATION              | CLARK          | SCE       |               0 |               1050 |              0 |
-| LOS BANOS                      | MERCED         | PGAE      |             400 |               1995 |              0 |
-| LUGO                           | SAN BERNARDINO | SCE       |            1798 |               4453 |              0 |
+| MIDWAY - VINCENT               | KERN           | SCE       |               0 |               1150 |           0    |
+| VIEJO                          | ORANGE         | SCE       |               0 |               1000 |           0    |
+| BEATTY                         | NYE            | GLW       |               0 |               1350 |           0    |
+| TROUT CANYON SUBSTATION        | CLARK          | GLW       |               0 |               1500 |           0    |
+| SLOAN CANYON SWITCHING STATION | CLARK          | GLW       |               0 |                550 |           0    |
+| MOHAVE SUBSTATION              | CLARK          | SCE       |               0 |               1050 |           0    |
+| LOS BANOS                      | MERCED         | PGAE      |             400 |               1995 |           0.17 |
+| LUGO                           | SAN BERNARDINO | SCE       |            1798 |               4453 |           0.29 |
 
 ## Cluster 15 withdrawals by month
 
