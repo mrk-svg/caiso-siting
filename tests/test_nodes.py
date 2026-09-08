@@ -401,3 +401,17 @@ def test_join_tpd_real_invariants(real_nodes, real_projects):
     assert (n.tpd25_denied_mw <= n.tpd25_req_mw + 1e-6).all()
     assert (n.tpd25_projects > 0).sum() > 50
     assert n.tpd25_req_mw.sum() > 0 and n.tpd24_fcdsa_projects.sum() > 0
+
+
+@pytest.mark.real_data
+def test_join_wdat_real_invariants(real_nodes):
+    if not (nodes.DATA / "wdat_pge.xlsx").exists():
+        pytest.skip("real data file missing: wdat_pge.xlsx")
+    n = nodes.join_wdat(real_nodes.copy())
+    assert len(n) == len(real_nodes)
+    for c in nodes.WDAT_COLS:
+        assert c in n.columns, c
+        assert n[c].notna().all() and (n[c] >= 0).all(), c
+    assert (n.wdat_active_projects > 0).sum() > 50
+    assert (n.wdat_active_storage_mw <= n.wdat_active_mw + 1e-6).all()
+    assert n.loc[n.wdat_active_projects == 0, "wdat_active_mw"].eq(0).all()

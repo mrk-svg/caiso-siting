@@ -4,6 +4,10 @@ __pycache__/
 .idea/
 # raw downloads are re-fetchable; keep the repo small
 data/*.xlsx
+!data/tpd_*.xlsx
+# OASIS raw downloads are re-fetchable (data/poi_pnodes.csv, the hand-confirmed mapping, IS committed)
+data/pnodes.csv
+data/oasis_cache/
 # data/osm_substations.csv is committed on purpose (130 KB, ODbL-attributed): CI needs it to geocode
 outputs/projects_all.csv
 outputs/cluster15_projects.csv

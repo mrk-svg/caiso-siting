@@ -2,8 +2,9 @@
 
   index.html          headline numbers, top-40 nodes, official C16 POI statements
   map.html            outputs/nodes_map.html copied verbatim (self-contained Leaflet)
-  nodes/<slug>.html   one page per node with pipeline or operating MW
+  nodes/<slug>.html   one page per node with pipeline, operating or active WDAT MW
   note.html           outputs/node_watch.md rendered
+  survival.html       Kaplan–Meier withdrawal survival by cluster (outputs/survival_*.csv, inline SVG)
   diff.html           outputs/diff_latest.md rendered (or a placeholder until two snapshots exist)
 
 No template engine: stdlib string.Template + f-strings. No external assets except the Leaflet CDN
@@ -25,6 +26,11 @@ from .config import OUT, RECENT_YEARS, SITE
 
 DISCLAIMER = ('No figure on this site states a cause. CAISO files carry no withdrawal reason beyond '
               '"IC Request".')
+
+WDAT_NOTE = "WDAT = distribution-level queue at the same substation, PG&E file today; not CAISO deliverability"
+WDAT_COLS = ["queue_position", "status_raw", "process", "gen_type", "net_mw", "request_received", "current_cod",
+             "ia_status"]
+WDAT_CAP = 50
 
 APPROX_METHODS = {"line-one-end", "fuzzy", "override-approx", "county-centroid", "none"}
 
@@ -49,10 +55,15 @@ METRIC_DEFS = [
     ("tpd25_alloc_mw", "MW allocated in that cycle (requested × allocation %)"),
     ("tpd25_denied_mw", "MW requested by rows that received 0 %"),
     ("tpd24_fcdsa_projects", "projects at the node allocated Full Capacity in the 2024 cycle"),
+    ("wdat_active_projects", f"active WDAT requests at the same substation ({WDAT_NOTE})"),
+    ("wdat_active_mw", "MW of active WDAT (distribution-level) requests at the same substation (PG&E file today)"),
+    ("wdat_active_storage_mw", "storage share of wdat_active_mw"),
+    ("wdat_inservice_mw", "WDAT MW already in service at that substation"),
+    ("wdat_withdrawn_mw", "WDAT MW withdrawn at that substation (all-time in the file)"),
 ]
 
 TOP_COLS = ["poi_base", "county", "utility", "legacy_active_mw", "c15_active_mw", "operating_mw",
-            "wd_recent_mw", "storage_churn", "c15_survival", "tpd25_denied_mw", "c16_poi_status"]
+            "wd_recent_mw", "storage_churn", "c15_survival", "tpd25_denied_mw", "wdat_active_mw", "c16_poi_status"]
 
 CSS = """
 :root{--fg:#1b1b1b;--muted:#5b5b5b;--bg:#fbfbf9;--line:#dcdcd6;--card:#fff;--accent:#1d4ed8;--warn:#9a3412;--warnbg:#fff4ec}
@@ -85,6 +96,7 @@ td.wrap,th.wrap{white-space:normal;min-width:16em}
 dl.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:8px 0}
 dl.kv dt{font-weight:600}dl.kv dd{margin:0}
 .md table{width:auto}
+.chart{max-width:760px;margin:12px 0}.chart svg{width:100%;height:auto;display:block}
 .md pre,.md code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em}
 .md code{background:#eeeee8;padding:1px 4px;border-radius:3px}
 footer{max-width:1180px;margin:24px auto 40px;padding:12px 16px;border-top:1px solid var(--line);color:var(--muted);
@@ -105,7 +117,8 @@ PAGE = Template("""<!doctype html>
 <header><div class="in">
 <span class="brand"><a href="${root}index.html">CAISO node intelligence</a></span>
 <nav><a href="${root}index.html">Home</a> · <a href="${root}map.html">Map</a> ·
-<a href="${root}note.html">Node Watch</a> · <a href="${root}diff.html">Weekly diff</a></nav>
+<a href="${root}note.html">Node Watch</a> · <a href="${root}survival.html">Survival</a> ·
+<a href="${root}diff.html">Weekly diff</a></nav>
 </div></header>
 <main>
 $body
@@ -115,7 +128,7 @@ $body
 <p>Sources: CAISO Public Queue Report and Cluster 15 Interconnection Requests report (CAISO report run date $run_date);
 CAISO 2024 and 2025 Transmission Plan Deliverability allocation cycle results;
 CAISO / PTO notices on Cluster 16 POI availability; substation positions &copy; OpenStreetMap contributors, ODbL;
-parcel and zoning layers from Kings County and Kern County GIS.</p>
+PG&amp;E Wholesale Distribution Queue (WDAT); parcel and zoning layers from Kings County and Kern County GIS.</p>
 <p>All MW are net-to-grid as filed. Cluster 15 deliverability is requested, not allocated.
 Nothing here is load-side.</p>
 <p>Pipeline commit <code>$commit</code> · pipeline run <code>$run</code> · site built <code>$built</code></p>
@@ -356,12 +369,15 @@ def index_page(nodes: pd.DataFrame, projects: pd.DataFrame, slugs: dict[str, str
     n_pages = len(slugs)
     tpd = nodes[nodes.get("tpd25_req_mw", pd.Series(0, index=nodes.index)) > 0] \
         .sort_values("tpd25_req_mw", ascending=False).head(15)
+    wdat_top = nodes[nodes.get("wdat_active_mw", pd.Series(0, index=nodes.index)) > 0] \
+        .sort_values("wdat_active_mw", ascending=False).head(10)
     body = f"""<h1>CAISO interconnection nodes</h1>
 <p class="sub">Public Queue Report + Cluster 15 report, unified per point of interconnection, joined to official
 Cluster 16 POI statements. CAISO report run date {esc(prov['run_date'])}. Every number traces to a CAISO row.</p>
 <div class="tiles">{tiles}</div>
 <p><a href="map.html">Map</a> (size = pipeline MW, fill = storage churn) ·
-<a href="diff.html">Weekly diff</a> · <a href="note.html">Node Watch note</a> · {n_pages} node pages.</p>
+<a href="diff.html">Weekly diff</a> · <a href="note.html">Node Watch note</a> ·
+<a href="survival.html">Survival by cluster</a> · {n_pages} node pages.</p>
 <h2>Top 40 nodes by pipeline MW (legacy active + Cluster 15 active)</h2>
 <p class="sub">storage_churn = storage MW withdrawn in the last {RECENT_YEARS} years ÷ (active + operating storage MW).
 c15_survival = C15 active ÷ (C15 active + C15 withdrawn). Click a node for its projects and geocode provenance.</p>
@@ -371,6 +387,11 @@ c15_survival = C15 active ÷ (C15 active + C15 withdrawn). Click a node for its 
 {table(tpd, ['poi_base', 'county', 'utility', 'tpd25_req_mw', 'tpd25_alloc_mw', 'tpd25_denied_mw',
              'tpd24_fcdsa_projects'], links)}
 <p>"Denied" = MW requested by rows that received 0 % in the cycle. The CAISO file states no reason.</p>
+<h2>Distribution-level (WDAT) activity at CAISO nodes</h2>
+<p class="sub">Top 10 CAISO nodes by active MW in the wholesale distribution (WDAT) queue at the same substation.</p>
+{table(wdat_top, ['poi_base', 'county', 'utility', 'wdat_active_projects', 'wdat_active_mw', 'wdat_inservice_mw'], links)}
+<p>WDAT requests connect below CAISO's transmission grid; they carry no CAISO deliverability unless separately studied.
+Source: PG&amp;E Wholesale Distribution Queue, as dated in the file.</p>
 <h2>Official Cluster 16 POI statements</h2>
 <p class="sub">Encoded only where a CAISO / PTO notice names the POI. Absence of a row is not availability.
 The latest dated statement per POI wins.</p>
@@ -380,7 +401,7 @@ The latest dated statement per POI wins.</p>
     return render("Home", body, "", prov)
 
 
-def node_page(r: pd.Series, projects: pd.DataFrame, prov: dict) -> str:
+def node_page(r: pd.Series, projects: pd.DataFrame, prov: dict, wdat: pd.DataFrame | None = None) -> str:
     title = r.poi_base or r.node_key
     status = str(r.get("c16_poi_status") or "")
     c16 = ""
@@ -425,11 +446,74 @@ node key <code>{esc(r.node_key)}</code></p>
 <p class="sub">Both reports. cod = current on-line date (public report) or proposed on-line date (Cluster 15).
 ia_status exists only in the public report. Cluster 15 deliverability is requested, not allocated.</p>
 {table(projects, proj_cols, wrap=('project_name',))}
+{wdat_section(wdat)}
 <h2>Geocode provenance</h2>
 {warn}
 {geo}
 """
     return render(title, body, "../", prov)
+
+
+def wdat_section(wdat: pd.DataFrame | None) -> str:
+    """'WDAT requests at this substation' — only when outputs/wdat_projects.csv exists and has rows for the node."""
+    if wdat is None or wdat.empty:
+        return ""
+    n = len(wdat)
+    shown = wdat.head(WDAT_CAP)
+    cap = f"<p class=\"sub\">showing {WDAT_CAP} of {n}</p>" if n > WDAT_CAP else ""
+    return f"""<h2>WDAT requests at this substation ({n})</h2>
+<p class="sub">{esc(WDAT_NOTE)}. WDAT requests connect below CAISO's transmission grid; they carry no CAISO
+deliverability unless separately studied.</p>
+{cap}{table(shown, WDAT_COLS)}
+"""
+
+
+def load_wdat() -> dict[str, pd.DataFrame]:
+    """outputs/wdat_projects.csv grouped by node_key (empty dict when the file is absent)."""
+    p = OUT / "wdat_projects.csv"
+    if not p.exists():
+        return {}
+    w = pd.read_csv(p, dtype=str, keep_default_na=False)
+    for c in WDAT_COLS + ["node_key", "sheet_status"]:
+        if c not in w:
+            w[c] = ""
+    w["net_mw"] = pd.to_numeric(w["net_mw"], errors="coerce")
+    for c in ("request_received", "current_cod"):
+        w[c] = w[c].map(date_only)
+    w["_o"] = w.sheet_status.map({"ACTIVE": 0, "COMPLETED": 1, "WITHDRAWN": 2}).fillna(3)
+    w = w.sort_values(["_o", "net_mw"], ascending=[True, False]).drop(columns="_o")
+    return {k: g for k, g in w.groupby("node_key")}
+
+
+def survival_page(prov: dict) -> str:
+    """Kaplan–Meier survival by cluster: inline SVG charts, the summary table and the computed findings.
+    Built from outputs/survival_by_cluster.csv + survival_summary.csv (run `caiso-siting survival`)."""
+    from . import survival
+    long_path, sum_path = OUT / "survival_by_cluster.csv", OUT / "survival_summary.csv"
+    if not (long_path.exists() and sum_path.exists()):
+        return render("Survival", "<h1>Survival</h1><p>outputs/survival_by_cluster.csv not found; run "
+                      "<code>caiso-siting survival</code>.</p>", "", prov)
+    long_df = pd.read_csv(long_path)
+    summary = pd.read_csv(sum_path)
+    clus = long_df[long_df.cohort.isin(survival.CLUSTER_COHORTS)]
+    tech = long_df[long_df.cohort.isin(survival.TECH_COHORTS)]
+    svg1 = survival.render_svg(clus, adaptive=False)
+    svg2 = survival.render_svg(tech, title="C13–C15 by technology: share not yet withdrawn", adaptive=False)
+    body = f"""<h1>Queue-cohort survival</h1>
+<p class="sub">Kaplan–Meier estimate of the share of each cluster's projects <b>not yet withdrawn</b>, by months since
+queue date. Event = withdrawal. Active projects are censored at the CAISO report run date ({esc(prov['run_date'])});
+completed projects are censored at their on-line date — completion is success, not an event. S(t) is reported while
+at least {survival.MIN_AT_RISK} projects remain at risk. Withdrawal is not failure and the files carry no cause.</p>
+<div class="chart">{svg1}</div>
+<div class="chart">{svg2}</div>
+<h2>Summary</h2>
+<p class="sub">s12…s60 = S(t) at 12…60 months; _mw = each project weighted by net MW. n/a = not observed that long.</p>
+{md_to_html(survival.summary_markdown(summary))}
+<h2>Findings</h2>
+<p>{esc(survival.findings(summary))}</p>
+<p>Definitions: <code>DATA.md</code> (survival_by_cluster.csv, survival_summary.csv).</p>
+"""
+    return render("Survival", body, "", prov)
 
 
 def md_page(title: str, path: Path, fallback: str, prov: dict) -> str:
@@ -459,7 +543,8 @@ def main() -> None:
                 run=esc(first.get("pipeline_run", "") or "unknown"),
                 built=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
 
-    keep = nodes[(nodes.pipeline_mw > 0) | (nodes.operating_mw > 0)].copy()
+    wdat_mw = nodes.get("wdat_active_mw", pd.Series(0, index=nodes.index)).fillna(0)
+    keep = nodes[(nodes.pipeline_mw > 0) | (nodes.operating_mw > 0) | (wdat_mw > 0)].copy()
     slugs = unique_slugs(keep.node_key.tolist())
 
     SITE.mkdir(exist_ok=True)
@@ -473,11 +558,12 @@ def main() -> None:
     written += 1
 
     by_node = {k: g for k, g in projects.groupby("node_key")} if len(projects) else {}
+    wdat_by_node = load_wdat()
     empty = projects.iloc[0:0]
     for r in keep.itertuples(index=False):
         s = pd.Series(r._asdict())
         (SITE / "nodes" / f"{slugs[s.node_key]}.html").write_text(
-            node_page(s, by_node.get(s.node_key, empty), prov), encoding="utf-8")
+            node_page(s, by_node.get(s.node_key, empty), prov, wdat_by_node.get(s.node_key)), encoding="utf-8")
         written += 1
 
     map_src = OUT / "nodes_map.html"
@@ -495,6 +581,8 @@ def main() -> None:
     (SITE / "note.html").write_text(md_page("Node Watch", OUT / "node_watch.md",
                                             "outputs/node_watch.md not found; run `caiso-siting nodes`.", prov),
                                     encoding="utf-8")
+    written += 1
+    (SITE / "survival.html").write_text(survival_page(prov), encoding="utf-8")
     written += 1
 
     print(f"site: {written} pages written to {SITE} ({len(keep)} node pages of {len(nodes)} nodes) "

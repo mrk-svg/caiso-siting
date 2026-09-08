@@ -4,19 +4,23 @@
   cluster15  parse the Cluster 15 report              -> outputs/cluster15_projects.csv
   nodes      unify, geocode, TPD, availability, map  -> outputs/nodes.csv, nodes_map.html, node_watch.md
   tpd        parse TPD allocation results            -> outputs/tpd_allocations.csv
+  wdat       parse utility WDAT queues (PG&E)         -> outputs/wdat_projects.csv  (`wdat inspect FILE` prints headers)
+  oasis      pnodes | suggest | fetch: OASIS day-ahead LMP TB4 -> outputs/lmp_tb4*.csv (needs internet; not in weekly)
+  survival   Kaplan–Meier withdrawal survival by cluster -> outputs/survival_*.csv, survival.svg, survival.md
   snapshot   store this week's rows                   -> data/snapshots/YYYY-MM-DD/
   diff       compare the two latest snapshots         -> outputs/diff_latest.md
   parcels    parcels/zoning around a POI              -> outputs/parcels_*.csv (needs internet)
+  watch      diff watched CAISO/PTO pages for new documents -> outputs/new_documents.md (needs internet)
   layers     lines | screen: CEC line placement, Williamson Act + CEC siting screens (needs internet)
   site       build the static site                    -> site/
-  weekly     queue + cluster15 + nodes + snapshot + diff + site, in order
+  weekly     queue + cluster15 + nodes + survival + snapshot + diff + site, in order
   download   fetch both CAISO files (needs internet)
 """
 from __future__ import annotations
 
 import sys
 
-from . import cluster15, diff, layers, nodes, parcels, queue_report, tpd
+from . import cluster15, diff, layers, nodes, oasis, parcels, queue_report, survival, tpd, watch, wdat
 from .config import CLUSTER15_URL, DATA
 
 
@@ -29,17 +33,32 @@ def _run(mod, argv):
         sys.argv = saved
 
 
+CAISO_DOCS = "https://www.caiso.com/documents/"
+PGE_DOCS = "https://www.pge.com/assets/pge/docs/about/doing-business-with-pge/"
+
+EXTRA_DOWNLOADS = {
+    # required: the job fails without these two
+    "cluster15.xlsx": (CLUSTER15_URL, True),
+    # optional: TPD results are annual (also committed); the PG&E WDAT queue refreshes monthly
+    "tpd_2025.xlsx": (CAISO_DOCS + "2025-transmission-plan-deliverability-allocation-cycle-results.xlsx", False),
+    "tpd_2024.xlsx": (CAISO_DOCS + "2024-transmission-plan-deliverability-allocation-cycle-results.xlsx", False),
+    "wdat_pge.xlsx": (PGE_DOCS + "PublicQueueInterconnection.xlsx", False),
+}
+
+
 def download(argv) -> None:
+    import requests
     ok = queue_report.download(DATA / "publicqueuereport.xlsx")
-    try:
-        import requests
-        r = requests.get(CLUSTER15_URL, timeout=60, headers={"User-Agent": "Mozilla/5.0 (caiso-siting)"})
-        r.raise_for_status()
-        (DATA / "cluster15.xlsx").write_bytes(r.content)
-        print(f"downloaded {len(r.content):,} bytes -> {DATA / 'cluster15.xlsx'}")
-    except Exception as e:  # noqa: BLE001
-        print(f"cluster15 download failed ({e})", file=sys.stderr)
-        ok = False
+    for name, (url, required) in EXTRA_DOWNLOADS.items():
+        try:
+            r = requests.get(url, timeout=120, headers={"User-Agent": "Mozilla/5.0 (caiso-siting)"})
+            r.raise_for_status()
+            (DATA / name).write_bytes(r.content)
+            print(f"downloaded {len(r.content):,} bytes -> {DATA / name}")
+        except Exception as e:  # noqa: BLE001
+            print(f"{name} download failed ({e}){' — required' if required else ' — optional, keeping existing file'}",
+                  file=sys.stderr)
+            ok = ok and not required
     if not ok:
         sys.exit(1)
 
@@ -48,12 +67,22 @@ def weekly(argv) -> None:
     from . import site
     _run(queue_report, [])
     _run(cluster15, [])
+    for mod, label in ((tpd, "tpd"), (wdat, "wdat")):
+        try:
+            _run(mod, [])
+        except SystemExit as e:  # optional inputs missing
+            print(f"{label} skipped: {e}")
     _run(nodes, [])
+    _run(survival, [])
     _run(diff, ["snapshot"])
     try:
         _run(diff, [])
     except SystemExit as e:  # first week: only one snapshot exists
         print(f"diff skipped: {e}")
+    try:
+        _run(watch, [])
+    except Exception as e:  # noqa: BLE001 — network optional
+        print(f"watch skipped: {e}")
     _run(site, [])
 
 
@@ -62,6 +91,10 @@ COMMANDS = {
     "cluster15": lambda a: _run(cluster15, a),
     "nodes": lambda a: _run(nodes, a),
     "tpd": lambda a: _run(tpd, a),
+    "wdat": lambda a: _run(wdat, a),
+    "watch": lambda a: _run(watch, a),
+    "oasis": lambda a: _run(oasis, a),
+    "survival": lambda a: _run(survival, a),
     "snapshot": lambda a: _run(diff, ["snapshot", *a]),
     "diff": lambda a: _run(diff, a),
     "parcels": lambda a: _run(parcels, a),

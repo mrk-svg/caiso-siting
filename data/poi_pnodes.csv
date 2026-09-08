@@ -1,0 +1,4 @@
+node_key,pnode,confirmed,note
+WINDHUB,,no,fill from data/pnodes.csv
+RED BLUFF,,no,fill from data/pnodes.csv
+VINCENT,,no,fill from data/pnodes.csv

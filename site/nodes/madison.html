@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MADISON · CAISO node intelligence</title>
+<style>
+:root{--fg:#1b1b1b;--muted:#5b5b5b;--bg:#fbfbf9;--line:#dcdcd6;--card:#fff;--accent:#1d4ed8;--warn:#9a3412;--warnbg:#fff4ec}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+header{border-bottom:1px solid var(--line);background:var(--card)}
+header .in{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;gap:6px 18px;
+  align-items:baseline}
+header .brand{font-weight:700;margin-right:auto}
+header nav a{white-space:nowrap}
+main{max-width:1180px;margin:0 auto;padding:16px}
+h1{font-size:1.6rem;margin:.2em 0 .3em}
+h2{font-size:1.2rem;margin:1.4em 0 .4em;border-bottom:1px solid var(--line);padding-bottom:.2em}
+h3{font-size:1.05rem;margin:1.2em 0 .3em}
+.sub{color:var(--muted);margin:0 0 .8em}
+.disclaimer{background:var(--warnbg);border-left:4px solid var(--warn);padding:8px 12px;margin:12px 0;font-size:.92rem}
+.warn{color:var(--warn);font-weight:600}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:14px 0}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.tile .n{font-size:1.5rem;font-weight:700;line-height:1.15}.tile .l{color:var(--muted);font-size:.85rem}
+.tbl{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:8px;margin:8px 0 16px}
+table{border-collapse:collapse;width:100%;font-size:.9rem;font-variant-numeric:tabular-nums}
+th,td{padding:6px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;white-space:nowrap}
+th{background:#f1f1ec;position:sticky;top:0}
+td.num,th.num{text-align:right}
+tr:last-child td{border-bottom:0}
+td.wrap,th.wrap{white-space:normal;min-width:16em}
+dl.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:8px 0}
+dl.kv dt{font-weight:600}dl.kv dd{margin:0}
+.md table{width:auto}
+.chart{max-width:760px;margin:12px 0}.chart svg{width:100%;height:auto;display:block}
+.md pre,.md code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em}
+.md code{background:#eeeee8;padding:1px 4px;border-radius:3px}
+footer{max-width:1180px;margin:24px auto 40px;padding:12px 16px;border-top:1px solid var(--line);color:var(--muted);
+  font-size:.85rem}
+footer p{margin:.3em 0}
+@media (max-width:600px){body{font-size:14px}main{padding:10px}th,td{padding:5px 7px}}
+</style>
+</head>
+<body>
+<header><div class="in">
+<span class="brand"><a href="../index.html">CAISO node intelligence</a></span>
+<nav><a href="../index.html">Home</a> · <a href="../map.html">Map</a> ·
+<a href="../note.html">Node Watch</a> · <a href="../survival.html">Survival</a> ·
+<a href="../diff.html">Weekly diff</a></nav>
+</div></header>
+<main>
+<h1>MADISON</h1>
+<p class="sub">YOLO · PGAE ·
+node key <code>MADISON</code></p>
+
+<h2>Metrics</h2>
+<div class="tbl"><table><thead><tr><th>metric</th><th class="num">value</th><th class="wrap">definition</th></tr>
+</thead>
+<tbody><tr><td><code>legacy_active_mw</code></td><td class="num">0</td><td class="wrap">active MW in the public report (C14 and earlier)</td></tr><tr><td><code>c15_active_mw</code></td><td class="num">0</td><td class="wrap">active MW in the Cluster 15 report</td></tr><tr><td><code>operating_mw</code></td><td class="num">0</td><td class="wrap">completed MW in the public report</td></tr><tr><td><code>pipeline_storage_mw</code></td><td class="num">0</td><td class="wrap">storage MW inside legacy_active_mw + c15_active_mw</td></tr><tr><td><code>operating_storage_mw</code></td><td class="num">0</td><td class="wrap">storage MW inside operating_mw (completed, public report)</td></tr><tr><td><code>wd_recent_mw</code></td><td class="num">0</td><td class="wrap">withdrawn in the last 5 years (both reports)</td></tr><tr><td><code>wd_recent_storage_mw</code></td><td class="num">0</td><td class="wrap">the storage share of wd_recent_mw</td></tr><tr><td><code>wd_post_phase2_mw</code></td><td class="num">0</td><td class="wrap">withdrew AFTER Phase II / Facilities Study results (public report only)</td></tr><tr><td><code>wd_alltime_mw</code></td><td class="num">158</td><td class="wrap">every withdrawn MW since 2006 (includes dead wind/solar-era projects)</td></tr><tr><td><code>storage_churn</code></td><td class="num">n/a</td><td class="wrap">wd_recent_storage_mw / (active + operating storage MW) — the one to quote</td></tr><tr><td><code>churn_alltime</code></td><td class="num">n/a</td><td class="wrap">wd_alltime_mw / (pipeline + operating MW) — historical color only</td></tr><tr><td><code>c15_survival</code></td><td class="num">n/a</td><td class="wrap">c15_active / (c15_active + c15_withdrawn)</td></tr><tr><td><code>c15_fcds_req_mw</code></td><td class="num">0</td><td class="wrap">C15 active MW that requested Full Capacity Deliverability Status (requested, not allocated)</td></tr><tr><td><code>tpd25_projects</code></td><td class="num">0</td><td class="wrap">projects at the node that sought TPD in CAISO&#x27;s 2025 allocation cycle</td></tr><tr><td><code>tpd25_req_mw</code></td><td class="num">0</td><td class="wrap">MW at the node that sought TPD in CAISO&#x27;s 2025 allocation cycle</td></tr><tr><td><code>tpd25_alloc_mw</code></td><td class="num">0</td><td class="wrap">MW allocated in that cycle (requested × allocation %)</td></tr><tr><td><code>tpd25_denied_mw</code></td><td class="num">0</td><td class="wrap">MW requested by rows that received 0 %</td></tr><tr><td><code>tpd24_fcdsa_projects</code></td><td class="num">0</td><td class="wrap">projects at the node allocated Full Capacity in the 2024 cycle</td></tr><tr><td><code>wdat_active_projects</code></td><td class="num">2</td><td class="wrap">active WDAT requests at the same substation (WDAT = distribution-level queue at the same substation, PG&amp;E file today; not CAISO deliverability)</td></tr><tr><td><code>wdat_active_mw</code></td><td class="num">14</td><td class="wrap">MW of active WDAT (distribution-level) requests at the same substation (PG&amp;E file today)</td></tr><tr><td><code>wdat_active_storage_mw</code></td><td class="num">0</td><td class="wrap">storage share of wdat_active_mw</td></tr><tr><td><code>wdat_inservice_mw</code></td><td class="num">38</td><td class="wrap">WDAT MW already in service at that substation</td></tr><tr><td><code>wdat_withdrawn_mw</code></td><td class="num">43</td><td class="wrap">WDAT MW withdrawn at that substation (all-time in the file)</td></tr></tbody></table></div>
+<h2>Projects at this node (1)</h2>
+<p class="sub">Both reports. cod = current on-line date (public report) or proposed on-line date (Cluster 15).
+ia_status exists only in the public report. Cluster 15 deliverability is requested, not allocated.</p>
+<div class="tbl"><table><thead><tr><th class=" wrap">project_name</th><th class="num">queue_position</th><th class="">sheet_status</th><th class="">cluster</th><th class="num">net_mw</th><th class="num">storage_mw</th><th class="">deliverability</th><th class="">ia_status</th><th class="">cod</th><th class="">withdrawn_date</th></tr></thead><tbody><tr><td class="wrap">BERRYESSA WIND FARM</td><td class="num">1267</td><td class="">WITHDRAWN</td><td class="">C09</td><td class="num">158</td><td class="num">0</td><td class="">FULL CAPACITY</td><td class=""></td><td class="">2019-12-31</td><td class="">2017-05-01</td></tr></tbody></table></div>
+<h2>WDAT requests at this substation (14)</h2>
+<p class="sub">WDAT = distribution-level queue at the same substation, PG&amp;E file today; not CAISO deliverability. WDAT requests connect below CAISO's transmission grid; they carry no CAISO
+deliverability unless separately studied.</p>
+<div class="tbl"><table><thead><tr><th class="num">queue_position</th><th class="">status_raw</th><th class="">process</th><th class="">gen_type</th><th class="num">net_mw</th><th class="">request_received</th><th class="">current_cod</th><th class="">ia_status</th></tr></thead><tbody><tr><td class="num">2595-WD</td><td class="">Active</td><td class="">Independent Study</td><td class="">Other</td><td class="num">14</td><td class="">2020-08-17</td><td class=""></td><td class="">Executed</td></tr><tr><td class="num">4253-RD</td><td class="">Active</td><td class="">Fast Track</td><td class="">Solar PV</td><td class="num">0</td><td class="">2025-04-18</td><td class="">2025-06-20</td><td class="">Executed</td></tr><tr><td class="num">2740-RD</td><td class="">In Service</td><td class="">Fast Track</td><td class="">Engine, Solar PV</td><td class="num">22</td><td class="">2021-02-22</td><td class="">2023-01-03</td><td class="">Executed</td></tr><tr><td class="num">1515-RD</td><td class="">In Service</td><td class="">Detailed Study</td><td class="">Engine, Fuel Cell</td><td class="num">15</td><td class="">2017-04-27</td><td class="">2020-06-10</td><td class="">Executed</td></tr><tr><td class="num">2630-RD</td><td class="">In Service</td><td class="">Fast Track</td><td class="">Storage</td><td class="num">1</td><td class="">2020-10-13</td><td class="">2021-09-30</td><td class="">Executed</td></tr><tr><td class="num">2629-RD</td><td class="">In Service</td><td class="">Fast Track</td><td class="">Storage</td><td class="num">0</td><td class="">2020-10-13</td><td class="">2021-09-30</td><td class="">Executed</td></tr><tr><td class="num">1170-RD</td><td class="">In Service</td><td class="">Fast Track</td><td class="">Solar PV</td><td class="num">0</td><td class="">2015-03-09</td><td class="">2016-02-16</td><td class="">Executed</td></tr><tr><td class="num">2583-WD</td><td class="">Withdrawn</td><td class="">Independent Study</td><td class="">Solar PV</td><td class="num">25</td><td class="">2020-07-28</td><td class=""></td><td class="">Withdrawn</td></tr><tr><td class="num">3675-RD</td><td class="">Withdrawn</td><td class="">Detailed Study</td><td class="">Solar PV</td><td class="num">6</td><td class="">2023-10-17</td><td class=""></td><td class="">Withdrawn</td></tr><tr><td class="num">2684-WD</td><td class="">Withdrawn</td><td class="">DGSP</td><td class="">Solar PV</td><td class="num">5</td><td class="">2021-01-07</td><td class=""></td><td class="">Withdrawn</td></tr><tr><td class="num">3543-RD</td><td class="">Withdrawn</td><td class="">Detailed Study</td><td class="">Solar PV</td><td class="num">5</td><td class="">2023-07-27</td><td class=""></td><td class="">Withdrawn</td></tr><tr><td class="num">0550-WD</td><td class="">Withdrawn</td><td class="">Fast Track</td><td class="">Solar PV</td><td class="num">2</td><td class="">2012-04-10</td><td class=""></td><td class="">Withdrawn</td></tr><tr><td class="num">4085-RD</td><td class="">Withdrawn</td><td class="">Fast Track</td><td class="">Solar PV</td><td class="num">0</td><td class="">2024-10-21</td><td class=""></td><td class="">Withdrawn</td></tr><tr><td class="num">1691-RD</td><td class="">Withdrawn</td><td class="">Fast Track</td><td class="">Hydro</td><td class="num">0</td><td class="">2017-10-23</td><td class=""></td><td class="">Withdrawn</td></tr></tbody></table></div>
+
+<h2>Geocode provenance</h2>
+<p class="warn">Position is approximate or unknown (county-centroid): position unknown; placed at the median of located nodes in the county.</p>
+<dl class="kv">
+<dt>geo_method</dt><dd>county-centroid</dd>
+<dt>geo_score</dt><dd>0.30</dd>
+<dt>osm_name</dt><dd>median of located nodes in YOLO</dd>
+<dt>lat, lon</dt><dd>38.93520, -121.80907</dd>
+</dl>
+
+<p class="disclaimer">No figure on this site states a cause. CAISO files carry no withdrawal reason beyond &quot;IC Request&quot;.</p>
+</main>
+<footer>
+<p>Sources: CAISO Public Queue Report and Cluster 15 Interconnection Requests report (CAISO report run date 2026-09-07);
+CAISO 2024 and 2025 Transmission Plan Deliverability allocation cycle results;
+CAISO / PTO notices on Cluster 16 POI availability; substation positions &copy; OpenStreetMap contributors, ODbL;
+PG&amp;E Wholesale Distribution Queue (WDAT); parcel and zoning layers from Kings County and Kern County GIS.</p>
+<p>All MW are net-to-grid as filed. Cluster 15 deliverability is requested, not allocated.
+Nothing here is load-side.</p>
+<p>Pipeline commit <code>93c8b00</code> · pipeline run <code>2026-09-08T02:41:23Z</code> · site built <code>2026-09-08T02:41:26Z</code></p>
+</footer>
+</body>
+</html>

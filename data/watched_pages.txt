@@ -1,0 +1,9 @@
+# CAISO pages that carry the documents that change siting decisions (server-rendered; diffed weekly)
+https://www.caiso.com/generation-transmission/generation/generator-interconnection
+https://www.caiso.com/generation-transmission/generation/generator-interconnection/transmission-plan-deliverability
+https://www.caiso.com/generation-transmission/generation/generator-interconnection/interconnection-request-study
+https://www.caiso.com/library/interconnection-queue-reports
+https://www.caiso.com/library/interconnection-request-and-study
+https://www.caiso.com/library/cluster-study-process
+https://www.pge.com/en/about/doing-business-with-pge/interconnections/wholesale-generation.html
+https://www.sce.com/clean-energy-efficiency/solar-generating-your-own-power/solar-power-basics/grid-interconnections

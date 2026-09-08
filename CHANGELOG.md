@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.3.0 — 2026-09-08
+
+WDAT layer (`wdat.py`, PG&E public queue: 4,639 requests; 99 CAISO nodes also carry active distribution-level requests). Document watch (`watch.py`): weekly diff of the CAISO/PTO pages that carry siting documents -> review queue; nothing auto-encoded. 233 tests.
+
+Queue-cohort survival (`survival.py`, `caiso-siting survival`, in `weekly` after `nodes`): Kaplan–Meier time-to-withdrawal
+by cluster C10–C15 and for C13–C15 by technology, unweighted and MW-weighted, on a monthly grid to 120 months —
+`outputs/survival_by_cluster.csv`, `survival_summary.csv`, `survival.svg`, `survival_tech.svg`, `survival.md`, and the
+site's Survival page. COMPLETED is censored at its on-line date, never an event.
+OASIS day-ahead LMP (`oasis.py`, `caiso-siting oasis pnodes | suggest | fetch`, terminal-only, not in `weekly`): TB4 spread per day at hand-confirmed PNodes (`data/poi_pnodes.csv`, never guessed) → `outputs/lmp_tb4.csv`, `lmp_tb4_summary.csv`, and `lmp_tb4_12mo_mean/_p90`, `lmp_months` on `nodes.csv` — a first-pass storage revenue screen, not a revenue forecast.
+
 ## 1.2.0 — 2026-09-08
 
 TPD allocation layer (`tpd.py`, `caiso-siting tpd`): CAISO's 2024 and 2025 allocation cycle results joined per node —

@@ -30,6 +30,12 @@ Metric definitions (read before quoting any of them):
   tpd25_alloc_mw          MW allocated in that cycle (requested × allocation %)
   tpd25_denied_mw         MW requested by rows that received 0 %
   tpd24_fcdsa_projects    projects at the node allocated Full Capacity in the 2024 cycle
+  wdat_active_mw          MW of active WDAT (distribution-level) requests at the same substation (PG&E file today)
+  wdat_inservice_mw       WDAT MW already in service at that substation
+  lmp_tb4_12mo_mean       TB4 spread of day-ahead LMP at the confirmed PNode (mean of daily top-4 minus bottom-4 hours,
+                          $/MWh, over the months fetched); a first-pass storage revenue screen, not a revenue forecast
+  lmp_tb4_12mo_p90        the 90th percentile of the same daily TB4 spread
+  lmp_months              months of OASIS data behind the two numbers (0 = no confirmed PNode / nothing fetched)
 None of these say WHY anything withdrew. The files carry no reason beyond "IC Request".
 """
 from __future__ import annotations
@@ -40,7 +46,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from . import cluster15, tpd
+from . import cluster15, tpd, wdat
 from . import queue_report as caiso_queue
 from .common import norm_poi, poi_endpoints
 from .config import DATA, OUT, RECENT_YEARS, add_provenance
@@ -213,6 +219,52 @@ def join_tpd(nodes: pd.DataFrame, pq: pd.DataFrame) -> pd.DataFrame:
     hit = nodes.tpd25_projects > 0
     print(f"tpd: {hit.sum()} nodes with 2025 TPD requests; requested {nodes.tpd25_req_mw.sum():,.0f} MW, "
           f"allocated {nodes.tpd25_alloc_mw.sum():,.0f} MW, denied {nodes.tpd25_denied_mw.sum():,.0f} MW")
+    return nodes
+
+
+WDAT_COLS = ["wdat_active_projects", "wdat_active_mw", "wdat_active_storage_mw", "wdat_inservice_mw", "wdat_withdrawn_mw"]
+
+
+def join_wdat(nodes: pd.DataFrame) -> pd.DataFrame:
+    """Distribution-level (WDAT) queue activity at the same substation, from data/wdat_*.xlsx.
+    Only substations that already exist as CAISO nodes are joined here; WDAT-only substations live in
+    outputs/wdat_projects.csv (they are a different market: no CAISO deliverability unless studied)."""
+    w = wdat.load_all()
+    if w.empty:
+        for c in WDAT_COLS:
+            nodes[c] = 0.0
+        print("wdat: no data/wdat_*.xlsx files — WDAT columns are zero")
+        return nodes
+    pn = wdat.per_node(w)
+    nodes = nodes.merge(pn, left_on="node_key", right_index=True, how="left")
+    for c in WDAT_COLS:
+        nodes[c] = nodes[c].fillna(0.0)
+    hit = nodes.wdat_active_projects > 0
+    print(f"wdat: {hit.sum()} CAISO nodes also carry active WDAT requests ({nodes.wdat_active_mw.sum():,.0f} MW); "
+          f"{len(pn) - hit.sum()} WDAT-only substations not in the CAISO node table")
+    return nodes
+
+
+LMP_COLS = ["lmp_tb4_12mo_mean", "lmp_tb4_12mo_p90", "lmp_months"]
+
+
+def join_lmp(nodes: pd.DataFrame) -> pd.DataFrame:
+    """Day-ahead LMP TB4 spread per node from outputs/lmp_tb4_summary.csv (`caiso-siting oasis fetch`, run from a
+    terminal). Only nodes with a hand-confirmed PNode in data/poi_pnodes.csv carry values; everything else is NaN
+    with lmp_months = 0. A first-pass storage revenue screen, not a revenue forecast."""
+    path = OUT / "lmp_tb4_summary.csv"
+    if not path.exists():
+        nodes["lmp_tb4_12mo_mean"] = float("nan")
+        nodes["lmp_tb4_12mo_p90"] = float("nan")
+        nodes["lmp_months"] = 0
+        print("lmp: no outputs/lmp_tb4_summary.csv — LMP columns are empty (run `caiso-siting oasis fetch`)")
+        return nodes
+    s = pd.read_csv(path, dtype={"node_key": str}).drop_duplicates("node_key").set_index("node_key")
+    nodes["lmp_tb4_12mo_mean"] = nodes["node_key"].map(pd.to_numeric(s["tb4_12mo_mean"], errors="coerce"))
+    nodes["lmp_tb4_12mo_p90"] = nodes["node_key"].map(pd.to_numeric(s["tb4_12mo_p90"], errors="coerce"))
+    nodes["lmp_months"] = nodes["node_key"].map(pd.to_numeric(s["months"], errors="coerce")).fillna(0).astype(int)
+    hit = nodes.lmp_months > 0
+    print(f"lmp: {hit.sum()} nodes with day-ahead TB4 from OASIS ({len(s) - hit.sum()} summary rows not in the node table)")
     return nodes
 
 
@@ -448,6 +500,8 @@ def main() -> None:
     pq, c15 = load_projects()
     nodes = build_nodes(pq, c15)
     nodes = join_tpd(nodes, pq)
+    nodes = join_wdat(nodes)
+    nodes = join_lmp(nodes)
     nodes = join_availability(nodes)
     nodes = geocode_nodes(nodes)
     nodes = add_provenance(nodes, "publicqueuereport.xlsx+cluster15.xlsx",

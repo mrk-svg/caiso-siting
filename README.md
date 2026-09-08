@@ -19,9 +19,10 @@ Not a "Grid-Ready Score". Transparent, sourced layers — every number traceable
       queue_report.py    Public Queue Report parser (Cluster 14 and earlier + completed + withdrawn)
       cluster15.py       Cluster 15 report parser (different schema)
       nodes.py           unify per node, geocode, county-centroid fallback, POI availability, map, node_watch.md
+      survival.py        Kaplan–Meier time-to-withdrawal by cluster (C10–C15, C13–C15 by technology) -> outputs/survival_*
       diff.py            weekly snapshot + diff -> outputs/diff_latest.md (the newsletter engine)
       parcels.py         parcels / zoning / general plan within N km of a POI (public county ArcGIS)
-      site.py            static site -> site/ (index, map, per-node pages, diff, note) for GitHub Pages
+      site.py            static site -> site/ (index, map, per-node pages, survival, diff, note) for GitHub Pages
       cli.py             `caiso-siting` entry point
     tests/               pytest suite (synthetic CAISO-layout fixtures + real-file smoke tests + header-drift guard)
     data/                raw downloads (gitignored), osm_substations.csv (committed, ODbL), poi_overrides.csv,
@@ -52,11 +53,11 @@ The CAISO files contain no withdrawal reason beyond "IC Request"; never state a 
     #    https://www.caiso.com/documents/cluster-15-interconnection-requests.xlsx -> data/cluster15.xlsx
     # 2. refresh substations only occasionally (OSM changes slowly) — see "Substation coordinates"
     caiso-siting download            # both CAISO files (needs normal internet)
-    caiso-siting weekly              # = queue, cluster15, nodes, snapshot, diff, site — in order
+    caiso-siting weekly              # = queue, cluster15, nodes, survival, snapshot, diff, site — in order
     open site/index.html
 
     # or step by step
-    caiso-siting queue | cluster15 | nodes | snapshot | diff | site
+    caiso-siting queue | cluster15 | nodes | survival | snapshot | diff | site
 
 On GitHub the same thing runs every Monday 14:00 UTC via `.github/workflows/weekly.yml`, commits the snapshot and
 site, deploys Pages, and opens an issue titled "Weekly diff <date>". Set the repo's Pages source to "GitHub Actions" once.
@@ -95,6 +96,14 @@ by statute in every California county layer — parcel + APN is what you get; ow
   Vincent (3.5 GW), Whirlwind (3.3 GW), Delaney–Colorado River (3.2 GW), Trout Canyon (3.0 GW), Dry Lake (2.95 GW, all C15).
 - Churn ratio (withdrawn ÷ surviving MW) > 2 at Red Bluff, Lugo, Colorado River: graveyard nodes.
 
+## Queue-cohort survival (v1.3)
+
+`caiso-siting survival` fits a Kaplan–Meier curve per cluster (C10–C15, plus C13–C15 split by technology): the share of
+each cohort not yet withdrawn at each month since queue date, unweighted and MW-weighted. Withdrawal is the event;
+active rows are censored at the report run date, completed rows at their on-line date (completion is success, never an
+event). Outputs `outputs/survival_by_cluster.csv`, `survival_summary.csv`, `survival.svg`, `survival.md` and the site's
+Survival page. Columns and the censoring rule are in `DATA.md`. Nothing in it says why a project withdrew.
+
 ## Deliverability that was actually allocated (v1.2)
 
 `caiso-siting tpd` parses CAISO's 2024 and 2025 TPD allocation cycle results (`data/tpd_2024.xlsx`, `data/tpd_2025.xlsx`,
@@ -113,6 +122,22 @@ through RIMS (login), not as open documents. Nothing in this repo claims a cost.
 
 Line POIs ("MIDWAY - GATES") move from one endpoint onto the actual line (`geo_method = cec-line`, score 0.9, nearest
 vertex to the county's located nodes). Screens are presence-only: the CEC layers carry no attributes.
+
+## v1.3 layers
+
+- **WDAT (distribution-level) queue** — `caiso-siting wdat` parses PG&E's public Wholesale Distribution Queue
+  (`data/wdat_pge.xlsx`, refreshed by `download`); `nodes` joins active / in-service / withdrawn WDAT MW onto the same
+  substation key. 99 CAISO nodes also carry active WDAT requests. SCE and SDG&E files: drop them in `data/` and add a
+  column map (`caiso-siting wdat inspect FILE` prints the headers). WDAT requests carry no CAISO deliverability
+  unless separately studied; the `-WD` ids are how the TPD files refer to them.
+- **Survival curves** — `caiso-siting survival`: Kaplan–Meier withdrawal survival by cluster (C10–C15) and by
+  technology (C13–C15), MW-weighted variants, `site/survival.html`. Completion is censoring, never an event.
+- **Document watch** — `caiso-siting watch`: diffs the server-rendered CAISO/PTO pages in `data/watched_pages.txt`
+  against `data/documents_seen.csv` and writes `outputs/new_documents.md` — the human review queue for the prose layer.
+  CAISO's notices index is JavaScript-rendered with no RSS, so this watches the pages the documents actually land on.
+- **OASIS LMP (TB4)** — `caiso-siting oasis pnodes | suggest | fetch`: day-ahead LMP for hand-confirmed PNodes only
+  (`data/poi_pnodes.csv`, `confirmed=yes`), 4-hour top-bottom spread per day, 12-month summary joined as
+  `lmp_tb4_12mo_mean`. A first-pass revenue screen, not a forecast. Nothing is queried until you confirm a mapping.
 
 ## Substation coordinates (the hard part the pitch hand-waved)
 
@@ -154,5 +179,7 @@ Rule: only encode a POI a source names. Add a row every time a new notice appear
 
 1. CAISO TPD allocation reports + constraint-mapping workbook (decides who gets deliverability) — join to nodes.
 2. Week-over-week diff of both CAISO files (new withdrawals, COD slips, IA status changes) — the newsletter engine.
-3. OASIS nodal LMP history for the ~40 nodes that matter, not the whole grid.
+3. OASIS nodal LMP history for the ~40 nodes that matter, not the whole grid — started: `caiso-siting oasis pnodes | suggest | fetch`
+   (terminal-only, rate-limited) computes the day-ahead TB4 spread at PNodes you confirm by hand in `data/poi_pnodes.csv`;
+   see `DATA.md` (`lmp_tb4*.csv`). A first-pass storage revenue screen, not a revenue forecast.
 4. Only then: a UI.

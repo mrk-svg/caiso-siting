@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "caiso-siting"
-version = "1.2.0"
+version = "1.3.0"
 description = "Free-data CAISO interconnection node intelligence: queue + Cluster 15 + POI availability + parcels"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -40,3 +40,9 @@ ignore = ["E731"]
 "src/caiso_siting/diff.py" = ["E501"]
 "src/caiso_siting/parcels.py" = ["E501"]
 "src/caiso_siting/layers.py" = ["E501"]
+"src/caiso_siting/wdat.py" = ["E501"]
+"src/caiso_siting/watch.py" = ["E501"]
+"tests/test_watch.py" = ["E501", "E731"]
+"src/caiso_siting/survival.py" = ["E501"]
+"src/caiso_siting/oasis.py" = ["E501"]
+"tests/test_oasis.py" = ["E501"]
