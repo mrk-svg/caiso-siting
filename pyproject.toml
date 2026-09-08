@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "caiso-siting"
+version = "1.1.0"
+description = "Free-data CAISO interconnection node intelligence: queue + Cluster 15 + POI availability + parcels"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Robert Karimov" }]
+dependencies = ["pandas>=2.0", "openpyxl>=3.1", "requests>=2.31", "tabulate>=0.9"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "ruff>=0.4"]
+
+[project.scripts]
+caiso-siting = "caiso_siting.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E731"]
+
+[tool.ruff.lint.per-file-ignores]
+# nodes.py and site.py carry HTML/markdown templates as string literals; diff.py/parcels.py have wide report lines
+"src/caiso_siting/nodes.py" = ["E501"]
+"src/caiso_siting/site.py" = ["E501"]
+"src/caiso_siting/diff.py" = ["E501"]
+"src/caiso_siting/parcels.py" = ["E501"]

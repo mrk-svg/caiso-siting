@@ -1,0 +1,1369 @@
+@id,@type,@lat,@lon,name,voltage,operator,substation
+368173858,node,37.8092396,-120.2996240,Moccasin Creek Power House,,,
+368174426,node,41.9854190,-122.3602971,Fall Creek Powerhouse,,,
+1515105640,node,38.7474344,-121.2493250,Central Utilities Plant,,,
+4199809190,node,37.7543759,-122.4782690,21st Avenue Substation,,,distribution
+4214350591,node,37.7527592,-122.5047413,Noriega Substation,,,distribution
+4675367242,node,37.1391711,-121.6202781,Geocache in Electrical Box,,,minor_distribution
+6894320584,node,40.5712025,-122.3644990,T2933L,,,
+7221425253,node,38.9139964,-121.0189791,Mountain Quarries Substation,,,
+9345288210,node,34.0341613,-118.2830280,Distributing Station 31,34500;4800,Los Angeles Department of Water and Power,distribution
+10839031950,node,37.8019613,-122.4651758,Battery Substation,,,
+10895335660,node,37.8264986,-122.2164340,Wood Substation,,Pacific Gas and Electric Company,yes
+12790430622,node,37.8544962,-122.2795273,Russell Substation,,PGE,
+4630372,way,37.4178138,-122.0671333,Ames Substation,115000,Pacific Gas and Electric Company,transition
+23805620,way,37.2255899,-121.7439528,Metcalf Substation,500000;230000;115000,Pacific Gas and Electric Company,transmission
+23823577,way,37.2446077,-121.7957750,Edenvale,115000,Pacific Gas and Electric Company,transmission
+23837624,way,37.7120521,-121.5647373,Tesla Substation,500000;230000,Pacific Gas and Electric Company,
+23837627,way,37.7155046,-121.5669346,Tesla Substation,115000,Pacific Gas and Electric Company,yes
+23988495,way,37.0530047,-121.0205078,Los Banos Substation,500000;230000,Pacific Gas and Electric Company,
+24049353,way,37.7672618,-121.6165591,Ralph Substation,,Pacific Gas and Electric Company,generation
+24049455,way,37.7979179,-121.5807052,Tracy Substation,500000;230000,Western Area Power Administration,
+24064448,way,38.1247013,-121.8301278,Birds Landing Switching Station,230000,Pacific Gas and Electric Company,transmission
+24064449,way,38.1234890,-121.8291623,Russell Substation,230000,,generation
+24064886,way,38.0587470,-121.3768414,Eight Mile Substation,230000,Pacific Gas and Electric Company,
+24168995,way,37.3409379,-121.9014665,San Jose Substation B,115000,Pacific Gas and Electric Company,
+24283011,way,37.6934358,-121.6951878,Livermore Substation,230000;115000,Western Area Power Administration,
+24294714,way,37.5830081,-122.3192431,San Mateo Substation,230000;115000,Pacific Gas and Electric Company,
+24314687,way,37.6219397,-122.4467361,Sneath Lane Substation,60000;1200;2400,Pacific Gas and Electric Company,distribution
+24333232,way,35.4029429,-119.4522985,Midway Substation,500000;230000,Pacific Gas and Electric Company,
+24388861,way,39.1206016,-122.2231973,Cortina Substation,230000;115000,,
+24396811,way,36.8002613,-121.7690896,Dolan Road Substation,115000,Pacific Gas and Electric Company,minor_distribution
+24396970,way,36.7631266,-121.7347465,Castroville Substation,115000,Pacific Gas and Electric Company,minor_distribution
+24397013,way,36.6820576,-121.6514791,Salinas Substation,115000;60000,,
+24397698,way,36.9520512,-121.7604186,Green Valley Substation,115000,Pacific Gas and Electric Company,minor_distribution
+24400937,way,35.2161759,-120.8472939,Diablo Canyon,500000,Pacific Gas and Electric Company,generation
+24401024,way,35.2160115,-120.8511175,Diablo Canyon,230000,,generation
+24606412,way,37.6056261,-122.3915473,Millbrae Substation,115000;60000;13800;12000;4000,Pacific Gas and Electric Company,transmission
+24657439,way,37.5113456,-122.3401624,Ralston Substation,60000,Pacific Gas and Electric Company,
+25453503,way,32.9179868,-117.2190783,Peñasquitos Substation,230000;138000;69000,San Diego Gas & Electric,transmission
+25720848,way,32.6650617,-116.9867618,Proctor Valley Substation,138000,,distribution
+25793704,way,37.4928765,-122.1378730,Ravenswood Substation,230000;115000,Pacific Gas and Electric Company,transmission
+25797771,way,37.6533808,-122.4030565,East Grand Substation,115000,Pacific Gas and Electric Company,
+26254174,way,32.9582981,-117.1088663,Azuaga Street Substation,,,
+26587310,way,32.9587616,-117.2206664,North City West Substation,69000,San Diego Gas & Electric,distribution
+27340751,way,34.2811367,-118.9030822,Moorpark Substation,220000;66000;16000,Southern California Edison,transmission
+27503684,way,36.1139936,-115.2134403,Decatur substation,230000;138000;69000,,
+27593176,way,33.8423262,-118.1204944,Lucas Substation (electricity),66000,Southern California Edison,distribution
+27672789,way,37.4571123,-122.2861374,Jefferson Substation,230000;60000,Pacific Gas and Electric Company,yes
+27710070,way,36.0532812,-115.0425772,Warm Springs Substation,138000,NV Energy,
+27786664,way,36.0850662,-115.0861424,Russell Substation,69000,NV Energy,yes
+27878203,way,37.4370572,-122.2421566,Woodside Substation,60000,Pacific Gas and Electric Company,
+27925546,way,37.3261316,-122.0754437,Monta Vista Substation,230000;115000,Pacific Gas and Electric Company,distribution
+27925549,way,37.3240031,-122.0732623,Monta Vista Substation (lower yard),115000;60000,Pacific Gas and Electric Company,distribution
+28517608,way,38.7074224,-121.1610611,Folsom Substation,,Western Area Power Administration,generation
+28566617,way,38.5872830,-121.4179873,Hurley Substation,230000,Sacramento Municipal Utility District,distribution
+28875096,way,37.5008218,-121.9865669,Newark Substation,230000;115000,Pacific Gas and Electric Company,transmission
+28875097,way,37.5027226,-121.9816204,Newark Distribution Substation,230000,Pacific Gas and Electric Company,transmission
+29175070,way,33.6649231,-117.7685585,Santiago Substation,220000;66000;12000,Southern California Edison,transmission
+29399992,way,37.7037524,-122.4094087,Martin Substation,230000;115000;60000;12000,Pacific Gas and Electric Company,transmission
+29426718,way,38.2508462,-122.5810974,Lakeville Substation,230000,Pacific Gas and Electric Company,transmission
+29989554,way,38.7616011,-121.2640540,Berry Street Receiving Station,230000;60000,Roseville Electric,
+30036269,way,38.7443011,-121.1616444,Horseshoe Substation,,Pacific Gas and Electric Company,
+30045395,way,33.5976509,-117.7490005,Borrego Substation,66000;12000,Southern California Edison,distribution
+30050587,way,33.5126117,-117.6662800,Capistrano Substation,,San Diego Gas & Electric,
+30410527,way,38.7635707,-121.2640420,Atlantic Substation,230000;115000;60000;12000,Pacific Gas and Electric Company,
+30567721,way,34.4859441,-118.1196772,Vincent Substation,500000;220000,Southern California Edison,
+30620967,way,34.5501806,-117.4361920,Adelanto Converter Station,500000,Intermountain Power Agency,converter
+30636431,way,37.6917506,-122.4559637,Daly City Substation,115000;12000;7200,Pacific Gas and Electric Company,distribution
+30755899,way,39.5551324,-121.6451687,Table Mountain Substation,500000;230000;115000,Pacific Gas and Electric Company,
+30877246,way,37.8908861,-122.2922250,Solano Substation,12000;4000,Pacific Gas and Electric,distribution
+30979896,way,38.8347041,-121.0946845,Newcastle Switchyard,,Pacific Gas and Electric,generation
+30995423,way,33.5497273,-117.6280692,Margarita Substation,138000,,distribution
+31173635,way,34.2214825,-118.1871012,Gould Substation,220000;66000,Southern California Edison,
+31369697,way,37.2809465,-122.0153775,Saratoga Substation,230000,Pacific Gas and Electric Company,
+31503319,way,34.0731087,-118.3973768,Beverly Substation,66000;16000;4000,Southern California Edison,distribution
+31779344,way,34.2051762,-118.2105809,La Canada Substation,,,distribution
+31809170,way,32.9937908,-117.0776605,Rancho Carmel Substation,69000,San Diego Gas & Electric,distribution
+32008208,way,34.1578695,-118.2802232,Airway Substation,230000;69000,Glendale Water and Power,transmission
+32012723,way,34.1541085,-118.3395745,Hollywood Way Distributing Station,66000,City of Burbank,distribution
+32020824,way,34.2592830,-118.3213128,Distributing Station 72,34500;4800,Los Angeles Department of Water and Power,distribution
+32050965,way,38.6575814,-121.1368126,Gold Hill Substation,230000;115000,Pacific Gas and Electric Company,
+32217118,way,38.5482365,-121.4077518,Brighton Substation,230000;115000,Pacific Gas and Electric Company,transmission
+32223005,way,33.8481378,-118.0974269,Del Amo Substation,220000;66000,Southern California Edison,transmission
+32526610,way,38.6503056,-121.4863559,Natomas Substation,230000,Sacramento Municipal Utility District,transmission
+32547223,way,38.7137793,-121.4792194,Elverta Substation,230000,Western Area Power Administration,transmission
+32547487,way,38.5451944,-121.7340935,Davis Substation,115000,Pacific Gas and Electric Company,distribution
+32663174,way,34.1793184,-118.5437398,Receiving Station U - Tarzana,230000,Los Angeles Department of Water and Power,yes
+32693136,way,34.1934604,-118.5189904,LADWP Distributing Station No. 127,34500;4800,Los Angeles Department of Water and Power,distribution
+32695399,way,34.1654270,-118.5256303,DISTRIBUTING STATION 78,34500;4800,Los Angeles Department of Water and Power,distribution
+32707508,way,37.5160275,-121.2307996,Westley Substation,230000,Modesto Irrigation District;Turlock Irrigation District,
+32707873,way,37.6393820,-120.9197458,Claus Station,,Modesto Irrigation District,yes
+32707934,way,37.6682334,-120.9172755,Parker Substation,230000,Modesto Irrigation District,transmission
+32710411,way,38.3730069,-121.3534169,Elk Grove Substation,230000,Sacramento Municipal Utility District,transmission
+32719176,way,38.4895694,-121.4700404,Pocket Substation,230000,Sacramento Municipal Utility District,transmission
+32719874,way,38.7525965,-121.2510276,Hardrock Substation,,Roseville Electric,
+32728060,way,34.2579771,-118.4931730,LADWP Distributing Station No. 92,34500;4800,Los Angeles Department of Water and Power,distribution
+32794290,way,38.6557350,-121.0594484,Clarksville Substation,115000,Pacific Gas and Electric Company,distribution
+32818047,way,34.1935935,-118.4841197,LADWP Distributing Station No. 60,34500;4800,Los Angeles Department of Water and Power,distribution
+32844093,way,34.2716136,-118.4852011,LADWP Distributing Station No. 142,34500;4800,Los Angeles Department of Water and Power,distribution
+32943234,way,38.3442084,-121.1238678,Rancho Seco Substation,230000,Sacramento Municipal Utility District,
+32943573,way,39.0239342,-121.7231221,O'Banion Substation,230000,Western Area Power Administration,transmission
+33046461,way,38.0767942,-122.5403588,Ignacio Substation,230000,Pacific Gas and Electric Company,
+33046902,way,37.8984659,-122.5247928,Alto Substation,,PACIFIC GAS AND ELECTRIC COMPANY,yes
+33059334,way,38.1613083,-122.3809863,Skaggs Island,115000,Pacific Gas and Electric Company,minor_distribution
+33068219,way,38.0808738,-122.1374133,Bahia Substation,230000,,
+33068400,way,38.1381217,-122.2091136,Parkway Substation,,Pacific Gas and Electric Company,
+33068511,way,38.2163273,-122.1115989,Cordelia Substation,,Pacific Gas and Electric Company,distribution
+33068597,way,38.2363184,-122.0968041,Hale Substation,,Pacific Gas and Electric Company,minor_distribution
+33106247,way,37.9054592,-122.2082408,Sobrante Substation,230000;115000;12000;7200,Pacific Gas and Electric Company,transmission
+33108052,way,37.8477991,-122.1611735,Moraga Substation,230000;115000;13200;12000,Pacific Gas and Electric Company,transmission
+33111585,way,37.6714440,-122.1595919,Grant Substation,115000,Pacific Gas and Electric Company,
+33111643,way,37.6248148,-122.1170695,Eastshore Substation,230000;115000,Pacific Gas and Electric Company,
+33111645,way,37.6321853,-122.1019142,Mount Eden Substation,115000,Pacific Gas and Electric Company,
+33292212,way,38.2478308,-122.2679071,Tulucay Substation,230000;115000,Pacific Gas and Electric Company,transmission
+33604800,way,34.0406913,-117.3206273,Vista Substation,220000,Southern California Edison,
+33605206,way,33.9985870,-117.6785183,Chino Substation,220000;66000;12000,Southern California Edison,transmission
+33808384,way,34.4221008,-118.5750053,Saugus Substation,220000;66000;16000,Southern California Edison,transmission
+33833507,way,38.5086450,-122.2144254,Monticello Substation,115000,Pacific Gas and Electric Company,minor_distribution
+34229001,way,38.5230579,-121.9944302,Putah Creek Substation,115000,Pacific Gas and Electric Company,transmission
+35115839,way,37.7773801,-122.4138578,Mission Substation,115000;12000;4000,Pacific Gas and Electric Company,transmission
+35407649,way,37.9454586,-122.3811407,Standard Oil 5 Substation,115000,,
+35479377,way,38.0027466,-122.2082843,Christie Substation,115000;60000;13200,Pacific Gas and Electric Company,transmission
+35602439,way,37.9939090,-122.1299929,Martinez Substation,115000,,
+35640786,way,38.0197579,-122.0618121,Tidewater Substation,230000,Pacific Gas and Electric Company,industrial
+35656716,way,37.7105291,-122.1486694,San Leandro U Substation,115000;12000,Pacific Gas and Electric Company,distribution
+35660929,way,37.8759452,-122.1870674,East Portal Substation,115000;34500,,distribution
+35732660,way,38.0369134,-121.8959532,Pittsburg Substation,230000;115000,Pacific Gas and Electric Company,
+35735111,way,38.0208157,-121.9059353,Kirker Substation,115000,Pacific Gas and Electric Company,minor_distribution
+35763387,way,37.9443397,-121.9692020,Clayton Substation,115000;21000;12000;7200,Pacific Gas and Electric Company,distribution
+35763516,way,37.9086401,-122.0573841,Lakewood Substation,115000;21000;12000;7200,Pacific Gas and Electric Company,distribution
+35798740,way,37.9993561,-121.7824183,Contra Costa Substation,230000,Pacific Gas and Electric Company,
+35799514,way,38.0152310,-121.7621701,Contra Costa Power Plant Substation,230000,Pacific Gas and Electric Company,
+35912596,way,38.2214947,-121.8669216,Lambie Substation,,Pacific Gas and Electric,generation
+35921570,way,38.2054582,-122.1479338,Jameson Substation,115000,Pacific Gas and Electric Company,distribution
+36250573,way,38.2854584,-121.9705143,Peabody Substation,230000,Pacific Gas and Electric Company,transmission
+36285890,way,38.0878168,-121.3883545,Lodi Energy Center,230000,Northern California Power Agency,generation
+36322454,way,37.7988385,-121.6201356,Delta Switching Station,230000,,minor_distribution
+36343040,way,37.7643129,-121.6144740,JRWG Substation,230000,Pacific Gas and Electric Company,generation
+36730100,way,38.6784701,-121.7600433,Woodland Substation,115000,Pacific Gas and Electric Company,
+37003386,way,38.5515846,-121.5598716,Deepwater Substation,115000,Pacific Gas and Electric Company,distribution
+37025505,way,38.8771759,-119.9860123,Meyers Substation,120000,,
+37093076,way,38.7628012,-121.3571208,Fiddyment Receiving Station,,Roseville Electric,transmission
+37112796,way,38.6933668,-121.3473318,Foothill Substation,230000,Sacramento Municipal Utility District,transmission
+37121428,way,38.6848895,-121.2663347,Orangevale Substation,230000,Sacramento Municipal Utility District,transmission
+37121892,way,38.8221004,-121.3065142,Pleasant Grove Substation,,Pacific Gas and Electric Company,
+37208979,way,38.7815856,-121.3077577,Industrial Substation,,Roseville Electric,
+37691256,way,38.5085711,-121.4639428,South City Substation,115000,Sacramento Municipal Utility District,transmission
+37692542,way,34.2077559,-119.2468823,Mandalay Switchyard,66000,Southern California Edison,subtransmission
+37723084,way,37.0418309,-122.0252619,Camp Evers Substation,115000,,
+38084005,way,37.3971817,-122.0102520,Fair Oaks Substation,115000,,
+38159840,way,37.6509286,-122.4541665,Serramonte Substation,115000;12000,Pacific Gas and Electric Company,distribution
+38311176,way,37.9922986,-121.3485086,Stagg Substation,230000,Pacific Gas and Electric Company,
+38508396,way,34.0921435,-118.0826651,Rosemead Substation,66000;16000,Southern California Edison,distribution
+38653255,way,37.3031783,-121.8408334,Evergreen Substation,115000,Pacific Gas and Electric Company,minor_distribution
+39017429,way,37.4272373,-121.9328297,Los Esteros Substation,230000;115000,Pacific Gas and Electric Company,
+39515681,way,34.1508286,-118.1843149,Eagle Rock Switchyard,220000,,transmission
+39923534,way,36.9836818,-122.0483563,UC/Meder Substation,,,
+40309253,way,34.3021917,-119.1854388,Santa Clara Substation,220000;66000;16340,Southern California Edison,transmission
+41382042,way,36.9842885,-121.9153739,Seacliff Substation,,,
+41939674,way,33.6081674,-117.8651711,Crown Substation,66000;12000,Southern California Edison,distribution
+42330936,way,37.2600109,-121.8900095,Almaden Substation,,,
+42637019,way,36.9923448,-121.9822310,Paul Sweet Substation,115000,Pacific Gas and Electric Company,minor_distribution
+43911451,way,34.1817713,-119.2221444,Channel Island Substation,66000;16340,Southern California Edison,distribution
+43951315,way,37.9162218,-122.3025375,El Cerrito G Substation,115000;12000,Pacific Gas and Electric Company,distribution
+47386641,way,37.7973777,-122.2807519,Oakland C Substation,115000;12000;7200,Pacific Gas and Electric Company,distribution
+47386656,way,37.7979031,-122.2821430,Oakland C Substation,115000;12000;7200,Pacific Gas and Electric Company,distribution
+48203963,way,37.4737395,-122.1279853,Cooley Landing Substation,115000,Pacific Gas and Electric Company,
+48205182,way,37.4776350,-122.1685678,Belle Haven Substation,60000,Pacific Gas and Electric Company,
+49048130,way,33.9479894,-118.2553146,Receiving Station B,287000;230000;138000,Los Angeles Department of Water and Power,transmission
+49715851,way,33.9189640,-118.4253357,Scattergood Substation,230000;138000,,
+50834713,way,32.5154450,-116.8835335,Tijuana 1,230000;115000,Comisión Federal de Electricidad,transmission
+51710408,way,37.5413724,-121.9619995,Fremont Substation,115000,Pacific Gas and Electric Company,distribution
+52098545,way,37.3744687,-122.0163991,Britton Substation,115000,Pacific Gas and Electric Company,minor_distribution
+52131031,way,32.5142557,-115.3478821,Subestación Siderúrgica,230000,,industrial
+52173997,way,32.5968844,-115.6764876,La Rosita,230000,,transmission
+52174012,way,32.6050066,-115.4592927,Mexicali 2,230000;161000,,transmission
+52174018,way,32.5797156,-115.3332120,Gonzáles Ortega,161000;34500;13800,,distribution
+52174020,way,32.6393445,-115.3981884,Cetys,230000;161000,,transmission
+52175527,way,32.4115863,-115.2452424,Cerro Prieto 3,230000,Comisión Federal de Electricidad,generation
+52175532,way,32.3909667,-115.2264921,Cerro Prieto 2,230000,Comisión Federal de Electricidad,generation
+52183964,way,32.7179069,-115.7155553,Imperial Valley Substation,500000;230000,,transmission
+52301113,way,32.6320561,-115.5690323,Santa Isabel,230000;161000,,transmission
+52302686,way,32.6029413,-115.5215692,Wisteria,230000;13800,,distribution
+52472709,way,32.3619689,-115.0607411,Chapultepec,230000;34500,,distribution
+52472710,way,32.4360595,-114.7114835,CFE Subestación Eléctrica Parque Industrial,230000,,transmission
+52612640,way,37.4020399,-121.9662358,Northern Receiving Station,230000;115000,Silicon Valley Power,
+54354749,way,32.6296410,-115.5207204,Substacion Orizaba,230000,,transmission
+54846182,way,32.6542058,-115.3572084,Mexicali Oriente,161000;34500;13800,Comisión Federal de Electricidad,distribution
+55143820,way,36.9791983,-121.8672269,Rob Roy Substation,,,
+59171712,way,38.5290950,-121.7513821,UC Davis Substation,115000,Pacific Gas and Electric Company,minor_distribution
+59238979,way,33.6668790,-117.6424464,Viejo Substation,220000;66000,Southern California Edison,transmission
+59271566,way,38.3564548,-121.9806245,Vacaville Substation,115000,Pacific Gas and Electric Company,distribution
+59450840,way,38.0662071,-122.1963036,North Tower Substation,115000,Pacific Gas and Electric Company,minor_distribution
+59470569,way,37.5570702,-122.0578829,Dumbarton Substation,115000,Pacific Gas and Electric Company,
+59585249,way,33.6502255,-117.6886543,Limestone Substation,66000;12000,Southern California Edison,distribution
+59590898,way,38.0854611,-122.2572823,778,,,
+60118528,way,33.6431240,-117.6056527,O'Neill Substation,,Southern California Edison,yes
+60118533,way,33.6296313,-117.6317921,Chiquita Substation,66000,Southern California Edison,distribution
+60494304,way,33.6605972,-117.8606227,Chip Substation,66000;12000,Southern California Edison,distribution
+60919770,way,32.5009947,-114.8375446,Ruiz Cortinez,230000;161000,Comisión Federal de Electricidad,transmission
+60947497,way,32.4791392,-114.7781307,Subestación Hidalgo,161000;13800,Comisión Federal de Electricidad,distribution
+61417688,way,35.2522438,-115.5155803,Cima Substation,230000,,
+61430457,way,33.8178295,-116.3673893,Ramon Substation,230000;92000,Imperial Irrigation District,
+61430458,way,33.8183451,-116.3695726,Mirage Substation,230000;220000;115000,,
+61430467,way,33.9379937,-116.5766239,Devers Substation,500000,Southern California Edison,distribution
+61558067,way,37.1267953,-121.6593936,Morgan Hill Substation,115000,Pacific Gas and Electric Company,
+61601149,way,33.7395005,-117.1564367,Valley Substation,500000;115000,Southern California Edison,transmission
+61878181,way,33.6718006,-117.8475997,Cabrillo Substation,66000;12000,Southern California Edison,distribution
+61878182,way,33.6091216,-117.6976435,Moulton Substation,66000;12000,Southern California Edison,distribution
+61878191,way,33.6076934,-117.8848796,Edgewater Substation,,Southern California Edison,
+61960833,way,33.7331976,-117.8498738,Chestnut Substation,66000,Southern California Edison,
+61960845,way,33.8149647,-117.8341037,Villa Park Substation,220000;66000;12000,Southern California Edison,transmission
+61960851,way,33.7882515,-117.8027240,Modena Substation,66000;12000,Southern California Edison,distribution
+61961946,way,33.6875019,-117.8285735,Estrella Substation,66000;12000,Southern California Edison,distribution
+61961948,way,33.7132628,-117.8526051,Johanna Substation,220000;66000;12000,Southern California Edison,transmission
+62206934,way,34.1021892,-117.2778643,Cardiff Substation,66000;33000,Southern California Edison,
+62235860,way,34.7816824,-116.3846956,Pisgah Switchyard,230000,,transmission
+62315137,way,35.7973353,-115.0084794,Eldorado Substation,500000;230000,Southern California Edison,transmission
+62333225,way,33.6852045,-117.9431126,Ellis Substation,220000;66000;12000,Southern California Edison,transmission
+63908845,way,34.7904804,-118.8271520,Gorman Substation,,,
+64130145,way,34.7766122,-118.7746647,Bailey Substation,220000,,
+64161681,way,33.8289323,-117.7897166,Serrano Substation,500000;220000,Southern California Edison,transmission
+65411731,way,33.8190324,-118.2223341,Hinson Substation,220000;66000,Southern California Edison,transmission
+65501703,way,37.9631660,-122.0522357,Meadow Lane Substation,115000;21000;7200,Pacific Gas and Electric Company,distribution
+65596865,way,33.8087260,-117.9827195,Barre Substation,220000;66000;12000,Southern California Edison,transmission
+65801366,way,33.7661247,-117.9795659,Trask Substation,66000;12000,Southern California Edison,distribution
+66157642,way,33.8802903,-118.1751865,Lighthipe Substation,220000;66000;12000,Southern California Edison,transmission
+66158393,way,33.9288306,-118.1057084,Center Substation,220000;66000;12000,Southern California Edison,transmission
+66209607,way,34.0365975,-118.1116208,Mesa Substation,500000;220000;66000;16000;12000,Southern California Edison,transmission
+66376509,way,37.8000395,-121.9076359,Tassajara Substation,230000,Pacific Gas and Electric Company,
+66376512,way,37.7446730,-121.9364756,San Ramon Substation,230000,Pacific Gas and Electric Company,
+66413933,way,37.6697116,-121.8544544,Vineyard Substation,230000,Pacific Gas and Electric Company,distribution
+66418181,way,37.7915109,-121.7276325,Jackson Ranch Substation,,,generation
+66983703,way,33.7345423,-117.8023175,Bryan Substation,66000;12000,Southern California Edison,distribution
+66983705,way,33.6830442,-117.7422782,Irvine Substation,66000;16000;12000,Southern California Edison,distribution
+67264544,way,32.8444239,-117.2370217,Rose Canyon Substation,69000,San Diego Gas & Electric,distribution
+67487406,way,32.6947441,-117.1436743,SDGE Electric Power Substation,,San Diego Gas & Electric,distribution
+71209428,way,37.7836728,-122.4170502,Larkin Substation,115000;12000,Pacific Gas and Electric Company,transmission
+71817088,way,34.1756538,-118.3598529,Receiving Station E - Toluca,500000;230000;34500,Los Angeles Department of Water and Power,transmission
+71834330,way,36.4822263,-114.8303447,Crystal Substation,500000;230000,,transmission
+71837876,way,36.4274003,-114.9069319,Harry Allen Substation,500000;345000;230000,,transmission
+74839063,way,33.8688713,-118.3329363,La Fresa Substation,220000;66000;16000,,transmission
+75206069,way,33.8516645,-118.3951050,66kV Switching Station,66000,Southern California Edison,transmission
+75206115,way,33.8525365,-118.3937996,230kV Switching Station,220000,Southern California Edison,transmission
+75776205,way,34.4171185,-114.2113887,Black Mesa Substation,230000,,distribution
+76146548,way,38.7794877,-121.2827520,Park Substation,,Roseville Electric,
+76146600,way,38.7813457,-121.3196083,Foothills Substation,60000;12000,Roseville Electric,
+76146823,way,38.8013986,-121.3286366,Dave Bakkie Substation,,Roseville Electric,
+76147170,way,38.7922380,-121.3623330,Westplan Substation,,Roseville Electric,
+76147358,way,38.7521015,-121.3140503,Baseline Substation,,Roseville Electric,
+76344891,way,34.2294469,-118.5434568,LADWP Receiving Station J - Northridge,230000;34500;4800,Los Angeles Department of Water and Power,transmission
+77003956,way,34.1912401,-118.3796420,DISTRIBUTING STATION 85,34500;4800,Los Angeles Department of Water and Power,distribution
+77275131,way,34.2911053,-114.1712775,Gene Substation,230000,,
+77275243,way,34.2909308,-114.1414137,Havasu Tap,230000,,distribution
+77275282,way,34.1613635,-114.2777094,Headgate Rock Substation,161000;69000,,distribution
+77338036,way,33.7336277,-117.0074106,Stetson Substation,115000,Southern California Edison,
+77339440,way,34.0080322,-117.5642244,Mira Loma Substation,500000;220000;66000,Southern California Edison,distribution
+77452171,way,34.0879780,-117.5337016,Rancho Vista Substation,500000;220000,Southern California Edison,
+78488984,way,33.6873024,-117.9128855,Gisler Substation,66000;12000,Southern California Edison,distribution
+78797580,way,33.9757580,-118.1478598,Laguna Bell Substation,220000;66000;16000,Southern California Edison,transmission
+79176953,way,37.2925967,-120.4075244,Wilson Substation,230000,Pacific Gas and Electric Company,
+79176968,way,37.3599247,-120.6153156,Atwater Substation,,Pacific Gas and Electric Company,yes
+79248632,way,37.7417051,-120.8023645,Warnerville Substation,230000,San Francisco Public Utilities Commission,
+79249627,way,37.7725291,-120.8264774,Cottle Substation,230000,Pacific Gas and Electric Company,yes
+79440943,way,33.9462399,-117.9221717,Olinda Substation,220000;66000;12000,Southern California Edison,transmission
+79671026,way,35.8192314,-115.0113645,Marketplace Substation,500000,,
+79671032,way,35.8038852,-115.0130133,McCullough Substation,500000;230000,Los Angeles Department of Water and Power,transmission
+79671040,way,35.7900276,-114.9942489,Merchant Substation,230000,,
+79734755,way,35.9273963,-114.8338237,Mead Substation,500000;287000;230000;69000,Western Area Power Administration,distribution
+80105953,way,35.2788987,-116.0744455,Baker Substation,,Southern California Edison,
+80213764,way,33.7978192,-118.2580886,Receiving Station C,138000,Los Angeles Department of Water and Power,transmission
+81737508,way,35.1581900,-114.5816510,Big Bend Substation,69000,,
+82005353,way,35.1439550,-114.0868115,Harris Substation,230000,,transmission
+82005359,way,35.1383613,-114.0863010,McConnico Substation,230000,,transmission
+82008875,way,35.1777775,-113.9802052,Cheyenne Substation,230000,,distribution
+82360297,way,35.7077504,-114.8248585,Nelson Substation,69000,,
+82362021,way,36.0354204,-115.0311886,Faulkner Substation,230000,,
+82362023,way,36.0023334,-115.1712587,Cactus Substation,138000,,
+85069428,way,39.2309958,-121.0349806,Brunswick Substation,115000,Pacific Gas and Electric Company,distribution
+85586689,way,32.7414519,-117.2334812,Point Loma Substation,69000,San Diego Gas & Electric,distribution
+86093899,way,38.7283921,-121.2698939,Cirby Substation,,Roseville Electric,
+86094474,way,34.1050306,-117.9803630,Rio Hondo Substation,220000,,
+86145651,way,38.7382451,-121.2346733,Southeast Substation,,Roseville Electric,
+86150201,way,38.7394634,-121.2961961,Vernon Street Substation,,Roseville Electric,
+86198913,way,34.1190343,-117.8720979,Citrus Substation,66000;12000,Southern California Edison,distribution
+86292411,way,34.1211210,-117.7319349,Live Oak Substation,66000,Southern California Edison,distribution
+86369466,way,34.3658218,-117.3693963,Lugo Substation,500000;220000,Southern California Edison,
+86383141,way,38.7140548,-121.4200508,Elverta - Cherry Brook Substation,69000,Sacramento Municipal Utility District,minor_distribution
+86435413,way,38.7234982,-121.3829095,Black Eagle Crystal Ridge Substation,69000,Sacramento Municipal Utility District,minor_distribution
+86454167,way,34.0670879,-118.2261612,Receiving Station A,230000,Los Angeles Department of Water and Power,transmission
+86463530,way,38.9097437,-121.5424907,East Nicolaus Substation,115000,Pacific Gas and Electric Company,distribution
+86463615,way,38.9351998,-121.4667925,Rio Oso Substation,230000;115000,Pacific Gas and Electric Company,
+86491045,way,39.0920158,-121.5430625,Oliverhurt Substation,,Pacific Gas and Electric Company,
+86573554,way,39.0959089,-121.6239833,Bogue Substation,,Pacific Gas and Electric Company,distribution
+86576021,way,39.0524925,-121.6919536,Greenleaf Substation,115000,Pacific Gas and Electric Company,generation
+86803024,way,39.1634541,-121.5611959,East Marysville Substation,,Pacific Gas and Electric Company,
+87806732,way,36.3819461,-114.9217078,Chuck Lenzie Substation,500000,,transmission
+88776835,way,34.6858079,-118.2981161,Antelope Substation,500000;220000,Southern California Edison,
+90085569,way,39.6213748,-119.2086935,Eagle,120000,,
+90091928,way,39.5599877,-119.5133634,Dove,120000,NV Energy,transmission
+90915109,way,32.8023286,-115.5375480,El Centro Substation,230000;161000;92000,Imperial Irrigation District,
+90915165,way,32.7060708,-115.2178956,Drop 4,92000,,
+90961067,way,32.7604299,-114.7486409,Knob Substation,161000,,transmission
+90961069,way,32.7364696,-114.7126545,Pilot Knob Substation,161000,,transmission
+90961473,way,32.7200573,-114.7096262,Yucca Substation,69000,,transmission
+90966380,way,32.7456924,-114.4912811,North Gila Substation,500000,Arizona Public Service,transmission
+91020505,way,32.7685005,-114.3968497,Dome Tap Substation,161000,,distribution
+91042835,way,32.7108526,-114.3271131,Wellton-Mohawk Pumping Plant #1,34500;4160,Wellton-Mohawk Irrigation and Drainage District,distribution
+91042863,way,32.6665520,-114.2649770,Wellton-Mohawk Ligurta Substation,161000;69000;34500;4160,Wellton-Mohawk Irrigation and Drainage District,distribution
+91042866,way,32.6848773,-114.4700165,Gila Substation,161000,,distribution
+91164872,way,37.8103041,-122.2715752,Oakland L Substation,115000;12000;7200,Pacific Gas and Electric Company,distribution
+91333377,way,38.9005734,-121.2941808,PG&E Lincoln Substation,115000,Pacific Gas and Electric Company,transmission
+91530350,way,34.2734732,-118.4586766,San Fernando Substation,66000,,
+91530354,way,34.3791522,-118.5590591,Newhall Substation,66000,Southern California Edison,distribution
+91534418,way,36.8627977,-121.4062132,Hollister Substation,115000,Pacific Gas and Electric Company,distribution
+91834998,way,34.4397943,-118.5826225,Pardee Substation,220000,Southern California Edison,transmission
+92107752,way,38.0154455,-122.1162144,Martinez Substation,115000,,
+92513782,way,38.0444117,-122.2570319,Oleum Substation,115000,Pacific Gas and Electric Company,
+92633578,way,37.9190210,-121.6767952,Brentwood Substation,230000,Pacific Gas and Electric Company,distribution
+92633626,way,38.1713032,-121.8464209,Shiloh 2 Substation,230000,,generation
+92832902,way,39.5326790,-121.4862404,Oroville Switchyard,230000,California Department of Water Resources,switchyard
+92966624,way,39.2373610,-122.2762888,Maxwell Capacitor Station,500000,Western Area Power Administration,transmission
+93128718,way,40.8079932,-121.9359340,Round Mountain Substation,500000;230000,,
+93128755,way,40.3979023,-122.2642981,Cottonwood Substation,230000;115000,Pacific Gas and Electric Company,transmission
+93128776,way,40.3829969,-122.3814249,Olinda Substation,500000,Western Area Power Administration,transmission
+93238392,way,36.9252276,-120.8298244,Dos Amigos Substation,230000,,transmission
+93251033,way,36.1413374,-120.1256622,Gates Substation,500000;230000,Pacific Gas and Electric Company,transmission
+93288988,way,36.6523145,-120.5815969,Panoche Substation,230000;115000,Pacific Gas and Electric Company,
+93420666,way,35.5550486,-120.6803660,Templeton,21000,Pacific Gas and Electric Company,
+93420676,way,35.3738781,-120.8555879,Morro Bay,230000;115000,Pacific Gas and Electric Company,
+93678748,way,37.2214424,-121.7466027,Coyote Switching Station,230000,Calpine,generation
+93950956,way,38.7134296,-121.4774711,Elverta Substation,230000/115000,Sacramento Municipal Utility District,transmission
+93984357,way,42.0796144,-121.3899577,Captain Jack Substation,500000,,
+94064537,way,34.1429562,-118.3574404,Southern Califorina Edison Power Substation: Studio Master Substation,,,
+94066289,way,34.1429667,-118.3591279,Southern California Edison Electrical Substation: Edison Universal Substation,,Southern California Edison,
+94600663,way,37.4217214,-121.1474784,Salado Substation,115000,Pacific Gas and Electric Company,distribution
+95894421,way,34.1108347,-116.4235078,Yucca Substation,115000,,
+95912441,way,37.3661783,-121.8434970,McKee Substation,115000,,
+96341992,way,38.7879615,-121.2316975,Rocklin Substation,60000,Pacific Gas and Electric Company,minor_distribution
+96637908,way,38.7987662,-121.2213220,Del Mar Substation,60000,Pacific Gas and Electric Company,minor_distribution
+97576454,way,32.7440926,-116.9573439,Jamacha Substation,69000,San Diego Gas & Electric,transmission
+98111153,way,38.9013375,-121.0878295,Placer Substation,,Pacific Gas and Electric Company,transmission
+99599964,way,35.0349893,-118.2808562,Windhub Substation,500000;220000,Southern California Edison,transmission
+99625445,way,33.9010413,-116.5440926,Garnet Substation,115000;33000;12000,,distribution
+99645329,way,32.9172568,-117.0309422,Sycamore Canyon Substation,230000;138000;69000,San Diego Gas & Electric,transmission
+99650319,way,33.1257327,-117.1167373,Escondido Substation,230000;69000,San Diego Gas & Electric,transmission
+101278680,way,42.1738990,-121.8135219,Klamath Substation,500000,PacifiCorp,transmission
+103099270,way,38.9467901,-121.0916489,Bell Substation,115000,Pacific Gas and Electric Company,distribution
+103260059,way,37.6913316,-122.0611153,Castro Valley Substation,230000;12000,Pacific Gas and Electric Company,distribution
+103383868,way,37.7847491,-122.3937480,Caltrans Sterling Sub Station,,,
+104478837,way,39.2146580,-120.8093116,Bonnie Nook Substation,,,
+104907571,way,33.8578140,-117.5883500,Jefferson Substation,66000;12000,Southern California Edison,distribution
+105232646,way,32.8940473,-117.1355952,Miramar Substation,69000,San Diego Gas & Electric,transmission
+105825880,way,33.2112992,-117.3345198,San Luis Rey Substation,230000,San Diego Gas & Electric,transmission
+106137706,way,37.4872473,-122.3111819,Watershed Substation,60000,,
+106479491,way,38.0121178,-122.2643140,Franklin Substation,60000;12000;7200,Pacific Gas and Electric Company,distribution
+106610038,way,38.2451302,-122.0412616,Suisun Substation,115000,Pacific Gas and Electric Company,minor_distribution
+108064166,way,38.7921659,-121.3834721,REP 60 kV Switchyard,60000,Roseville Electric,
+109355539,way,37.0072605,-121.5573635,Llagas Substation,115000,Pacific Gas and Electric Company,distribution
+110419842,way,37.4553512,-122.1783056,SRI Substation,60000,Pacific Gas and Electric Company,
+112285108,way,37.5234406,-122.2653026,Belmont Substation,115000,,
+112297069,way,37.4397244,-122.1151239,Palo Alto Switching Station,115000,,
+112306422,way,37.8053861,-122.2312754,Oakland X Substation,115000;12000;7200,Pacific Gas and Electric Company,distribution
+112445764,way,37.8474129,-122.2287922,Oakland K (Claremont) Substation,115000;12000;6600,Pacific Gas and Electric Company,distribution
+112452159,way,37.5952900,-122.0176363,Jarvis Substation,115000,Pacific Gas and Electric Company,distribution
+112568707,way,37.2336481,-121.9007517,Hicks Substation,230000,Pacific Gas and Electric Company,
+113779862,way,36.1148817,-115.1627838,Flamingo Substation,138000,,
+114438565,way,37.4571649,-122.1869329,Glenwood Substation,60000,Pacific Gas and Electric Company,
+114958126,way,37.2538677,-121.9662167,Vasona Substation,230000,Pacific Gas and Electric Company,
+116427264,way,32.7300976,-117.1108903,Wabash Substation,,San Diego Gas & Electric,transmission
+116440984,way,33.4532061,-117.5714849,Talega Substation,230000;138000;69000,San Diego Gas & Electric,transmission
+116534901,way,37.3344053,-122.0205664,Wolfe Substation,115000,Pacific Gas and Electric Company,minor_distribution
+117401235,way,37.2916636,-121.9356896,El Patio Substation,115000,Pacific Gas and Electric Company,
+119408726,way,37.3224752,-121.7970091,Swift Substation,115000,Pacific Gas and Electric Company,minor_distribution
+119409662,way,37.2689282,-121.7873391,Piercy Substation,115000,,
+119718455,way,32.7660854,-117.1923901,Old Town Substation,230000;69000,San Diego Gas & Electric,transmission
+119718456,way,32.8848282,-117.2008370,Eastgate Substation,69000,San Diego Gas & Electric,distribution
+119718926,way,32.7717391,-117.1644077,Friars Substation,,,
+119718927,way,32.7838747,-117.1371790,Mission Substation,138000;69000,San Diego Gas & Electric,transmission
+120342208,way,37.4575500,-121.9213290,Dixon Landing Substation,115000,Pacific Gas and Electric Company,minor_distribution
+120346267,way,37.3770777,-121.9546359,Scott Receiving Station,115000;60000,,
+120347589,way,37.4154050,-121.8884658,Milpitas Substation,115000,Pacific Gas and Electric Company,minor_distribution
+120353461,way,37.3819522,-121.9271433,Trimble Substation,115000,Pacific Gas and Electric Company,
+120359075,way,37.3472911,-121.9219860,FMC Substation,115000,Pacific Gas and Electric Company,
+122211839,way,34.2712870,-118.5561619,Distributing Station No. 82,34500;4800,Los Angeles Department of Water and Power,distribution
+123020119,way,37.4803496,-122.1677347,Tyco Electronics,60000,,industrial
+125280729,way,39.0438880,-121.0906728,Higgins Substation,,Pacific Gas and Electric Company,distribution
+125686119,way,37.8374161,-122.2635201,Oakland D Substation,115000;12000,Pacific Gas and Electric Company,distribution
+126153864,way,33.8094615,-117.8989290,Lewis Substation,220000;69000;12000,Anaheim Public Utilities,transmission
+130346335,way,36.3255515,-119.1344127,Venida Substation,66000;12000,Southern California Edison,distribution
+130771397,way,36.2746771,-115.0962861,Pecos Substation,230000,,distribution
+131068922,way,36.1743060,-115.2380480,Rainbow,69000,NV Energy,
+132230747,way,39.7686966,-121.8241031,Sycamore Creek Substation,115000,Pacific Gas and Electric Company,distribution
+133585863,way,34.4686423,-119.8843266,Goleta Substation,220000;66000;16340,Southern California Edison,transmission
+134477832,way,34.0621171,-117.2442851,Timoteo Substation,66000,,
+134636655,way,33.7910335,-118.1421024,Hathaway Substation,66000,Southern California Edison,distribution
+135234565,way,37.6080787,-122.3910969,Santa Paula Substation,115000;34500,,distribution
+136372566,way,36.1150212,-115.1894835,Valley View Substation,69000,NV Energy,
+137932368,way,33.5638693,-117.7148248,Niguel Substation,66000;12000,Southern California Edison,distribution
+139636821,way,36.9814272,-122.0250659,Blaine Street Substation,,,
+141726016,way,34.9896952,-117.5421983,Kramer Substation,230000,Southern California Edison,yes
+148224069,way,38.5532905,-121.2079639,Cordova Substation,230000,Sacramento Municipal Utility District,transmission
+148269720,way,38.5316862,-121.4000291,Procter Substation,230000,Sacramento Municipal Utility District,generation
+148273199,way,38.5538028,-121.4306469,East City Substation,115000,Sacramento Municipal Utility District,distribution
+149760444,way,38.8634920,-120.4428086,Union Valley Substation,230000,,
+149814841,way,38.7309319,-120.7836220,Placerville Substation,115000,Pacific Gas and Electric,distribution
+149817768,way,38.6933241,-120.8258859,Diamond Springs Substation,115000,Pacific Gas and Electric Company,distribution
+150402955,way,36.1429035,-115.1675068,Highland Substation,138000,,
+150412593,way,40.6789737,-122.4251015,Flanagan Substation,230000,Redding Electric Utility,distribution
+150420531,way,40.6098526,-122.4441817,Keswick Substation,230000;115000,Western Area Power Administration,transmission
+150562248,way,39.4542547,-121.5178277,Palermo Substation,230000;115000,Pacific Gas and Electric Company,transmission
+150583901,way,40.5193398,-122.3158655,Airport Substation,,Redding Electric Utility,distribution
+151116308,way,39.4915666,-121.5409382,Wyandotte Substation,115000,Pacific Gas and Electric Company,distribution
+151287400,way,38.1177245,-121.1601150,Lockeford Substation,230000,Pacific Gas and Electric Company,transmission
+151801695,way,36.5982643,-121.8531289,Del Monte Substation,115000,Pacific Gas and Electric Company,minor_distribution
+152340796,way,37.8563362,-120.9442136,Valley Home Substation,115000,Pacific Gas and Electric Company,distribution
+152352986,way,37.8422554,-121.0542003,Avena Substation,115000,Pacific Gas and Electric Company,distribution
+152353500,way,37.8009471,-121.2242723,Manteca Substation,115000,Pacific Gas and Electric Company,transmission
+152357677,way,37.7457866,-121.3413843,Kasson Substation,115000,Pacific Gas and Electric Company,transmission
+152390122,way,37.7131030,-121.4778009,Lammers Substation,115000,Pacific Gas and Electric Company,distribution
+153623686,way,37.7349425,-120.8448982,Oakdale Substation,115000,Turlock Irrigation District,
+153674102,way,37.4899763,-120.9059194,Walnut Substation,230000,Turlock Irrigation District,distribution
+155248358,way,36.9762960,-121.9646623,Opal Cliffs Substation,,,
+159088979,way,35.2617226,-120.6347848,PG&E Substation,115000;70000,Pacific Gas and Electric Company,
+159759790,way,33.9961547,-118.3590387,Windsor Hills Substation,66000;16000;4000,Southern California Edison,distribution
+159761230,way,35.3040221,-120.6580681,Mustang Substation (75),70000;12470,Cal Poly SLO,distribution
+160544538,way,34.1095081,-118.2543462,Receiving Station G - Atwater,230000,Los Angeles Department of Water and Power,transmission
+160842897,way,33.8113592,-118.1682070,Edison,,,
+162931413,way,41.0946735,-116.4234401,Coyote Creek Substation,,,
+162934426,way,41.2272733,-115.9399678,Humboldt,345000;120000,,transmission
+163037209,way,40.8196411,-117.2309008,Lone Tree Substation,115000,,industrial
+163043221,way,39.3365240,-114.8073300,Gonder Substation,345000;230000,,distribution
+163145501,way,40.0748874,-119.9741456,Fort Sage Substation,345000,,transmission
+163145502,way,41.5127574,-120.6347232,Hilltop Substation,345000;230000,,transmission
+164289720,way,36.8446681,-119.9225630,Herndon Substation,230000,Pacific Gas and Electric Company,distribution
+164758876,way,35.6526475,-117.7958919,Inyokern Substation,115000,,yes
+165256674,way,33.9660562,-118.3850507,Distributing Station 58,34500;4800,Los Angeles Department of Water and Power,distribution
+165480949,way,37.7941304,-122.4020636,Station J,,Pacific Gas and Electric Company,distribution
+165502301,way,33.6875325,-117.1459177,SCE Suncity Substation,115000,Southern California Edison,
+165771650,way,34.0254517,-118.3658536,Distributing Station 56,138000;,Los Angeles Department of Water and Power,distribution
+166273599,way,38.3238793,-117.3358048,Anaconda Moly Substation,230000;120000,,
+166551121,way,36.0082529,-115.2134852,Arden Substation,230000,,
+166551122,way,36.3225741,-115.2082305,Iron Mountain Substation,230000,,
+166551123,way,36.3343036,-115.3302075,Northwest Substation,500000;230000;138000,,
+166551144,way,35.9822455,-115.0842148,Anthem Substation,138000,NV Energy,
+166649166,way,33.6112925,-114.6802861,Blythe Substation,161000;33000;12000,,transmission
+166649170,way,33.1922938,-115.4345258,Midway Substation,230000,Imperial Irrigation District,distribution
+166649172,way,33.6162055,-114.6846393,Buck Substation,230000,,generation
+166728685,way,37.4157602,-122.2057550,S. L. A. C. Substation,230000,,yes
+167005125,way,32.8549207,-117.0119855,Carlton Hills Substation,138000,San Diego Gas & Electric,
+167005126,way,32.8597308,-116.8992272,Los Coches Substation,138000;69000,San Diego Gas & Electric,transmission
+167005130,way,32.7861059,-117.1383642,Mission Substation,230000,San Diego Gas & Electric,transmission
+167029619,way,32.8258058,-117.1836658,Clairemont Substation,69000,San Diego Gas & Electric,distribution
+167029631,way,32.8795875,-117.2135966,Genesee Substation,69000,San Diego Gas & Electric,distribution
+167143651,way,33.1228402,-117.2879008,Palomar Airport Substation,138000,,
+167143659,way,33.1414668,-117.2388510,Shadowridge Substation,,,
+167143660,way,32.8949446,-117.1563539,Fenton Substation,,,
+167242261,way,33.4568298,-117.5891840,Pico Substation,138000,,
+167405005,way,37.2531976,-121.0129501,Gustine Substation,,Pacific Gas and Electric Company,
+167413792,way,34.1616042,-118.8347698,Potrero Substation,66000;16000,Southern California Edison,distribution
+167413795,way,34.1474957,-118.7614511,Malibu Substation,66000;16000,Southern California Edison,distribution
+167421253,way,34.1874837,-118.8717342,Thousand Oaks Substation,66000;16000,Southern California Edison,distribution
+167884129,way,38.5110705,-121.4750576,Campbell Substation,230000,Sacramento Municipal Utility District,generation
+168003305,way,42.1985467,-121.7838313,Klamath Falls Substation,,PacifiCorp,transmission
+168216625,way,34.4519857,-119.7614899,San Marcos Substation,,,
+168216627,way,34.3005200,-119.1666627,Saticoy Substation,66000;16340,Southern California Edison,distribution
+168216632,way,34.3625169,-119.3092764,Casitas Substation,66000;16340,Southern California Edison,distribution
+168525615,way,35.3611831,-118.9227967,Magunden Substation,220000,Southern California Edison,transmission
+168525650,way,34.9351833,-118.8429736,Pastoria Substation,220000,,
+169402989,way,36.3038123,-119.2451574,Rector Substation,220000;66000;12000,Southern California Edison,transmission
+169403015,way,35.8412308,-119.0846351,Vestal Substation,220000,Southern California Edison,transmission
+169514309,way,36.1079723,-118.9381572,Springville Substation,220000,Southern California Edison,transmission
+169516713,way,36.8958053,-119.6645470,Coppermine Substation,70000,Pacific Gas and Electric,
+169674599,way,33.9994777,-118.1709273,Bandini,66000,Southern California Edison,
+169880227,way,34.1622180,-118.0857912,Eaton Substation,66000;16000,Southern California Edison,distribution
+169880229,way,33.9826871,-118.2053899,Randolph Substation,66000;16000,Southern California Edison,distribution
+169880235,way,34.0376263,-118.2298849,River Switching Station,230000,Los Angeles Department of Water and Power,transmission
+169880237,way,34.1511141,-118.0880101,T. M. Goodrich Substation,220000;34500,Southern California Edison,transmission
+169880238,way,34.0150843,-118.2039727,Receiving Station F,230000,Los Angeles Department of Water and Power,transmission
+170152151,way,42.0966771,-123.6813278,O'Brien Substation,115000,,
+170288297,way,39.5212615,-120.0086698,California,120000;115000,NV Energy,transmission
+170295877,way,39.4556305,-119.7173976,Mira Loma Substation,345000;125000,,transmission
+170362835,way,39.1889009,-119.6969991,Brunswick,,,transmission
+170362839,way,39.4783587,-119.8573116,Mount Rose Substation,,,transmission
+170362863,way,39.2394478,-119.9241742,Incline Substation,120000,NV Energy,transmission
+170362865,way,38.9633874,-119.7104334,Buckeye Substation,125000,Sierra Pacific Power Company,yes
+170401695,way,41.4076115,-115.9040274,Independence,,,
+170490300,way,38.4977484,-122.7605687,Fulton Substation,230000;115000;60000;12000,Pacific Gas and Electric Company,transmission
+170816713,way,38.0692617,-117.2426835,Tonopah,,,
+170816722,way,36.3054107,-116.4146023,Junction Substation,,Southern California Edison,
+170833620,way,35.6156318,-120.6795071,Paso Robles,12000,Pacific Gas and Electric Company,
+170980215,way,37.0257164,-122.1548163,Crusher Substation,,,
+172455386,way,33.5420983,-117.1147711,Triton Substation,115000,Southern California Edison,
+173109930,way,33.9977868,-114.2170639,Black Peak Substation,161000;69000,Arizona Public Service,distribution
+174012681,way,35.6218268,-117.6889085,Downs Substation+,12000,Southern California Edison,yes
+174861684,way,41.6331327,-121.2265312,Perez Substation,69000,,
+175370658,way,35.6019402,-119.3261876,Wasco Substation,115000,Pacific Gas and Electric Company,
+176723932,way,40.6185315,-122.3237395,College View Substation,,,
+176726311,way,35.6081967,-119.3252475,Charca Substation,115000,Pacific Gas and Electric,
+177409006,way,41.7047565,-121.2766611,Clear Lake Substation,69000,,
+177409007,way,41.2076111,-121.1381252,Lookout Substation,69000,,
+177409008,way,41.8881237,-121.3783633,Newell Substation,69000,,
+177490615,way,33.8043908,-117.9007216,Katella Substation,69000;12000,Anaheim Public Utilities,distribution
+177526173,way,36.9304959,-121.7642412,ERTA Substation,,,
+177592874,way,40.9097063,-121.6408540,Ultra Power Substation,60000,,
+177592879,way,40.9611119,-121.5486115,Hat Creek 2 Substation,60000,,
+177706578,way,41.4448012,-120.8810534,Canby 1 Substation,69000,,
+177706579,way,41.4440267,-120.8801638,Canby 2 Substation,69000,,
+179415242,way,36.8962778,-119.7510180,Woodward Substation,115000,Pacific Gas and Electric,
+180836063,way,38.6467946,-121.0705723,CPM Substation,115000,Pacific Gas and Electric Company,minor_distribution
+180839419,way,38.6592948,-120.9472318,Shingle Springs Substation,115000,Pacific Gas and Electric,distribution
+180970701,way,39.5969216,-119.2089770,Lonely Substation,120000,,minor_distribution
+181389084,way,37.7385570,-122.1937797,Edes Substation,115000;12000;7200,Pacific Gas and Electric,distribution
+181492758,way,34.0934496,-117.3171981,Calectric Substation,115000,,
+181492780,way,34.0799529,-117.2389874,San Bernardino Substation,220000,,
+181548170,way,42.0937389,-122.0716142,John C. Boyle Substation,,PacifiCorp,transmission
+181560370,way,37.4181928,-122.0634407,N-225B,115000,,
+181630666,way,37.9462693,-120.5276918,Melones Substation,115000,Pacific Gas and Electric Company,
+181675123,way,37.8750831,-119.9655637,Early Intake Switchyard,230000,San Francisco Public Utilities Commission,switching
+181693225,way,39.5395079,-122.2630176,Logan Creek Substation,,,
+181693250,way,39.7778665,-122.1426369,Glenn Substation,230000,Pacific Gas and Electric Company,transmission
+181864356,way,37.0666583,-121.0753351,Gianelli Switchyard,,Western Area Power Administration,generation
+182050458,way,34.9412983,-118.8261630,Edmonston Substation,220000,,
+182084288,way,38.5719479,-121.4829736,Station B,,Sacramento Municipal Utility District,transmission
+182102249,way,35.0083488,-120.4530998,Mesa Substation,230000;115000,Pacific Gas and Electric Company,
+182604562,way,36.2421264,-119.9028971,Henrietta Substation,230000,Pacific Gas and Electric Company,
+182604563,way,36.6108289,-119.6395996,McCall Substation,230000;115000,Pacific Gas and Electric Company,
+182622208,way,36.7083453,-119.6112851,Sanger Substation,115000,Pacific Gas and Electric Company,
+182648957,way,36.1826951,-115.3446770,Beltway Substation,230000,NV Energy,
+183206679,way,38.8289511,-122.8101652,Eagle Rock Substation,115000,Pacific Gas and Electric Company,generation
+184314047,way,33.7841928,-117.8885727,Edison substation,,,
+184696201,way,32.7197071,-117.1614202,SDG&E 4th and Ash Sub Station,,San Diego Gas & Electric,
+184864655,way,38.6098231,-122.8562710,Badger Substation,,City of Healdsburg,
+184909077,way,34.0681773,-118.4883582,Kenter Canyon,230000,Los Angeles Department of Water and Power,transition
+186041109,way,40.6459538,-122.6253737,Carr Substation,,Western Area Power Administration,transmission
+186041114,way,40.5982603,-122.5370778,Whiskeytown Switchyard,,,
+188161327,way,38.8220962,-121.3064317,Pleasant Grove Substation,,,
+188301755,way,36.1970740,-115.9689413,Pahrump Substation,230000,,
+188303133,way,35.9270203,-115.1748593,Magnolia Substation,230000,NV Energy,yes
+188689669,way,37.3771474,-122.0063670,Applied Materials Substation,115000,Pacific Gas and Electric Company,minor_distribution
+192435055,way,32.6690461,-115.5003476,Calexico Substation,92000,,
+192543558,way,32.6859748,-115.5085571,Pruett Substation,92000,,
+192883977,way,37.7875180,-122.3934622,Embarcadero Substation,230000,Pacific Gas and Electric Company,transmission
+193808882,way,32.6449466,-115.4773336,Centro,230000;161000;34500;13800,,transmission
+194026764,way,32.6624578,-115.4285718,Aeropuerto Dos,230000,,transmission
+194519256,way,35.5709061,-121.0554628,Perry,12000,Pacific Gas and Electric Company,
+195463430,way,38.2341942,-122.6362627,Petaluma A Substation,60000;4000;2400,Pacific Gas and Electric Company,distribution
+199049644,way,36.2133700,-119.3303801,Tulare Substation,66000;12000,Southern California Edison,distribution
+199461285,way,38.5894875,-121.5449731,West Sacramento Substation,115000,Pacific Gas and Electric Company,transmission
+199582149,way,33.9147099,-117.4866367,Harvey Lynn Substation,66000,,
+201812720,way,36.1435685,-115.0485279,Winterwood Substation,138000,Nevada Power Company,
+203316814,way,37.8889274,-122.2729527,Arlington Substation,12000;4000,Pacific Gas and Electric,distribution
+207068105,way,34.0397793,-118.2366813,LADWP Distributing Station No. 144,34500;4800,Los Angeles Department of Water and Power,distribution
+209242166,way,37.1308309,-122.1721521,Big Basin Substation,,,
+229580528,way,33.6820167,-114.2175748,Quartzsite Substation,69000,,distribution
+230129938,way,39.3205795,-121.5953056,Honcut Substation,115000,Pacific Gas and Electric Company,minor_distribution
+230740532,way,32.8927483,-117.2060045,Mira Sorrento Substation,69000,San Diego Gas & Electric,distribution
+233151744,way,36.2937295,-121.2001133,Los Ositos Substation,,,
+233812416,way,35.5444422,-115.4687507,Ivanpah Substation,230000,,
+236659648,way,33.8681007,-117.9212938,Fullerton Substation,66000;16000;4000,Southern California Edison,distribution
+240585981,way,37.4628980,-122.2278663,Las Pulgas Substation,60000,Pacific Gas and Electric Company,
+241517982,way,34.1297418,-118.4794883,LADWP Distributing Station No. 122,34500;4800,Los Angeles Department of Water and Power,distribution
+242195549,way,32.9789240,-117.0316446,Poway Substation,69000,San Diego Gas & Electric,distribution
+242195551,way,32.7952627,-116.9967857,Garfield Substation,69000,San Diego Gas & Electric,
+243125942,way,32.9111127,-117.1126304,Scripps Substation,69000,San Diego Gas & Electric,distribution
+243678721,way,34.0510307,-118.4761587,Distributing Station 66,34500;4800,Los Angeles Department of Water and Power,distribution
+245301741,way,32.7954070,-116.9723728,El Cajon Substation,69000,San Diego Gas & Electric,distribution
+245320960,way,32.8043708,-116.9209295,Granite Hills Substation,69000,San Diego Gas & Electric,distribution
+245417237,way,32.8277373,-116.7899038,Alpine Substation,69000,,
+245417242,way,33.0180671,-116.8530464,Creelman Substation,69000,San Diego Gas & Electric,distribution
+245778829,way,32.7969521,-116.7922452,Loveland Substation,69000,San Diego Gas & Electric,distribution
+245778832,way,32.7908216,-117.0231281,Murray Substation,69000,San Diego Gas & Electric,distribution
+245784881,way,32.7456082,-117.0785884,Streamview Substation,69000,San Diego Gas & Electric,distribution
+245946705,way,32.7438777,-117.0466129,Chollas Substation,69000,,
+245946709,way,32.7043560,-117.0500041,Paradise Substation,69000,San Diego Gas & Electric,distribution
+245946710,way,32.7390773,-117.0027506,Spring Valley Substation,69000,San Diego Gas & Electric,distribution
+246532420,way,32.7992354,-117.2402470,Pacific Beach Substation,69000,San Diego Gas & Electric,distribution
+246538205,way,32.5953414,-117.0577002,Otay Substation,69000,San Diego Gas & Electric,distribution
+246576846,way,33.0214645,-117.0963425,Rancho Bernardo Substation,69000,San Diego Gas & Electric,
+247795420,way,32.8295316,-117.1573513,Mesa Heights Substation,69000,San Diego Gas & Electric,distribution
+247795421,way,32.6583162,-117.0916893,Sweetwater Substation,69000,San Diego Gas & Electric,distribution
+247807059,way,32.6730729,-117.1073613,National City Substation,69000,San Diego Gas & Electric,distribution
+248427043,way,32.7073804,-117.2450554,Cabrillo Substation,69000,San Diego Gas & Electric,
+248650177,way,32.7331113,-117.1737934,Kettner Substation,69000,San Diego Gas & Electric,
+248983078,way,32.7141010,-117.1695797,Kettner Substation,69000,San Diego Gas & Electric,distribution
+253116587,way,41.5433718,-124.0504528,Yurok Substation,69000,,
+253174644,way,34.1716085,-118.4231488,DISTRIBUTING STATION 71,34500;4800,Los Angeles Department of Water and Power,distribution
+253258676,way,34.2014878,-118.5962809,Distributing Station No. 22,34500;4800,Los Angeles Department of Water and Power,distribution
+253258678,way,34.1893908,-118.5917130,Receiving Station T,,Los Angeles Department of Water and Power,yes
+253537982,way,34.0718795,-118.4673192,LADWP Distributing Station No. 135,34500;4800,Los Angeles Department of Water and Power,distribution
+253557544,way,34.1798103,-118.4455555,LADWP Receiving Station S / Distributing Station 21,,Los Angeles Department of Water and Power,transmission
+253731890,way,38.3095848,-122.7316423,Cotati Substation,,Pacific Gas and Electric Company,yes
+253747134,way,35.0890917,-118.9758250,Wheeler Ridge Substation,230000;70000,Pacific Gas and Electric Company,
+256935297,way,36.9763915,-121.9801133,Capitola Substation,,Pacific Gas and Electric Company,
+258650890,way,37.5720606,-120.9857548,Grayson Substation,,Turlock Irrigation District,distribution
+258866768,way,37.7460031,-122.4033330,Bayshore Substation,115000,Pacific Gas and Electric Company,transmission
+259248810,way,38.1661376,-122.2535959,American Canyon Substation,,Pacific Gas and Electric Company,
+260130000,way,37.7599745,-122.4203108,Station E,,Pacific Gas and Electric Company,distribution
+263882452,way,34.4626797,-114.3360468,Mulberry Substation,69000,UniSource Energy Services,yes
+265730084,way,33.9317874,-118.4045499,Distributing Station 139,34500;4800,Los Angeles Department of Water and Power,distribution
+265864441,way,37.7493866,-122.4341200,Castro Street Substation,,Pacific Gas and Electric Company,
+266284681,way,37.0952985,-122.1442443,Burns Substation,,,
+267159397,way,34.0331936,-118.4599949,Receiving Station K - Olympic,230000;138000;34500,Los Angeles Department of Water and Power,transmission
+274459406,way,37.7815865,-122.4406198,Station G,,Pacific Gas and Electric Company,distribution
+274459420,way,37.7818256,-122.4405347,Station G,,Pacific Gas and Electric Company,distribution
+278422085,way,37.7765945,-122.4836815,Station K,,Pacific Gas and Electric Company,distribution
+280308288,way,37.8090214,-122.3126984,Davis Substation,115000,Port of Oakland Harbor Utilities,
+280922418,way,32.8986790,-117.2400452,Torrey Pines Substation,69000,San Diego Gas & Electric,distribution
+282777549,way,34.0172256,-118.4882090,Santa Monica Substation,66000,,distribution
+282914601,way,38.2391457,-122.6367512,Petaluma C Substation,60000;12000,Pacific Gas and Electric Company,distribution
+283838367,way,33.8842845,-117.5717159,Corona Substation,66000;33000;12000,Southern California Edison,distribution
+283838368,way,33.8819423,-117.5884735,Perez Substation,33000;4160,Southern California Edison,distribution
+287802957,way,37.0172602,-122.1997399,Lone Star Substation,,,
+292295991,way,38.0304941,-121.8965520,Pittsburg Converter Station,200000,,converter
+295762352,way,34.1130837,-118.2677964,Distributing Station 25,34500;4800,Los Angeles Department of Water and Power,distribution
+297316324,way,33.9154939,-117.9637412,Parkwood Substation,66000;12000,Southern California Edison,distribution
+297444869,way,34.1014022,-118.2877980,LADWP Distribution Station 54,34500;4800,Los Angeles Department of Water and Power,distribution
+297694815,way,37.2732862,-120.4871838,Pacific Gas & Electric,,Pacific Gas and Electric Company,
+302045339,way,36.3172993,-116.0107970,Vista Substation,138000,,
+309822803,way,34.0256002,-118.4722120,Colorado Substation,66000,,distribution
+311711379,way,37.3974594,-120.7270145,Merced Irrigation District Substation,,,
+313027827,way,37.8580230,-122.2685966,Stuart Substation,,Pacific Gas and Electric Company,distribution
+314681113,way,36.1151358,-115.1430740,Claymont Substation,138000,NV Energy,
+317920324,way,42.1659332,-123.6375252,Cave Junction Substation,115000,PacifiCorp,
+322058879,way,41.8676139,-124.1391841,Del Norte Substation,115000;69000,,
+322976264,way,42.1761072,-122.6483612,Oak Knoll Substation,,PacifiCorp,distribution
+328028425,way,35.4487360,-120.8703178,Cayucos,70000,Pacific Gas and Electric Company,
+328033894,way,35.4654985,-120.6714647,Atascadero Substation,70000,Pacific Gas and Electric Company,
+328033895,way,35.3611870,-120.8114355,Baywood,70000,Pacific Gas and Electric Company,
+328033896,way,35.2866839,-120.7058811,Foothill,115000;medium,Pacific Gas and Electric Company,distribution
+328033897,way,35.3199933,-120.6930975,Goldtree,12000,Pacific Gas and Electric Company,
+328033898,way,35.3205354,-120.6931062,Goldtree,12000,Pacific Gas and Electric Company,
+328033899,way,35.1015350,-120.5810329,Oceano,115000,Pacific Gas and Electric Company,
+328033900,way,35.7523623,-120.6840377,PG&E - San Miguel Substation,70000,Pacific Gas and Electric Company,
+328043907,way,35.0469576,-120.5861366,Callendar Switching Station,,Pacific Gas and Electric Company,
+328043953,way,35.6865318,-120.3362128,Cholame,,Pacific Gas and Electric Company,
+328327399,way,32.6014210,-115.4850250,Xochimilco,230000;13800,,distribution
+328845104,way,35.0408506,-120.5909176,Union Oil,,Pacific Gas and Electric Company,
+329549577,way,33.9325988,-116.5051681,Coffee Substation,33000;12000,,
+332222407,way,34.1136574,-117.4541834,Randall Substation,66000,Southern California Edison,
+332728420,way,33.8455754,-116.5459235,Holiday Substation,33000;4160,,distribution
+338062751,way,33.9616755,-118.3762536,Receiving Station N - Airport,138000;34500,Los Angeles Department of Water and Power,transmission
+339856293,way,34.1519587,-118.4573591,Distributing Station 64,34500;4800,Los Angeles Department of Water and Power,distribution
+344610837,way,33.7183836,-117.7385539,Las Lomas Substation,66000;12000,Southern California Edison,
+344650882,way,33.7477732,-116.3920226,Santa Rosa Substation,115000,Southern California Edison,
+345602377,way,32.5684261,-115.9393802,Rumurosa,230000;69000,,transmission
+349473821,way,37.3562294,-121.9398956,Brokaw Substation,,Silicon Valley Power,
+351905168,way,33.8974149,-118.2247622,Compton Substation,16000;4000,Southern California Edison,distribution
+355939499,way,32.7090002,-114.6328763,Tenth Street Substation,69000,,distribution
+355939502,way,32.7264274,-114.6530272,Riverside Substation,69000,,distribution
+358560769,way,33.6028701,-114.5271774,Ehrenberg Substation,33000,Arizona Public Service,distribution
+360443541,way,38.1278485,-121.8321610,Montexuma Substation,230000,Pacific Gas and Electric Company,generation
+361344056,way,39.5064462,-119.9333056,Washoe,,NV Energy,
+362636658,way,33.8094303,-116.3886191,Edom Substation,92000,,
+362670969,way,36.5797649,-115.6824199,Nevada Power Substation,138000,,distribution
+365017628,way,33.7463798,-116.7154536,Idyllwild Substation,33000,Southern California Edison,
+366751290,way,33.8444507,-116.9993511,Ridgeview Substation,,,
+366759222,way,33.8078794,-116.4939911,Eisenhower Substation,115000;12000,Southern California Edison,
+369749220,way,33.7059833,-116.7317819,Taquitz Substation,33000;12000,Southern California Edison,distribution
+370765641,way,34.1960531,-118.9309646,Newbury Substation,,,
+371055268,way,37.3758043,-121.9543324,Kenneth Substation,60000,,distribution
+374247112,way,39.3577887,-115.1690063,Robinson Summit Substation,500000,,distribution
+374370487,way,33.6686746,-116.6751593,Lake Hemet Substation,34000,Anza Electric Cooperative,yes
+377128954,way,34.2793784,-118.4028582,LADWP Distributing Station No. 80,34500;4800,Los Angeles Department of Water and Power,distribution
+377658096,way,36.2202313,-115.3092754,Lone Mountain Substation,138000,,
+378176557,way,33.7047940,-116.7312286,Mountain Center Substation,,,transmission
+383664684,way,33.9960016,-118.2266831,Fruitland Substation,66000;16000;4000,Southern California Edison,distribution
+383669451,way,33.9635592,-118.1942818,Cudahy Substation,66000;16000;4000,Southern California Edison,distribution
+383740664,way,33.9615130,-118.1114113,Gallatin Substation,66000,Southern California Edison,distribution
+383740680,way,33.9480245,-118.0586256,Santa Fe Springs Substation,66000,Southern California Edison,distribution
+383742474,way,33.9480041,-118.0066722,Friendly Hills Substation,66000,Southern California Edison,distribution
+383773418,way,33.9400434,-118.1405352,Stewart Substation,66000,Southern California Edison,distribution
+383837070,way,33.8581387,-117.8074703,Yorba Substation,69000;12000,Anaheim Public Utilities,distribution
+383837313,way,33.7667557,-117.8521372,La Veta Substation,66000;12000,Southern California Edison,distribution
+384046583,way,33.7131376,-117.8836985,Camden Substation,66000;12000,Southern California Edison,distribution
+384189534,way,33.6385671,-117.8660306,MacArthur Substation,66000;12000,Southern California Edison,distribution
+384405435,way,33.9001147,-118.2060980,Bullis Substation,66000;16000,Southern California Edison,distribution
+384405441,way,33.9282691,-118.2154348,Fernwood Substation,66000;16000,Southern California Edison,distribution
+384405447,way,33.9271360,-118.2127679,Lynwood Substation,16000;4000,Southern California Edison,distribution
+384671107,way,33.8481125,-117.9106852,Sharp Substation,69000;12000,Anaheim Public Utilities,distribution
+384671108,way,33.8082791,-117.9331457,Southwest Substation,69000;12000,Anaheim Public Utilities,distribution
+384671109,way,33.8267260,-117.9024826,Vermont Substation,220000;69000,Anaheim Public Utilities,transmission
+384713953,way,33.6923242,-118.0171883,Slater Substation,66000;12000,Southern California Edison,industrial
+384713954,way,33.6654899,-117.9974921,Wave Substation,66000;12000;4000,Southern California Edison,distribution
+384800363,way,34.0081672,-117.9499642,Walnut Substation,220000;66000;12000,Southern California Edison,transmission
+384972419,way,34.0925150,-117.8796902,Cortez Substation,66000;12000,Southern California Edison,distribution
+384972420,way,34.0505447,-117.9908230,Industry Substation,66000;12000;4000,Southern California Edison,distribution
+384972422,way,34.0497237,-117.9072700,Merced Substation,66000;12000,Southern California Edison,distribution
+384972423,way,34.0090097,-117.9302800,Puente Substation,66000,Southern California Edison,distribution
+386364447,way,34.8578451,-118.4373291,Whirlwind Substation,500000;220000,Southern California Edison,transmission
+389163905,way,33.8507297,-118.0641095,Bovine Substation,66000;12000,Southern California Edison,distribution
+389163911,way,33.8176548,-118.0272289,Marion Substation,66000;12000,Southern California Edison,distribution
+389174036,way,33.7788220,-118.2273435,HarborGen Substation,220000,,transmission
+389263288,way,34.0714170,-118.0265234,Amador Substation,66000;16000,Southern California Edison,distribution
+389263289,way,34.0521514,-118.0488591,Hoyt Substation,16000;4000,Southern California Edison,distribution
+389263491,way,34.0509111,-118.0812081,Rush Substation,66000,Southern California Edison,distribution
+389396026,way,33.7669022,-118.3731610,Crest Substation,66000;16000,,distribution
+389396033,way,33.7470529,-118.3889046,Marymount Substation,66000;16000,,distribution
+389396036,way,33.7919495,-118.3234679,Walteria Substation,66000;16000;4000,,distribution
+389854923,way,34.0468233,-117.6749191,Narod Substation,66000;12000,Southern California Edison,distribution
+390434487,way,33.9776501,-118.4371616,Tahiti Substation,66000,Southern California Edison,distribution
+390473088,way,33.9157911,-118.3620562,Felton Substation,66000,Southern California Edison,distribution
+390473089,way,33.9656369,-118.3580466,Inglewood Substation,66000;16000;4000,Southern California Edison,distribution
+390473090,way,33.8949224,-118.3578992,Lawndale Substation,16000;4000,Southern California Edison,distribution
+390483364,way,33.9189919,-118.3968458,Sepulveda Substation,66000;16000;4000,Southern California Edison,distribution
+391073776,way,34.0757908,-118.3684844,DISTRIBUTING STATION 94,34500;4800,Los Angeles Department of Water and Power,distribution
+391279139,way,34.1056769,-118.0385144,Anita Substation,66000;16000;4000,Southern California Edison,distribution
+391279140,way,34.1439656,-118.0258066,Arcadia Substation,66000;16000;4000,Southern California Edison,distribution
+391325059,way,33.7840931,-118.1086247,College Substation,66000,,distribution
+391347857,way,33.9322650,-117.9920063,Telegraph Substation,66000;12000,Southern California Edison,distribution
+391620399,way,33.8722945,-118.3780887,Ditmar Substation,66000;16000;4000,Southern California Edison,distribution
+391620400,way,33.8588793,-118.3742788,Victoria Substation,66000;16000,Southern California Edison,distribution
+391645214,way,33.8837969,-118.1203843,Cornuta Substation,66000;12000,Southern California Edison,distribution
+391711000,way,33.6352866,-117.9356791,Lafayette Substation,66000;12000,Southern California Edison,distribution
+391757388,way,33.7306095,-118.0333526,Bolsa Substation,66000,Southern California Edison,distribution
+391883458,way,34.0986783,-118.1001355,San Gabriel Substation,66000,,distribution
+391929872,way,34.0415943,-117.7233712,Francis Substation,66000;12000,Southern California Edison,distribution
+392184987,way,39.5614509,-119.5291634,West Tracy Substation,345000;120000,,transmission
+392311411,way,37.3273332,-121.9961505,Lawrence Substation,,Pacific Gas and Electric Company,minor_distribution
+392312025,way,34.0069080,-118.4656484,Marine Substation,66000,,distribution
+392569282,way,33.9155181,-118.0811949,Pioneer Substation,66000,Southern California Edison,distribution
+393117862,way,33.9024861,-118.3119293,Brighton Substation,66000;16000,Southern California Edison,distribution
+393117870,way,33.8298388,-118.3443558,Torrance Substation,66000;16000,Southern California Edison,distribution
+393202198,way,33.8594968,-118.2763481,Nola Substation,66000,Southern California Edison,distribution
+393346754,way,33.8945868,-118.2644665,Fremont Substation,66000;16000;4000,Southern California Edison,distribution
+393475141,way,33.9903143,-118.4209727,Distributing Station 95,,Los Angeles Department of Water and Power,distribution
+393475144,way,34.0381864,-118.3712512,Receiving Station D - Fairfax,138000;34500,Los Angeles Department of Water and Power,transmission
+393484026,way,34.0147142,-118.4023617,Sony Substation,66000,Southern California Edison,distribution
+393503326,way,34.1359782,-117.9109732,Azusa Substation,66000;12000,Southern California Edison,distribution
+393844013,way,34.0870799,-117.9265034,Lark Ellen Substation,66000;12000,Southern California Edison,distribution
+393844014,way,34.1171656,-117.8078228,San Dimas Substation,66000;12000,Southern California Edison,distribution
+394549585,way,33.9464846,-118.3128464,Gramercy Switching Station,138000,Los Angeles Department of Water and Power,transmission
+394549586,way,33.9189381,-118.3345331,Yukon Substation,66000,Southern California Edison,distribution
+394710539,way,34.0881671,-118.3474675,Receiving Station H - Hollywood,230000;138000,Los Angeles Department and Power,transmission
+394710553,way,34.0474450,-118.4521925,Sawtelle Substation,66000;16000,Southern California Edison,distribution
+394806112,way,38.6191848,-121.7942781,Plainfield Substation,60000,Pacific Gas and Electric Company,distribution
+394895304,way,33.9035195,-118.3978913,Chevmain Substation,220000,Southern California Edison,transmission
+395237747,way,34.0699141,-118.1300839,Ramona Substation,66000;4000,Southern California Edison,distribution
+395457789,way,33.9977778,-117.5927224,Archibald Substation,66000;12000,Southern California Edison,distribution
+395530792,way,33.9588907,-117.5226797,Pedley Substation,66000,Southern California Edison,distribution
+395945866,way,34.1721407,-118.3472687,McNeil Substation,66000;12000,Southern California Edison,distribution
+396269147,way,37.3360204,-122.0431687,Stelling Substation,,Pacific Gas and Electric Company,distribution
+396930432,way,34.0418564,-117.6234511,Firehouse Substation,66000;12000,Southern California Edison,distribution
+396930433,way,34.0565269,-117.6456789,Ontario Substation,12000;4160,Southern California Edison,distribution
+402225518,way,33.5806241,-114.8172191,Colorado River Substation,500000,Southern California Edison,transmission
+402282244,way,34.0530440,-118.3055937,DISTRIBUTING STATION 38,34500;4800,Los Angeles Department of Water and Power,distribution
+403208540,way,38.0181619,-122.0613750,Tesoro Substation,230000,Pacific Gas and Electric Company,industrial
+405561526,way,38.2315267,-121.5903858,Grand Island Substation,115000,Pacific Gas and Electric Company,distribution
+407016872,way,32.8087648,-116.6830600,Suncrest Substation,500000;230000,San Diego Gas & Electric,transmission
+407070542,way,38.6946083,-120.8246788,Missouri Flat Switching Station,115000,Pacific Gas and Electric,switching
+407071702,way,38.7395774,-120.6771808,Apple Hill Substation,115000,,distribution
+407078429,way,34.0189575,-118.2650762,Distributing Station 19,34500;4800,Los Angeles Department of Water and Power,distribution
+407207526,way,33.9538987,-118.2907714,DISTRIBUTING STATION 14,34500;4800,Los Angeles Department of Water and Power,distribution
+407257256,way,34.0239471,-118.2999243,DISTRIBUTING STATION 13,34500;4800,Los Angeles Department of Water and Power,distribution
+407354969,way,33.9851677,-118.3299465,Distributing Station 18,34500;4800,Los Angeles Department of Water and Power,distribution
+407607023,way,34.0047135,-118.2724709,DISTRIBUTING STATION 32,34500;4800,Los Angeles Department of Water and Power,distribution
+409391757,way,34.0116316,-118.3346454,DISTRIBUTING STATION 53,34500;4800,Los Angeles Department of Water and Power,distribution
+409420874,way,33.9899794,-118.2822397,Distributing Station 4,34500;4800,,distribution
+410966019,way,33.9917542,-118.3086500,DISTRIBUTING STATION 45,34500;4800,Los Angeles Department of Water and Power,distribution
+411194423,way,33.9686748,-118.2830526,Distributing Station 41,34500;4800,Los Angeles Department of Water and Power,distribution
+413749451,way,34.0270368,-118.2318250,DISTRIBUTING STATION 5,34500;4800,Los Angeles Department of Water and Power,distribution
+414613890,way,34.0761262,-118.5573942,DISTRIBUTING STATION 99,34500;4800,Los Angeles Department of Water and Power,distribution
+414684225,way,33.9981882,-118.4622105,Distributing Station 44,34500;4800,Los Angeles Department of Water and Power,distribution
+415137339,way,37.7724034,-122.2429471,Jenney Substation,115000,Alameda Municipal Power,
+419596590,way,39.5907530,-119.2491795,Fernley,,,
+420136848,way,34.0820007,-118.2853746,Distributing Station 15,34500;4800,Los Angeles Department of Water and Power,distribution
+421505143,way,33.5399118,-117.1876217,Murrieta No. 2,,Southern California Edison,
+422132997,way,35.0296325,-119.0043697,Wheeler substation,,,
+422141187,way,34.1042301,-118.3257258,Distributing Station 52,34500;4800,Los Angeles Department of Water and Power,distribution
+422262654,way,34.0088366,-118.4252792,Distributing Station No. 59,34500;4800,Los Angeles Department of Water and Power,distribution
+422504305,way,34.0449222,-118.4437557,Distributing Station 28,34500;4800,Los Angeles Department of Water and Power,distribution
+422524271,way,34.0683997,-118.4254328,Distributing Station 46,34500;4800,Los Angeles Department of Water and Power,distribution
+423021853,way,34.0891499,-118.3269911,Distributing Station 6,34500;4800,Los Angeles Department of Water and Power,distribution
+423448385,way,34.1003195,-118.3379631,DISTRIBUTING STATION 10,34500;4800,Los Angeles Department of Water and Power,distribution
+423863049,way,39.5398510,-119.4370699,Tesla Gigafactory,120000,,industrial
+424466579,way,37.7304133,-122.4710037,Station L,,Pacific Gas and Electric Company,distribution
+424858446,way,34.1477338,-118.6318509,Valdez Substation,,SoCal Edison,distribution
+424941113,way,34.0335944,-118.3933169,Distributing Station 20,34500;4800,Los Angeles Department of Water and Power,distribution
+426245932,way,34.0691715,-118.2626166,Distributing Station 26,34500;4800,Los Angeles Department of Water and Power,distribution
+426408949,way,33.7294799,-116.3464508,Indian Wells Substation,115000,,
+428579897,way,34.0506282,-118.3007727,DISTRIBUTING STATION 17,34500;4800,Los Angeles Department of Water and Power,distribution
+428600657,way,34.0220112,-118.3304465,DISTRIBUTING STATION 39,34500;4800,Los Angeles Department of Water and Power,distribution
+428614580,way,34.0512765,-118.3638792,DISTRIBUTING STATION 43,34500;4800,Los Angeles Department of Water and Power,distribution
+428622633,way,34.0490412,-118.3422719,Distributing Station 8,34500;4800,Los Angeles Department of Water and Power,distribution
+428623467,way,34.1347321,-118.2113453,Distributing Station 30,34500;4800,Los Angeles Department of Water and Power,distribution
+429315627,way,34.0353223,-118.1927312,DISTRIBUTING STATION 23,34500;4800,Los Angeles Department of Water and Power,distribution
+429324506,way,34.0570537,-118.2379952,Plaza Substation,,,
+429816503,way,37.6716898,-121.0274125,Prescott Station,,Modesto Irrigation District,minor_distribution
+429850577,way,34.1571483,-118.3619619,LADWP Distributing Station No. 35,34500;4800,Los Angeles Department of Water and Power,distribution
+432083273,way,34.1474370,-118.4133463,DISTRIBUTING STATION 49,34500;4800,Los Angeles Department of Water and Power,distribution
+432157605,way,34.2420136,-118.5299882,Substation D;Cooling Tower,,,
+438074694,way,38.5719998,-121.5005020,Station D,115000,Sacramento Municipal Utility District,transmission
+439012890,way,36.1619690,-115.8994445,Gamebird Switchard,230000,,
+444348841,way,34.1420095,-118.3732184,DISTRIBUTING STATION 98,34500;4800,Los Angeles Department of Water and Power,distribution
+448959190,way,34.2000810,-118.5329529,LADWP DIstributing Station No. 24,34500;4800,Los Angeles Department of Water and Power,distribution
+455841624,way,39.5305906,-119.8453622,West 7th Street Substation,,NV Energy,
+455875595,way,33.5628795,-117.6735440,Trabuco Substation,,,
+456601026,way,33.9207920,-118.1274135,Downey Med Substation,,Southern California Edison,
+457315602,way,33.8949233,-118.2848307,Distributing Station 143,34500;4800,Los Angeles Department of Water and Power,distribution
+459028307,way,38.9625137,-122.6362147,Pacific Gas & Electric,,Pacific Gas and Electric Company,
+460186024,way,40.5757488,-122.3537433,Canby Substation,,,yes
+460689984,way,38.2019842,-121.8765218,Del Paso Substation,,,
+463011258,way,36.1582135,-115.2788339,Westside Substation,230000;138000;69000,,
+469210393,way,37.7548687,-122.3859286,Potrero Converter Station,200000,,converter
+469325765,way,40.5930211,-122.3698649,Sulphur Creek Substation,,,
+469515160,way,37.6089086,-120.9562175,Ceres Substatioon,,TID,yes
+475411879,way,32.6689623,-114.6325128,32nd Street Substation,69000,,
+475563848,way,32.6837818,-114.5861639,Ivalon Substation,69000,,
+475566827,way,32.6609857,-114.5805967,Marine Air Base Substation,69000,,
+476479137,way,32.6680192,-114.4960762,Araby Substation,69000,,
+476592707,way,37.8129138,-122.2187712,Hollywood Substation,,Pacific Gas and Electric Company,
+477585764,way,33.7669760,-118.1518894,Broadway Substation,66000,,
+478212302,way,32.6415740,-114.5946532,South O'Neill Substation,69000,,
+479169462,way,34.3053289,-118.5005617,LADWP Distributing Station No. 86,34500;4800,Los Angeles Department of Water and Power,distribution
+479815613,way,37.0310725,-122.1881401,Port Moretti Substation,,,
+480765123,way,33.8251161,-116.5461256,Palm Springs Substation,,Southern California Edison,
+480789960,way,38.8093438,-121.7452013,Knights Landing Substation,115000,Pacific Gas and Electric Company,minor_distribution
+480794378,way,38.7755142,-121.8581049,Zamora Substation,115000,Pacific Gas and Electric Company,minor_distribution
+483456583,way,40.6480024,-116.9452682,Battle Mountain Substation,115000,,distribution
+488176002,way,40.5864304,-122.3952371,Oregon Street Substation,,,
+488956745,way,37.7793330,-122.2927222,Cartwright Substation,115000,Alameda Municipal Power,
+490201586,way,39.9110606,-121.3275598,Bucks Creek Switchyard,230000,Pacific Gas and Electric Company,generation
+490201999,way,39.9053718,-121.3455863,Rock Creek Switchyard,,,generation
+495721241,way,36.1087346,-115.1849496,Polaris Substation,138000,Nevada Power Company,
+501037230,way,40.6018648,-122.3827991,Sulphur Creek Substation,,,
+501515904,way,33.5263975,-117.5987290,Rancho Mission Viejo Substation,,,
+501515905,way,33.4094774,-117.5906855,San Mateo Substation,,,
+501515906,way,33.4949278,-117.7029399,Laguna Niguel Substation,,,
+507591114,way,33.6988312,-115.3128761,Red Bluff Substation,500000;220000,Southern California Edison,transmission
+507821441,way,40.9290335,-121.5444409,Rising River Substation,60000,,
+507836289,way,37.6375258,-120.9540579,Lapham Station,,Modesto Irrigation District,yes
+507843487,way,37.6275639,-120.9751483,Santa Cruz Station,,Modesto Irrigation District,
+508412939,way,34.6432014,-120.4372204,Cabrillo Substation,115000,,distribution
+516299798,way,36.5998457,-121.8905459,PG&E Power Distribution Sub-Station,,Pacific Gas and Electric Company,
+518058316,way,38.5089935,-121.3552093,Hedge Substation,230000,Sacramento Municipal Utility District,transmission
+518059531,way,38.6571279,-121.1321019,Lake Substation,230000,Sacramento Municipal Utility District,transmission
+523536902,way,39.5412250,-119.0751839,Hazen,60000,,
+525114347,way,40.5838840,-122.4377157,Eureka Way Substation,69000,,
+530977942,way,41.3823797,-118.0331578,Davey Town Substation,,,
+532400091,way,36.1026079,-115.1798290,Sinatra Substation,,,
+532629908,way,38.3788375,-122.7125989,Bellevue Substation,110000,Pacific Gas and Electric Company,yes
+533316822,way,34.2419899,-118.5685251,Distributing Station No. 138,34500;4800,Los Angeles Department of Water and Power,distribution
+538426965,way,40.6335498,-122.3918950,Beltline Substation,,,
+539148054,way,37.4205581,-121.9599446,Nortech Substation,115000,Pacific Gas and Electric Company,
+540298861,way,37.7630288,-122.2144359,Oakland J Substation,115000;12000;7200,Pacific Gas and Electric Company,distribution
+542978042,way,34.2330139,-118.3690881,DISTRIBUTING STATION 102,34500;4800,Los Angeles Department of Water and Power,distribution
+542998185,way,35.8847198,-114.9582033,Copper Mountain Substation,500000,Western Area Power Administration,transmission
+543902233,way,32.6689068,-114.4306641,Foothills Substation,69000,,distribution
+543902240,way,32.6479874,-114.4275379,Desert Sands Substation,69000,,transmission
+544261596,way,34.4491171,-119.8159165,Vegas Substation,,Southern California Edison,
+548186660,way,34.1289191,-117.3043189,Sixteenth Street Substation,33000,,
+551396627,way,35.6409768,-115.3493160,Primm Substation,230000,,
+552653455,way,37.1199840,-121.0689671,Quinto Substation,230000,Pacific Gas and Electric Company,transmission
+553900343,way,38.6435071,-121.3290918,Carmichael Substation,230000,Sacramento Municipal Utility District,
+558306842,way,32.6595065,-115.4371267,Subestacion CFE Cuahutemoc Sur,,,
+559656173,way,32.4974465,-114.7603884,San Luis Substation,69000;34500,,distribution
+560590098,way,32.6852624,-114.4950303,Redondo Substation,69000,,distribution
+567612415,way,36.1744348,-115.1153053,Artesian Substation,138000;69000,,
+574510301,way,34.0528949,-118.4158692,DWP Sub 7,,,
+577517040,way,39.8038669,-120.4644735,Portola Substation,60000,Plumas-Sierra Rural Electric Cooperative,minor_distribution
+580855917,way,37.7774077,-122.4127449,Station I,,Pacific Gas and Electric Company,distribution
+592205752,way,36.8817124,-121.6032588,Brigatano Substation,60000,,
+592205775,way,36.9601240,-122.0525657,Cliff Drive Substation,,,
+593523181,way,34.2016722,-118.5560536,LADWP Distributing Station No. 90,34500;4800,Los Angeles Department of Water and Power,distribution
+597082183,way,33.8037966,-117.9077378,Harbor Substation,69000;12000,,
+597452230,way,34.6884003,-118.3145591,Plainview,69000,,
+597452232,way,34.6857691,-118.3043874,Big Sky Substation,220000;34500,AES Corporation,generation
+605638002,way,32.4954326,-114.7171173,Baja Substation,69000,,distribution
+605835953,way,40.5257728,-122.4281415,Texas Springs Substation,69000,,
+606129587,way,37.8646646,-122.0804497,Rossmoor Substation,230000;12000,Pacific Gas and Electric,distribution
+606138003,way,37.8835998,-122.1935090,Orinda Substation,12000;4000,Pacific Gas and Electric Company,distribution
+606138004,way,37.8764730,-122.1796979,Bryant Substation,12000;4000,Pacific Gas and Electric Company,distribution
+606154506,way,37.8723890,-122.2783135,Berkeley F Substation,,Pacific Gas and Electric,distribution
+606222639,way,37.6270637,-122.1097190,Cerberus Substation,115000,Amazon,industrial
+606500067,way,36.5822326,-115.9473218,Innovation Substation,230000,,
+607516379,way,37.6209528,-122.4250671,San Bruno Substation,60000;4000,Pacific Gas and Electric Company,distribution
+608001029,way,37.9660418,-122.2787115,Valley View Substation,115000;12000,Pacific Gas and Electric Company,distribution
+608967856,way,37.6489969,-118.9167053,Casa Diablo Substation,115000,,
+612239233,way,32.4759526,-117.0722038,El Rubi,230000;115000,,transmission
+612239235,way,32.4450304,-116.8781700,Metropoli,230000;115000,,transmission
+612239240,way,32.5239429,-116.7493654,Herradura,230000;115000,,transmission
+612239245,way,32.4053162,-115.2113158,Cerro Prieto 4,161000,Comisión Federal de Electricidad,generation
+612239246,way,32.3990217,-115.2383631,Cerro Prieto 1,161000,Comisión Federal de Electricidad,generation
+613571074,way,37.7488257,-121.4159518,Tracy Substation,115000,Pacific Gas and Electric Company,distribution
+615560851,way,39.6359910,-119.6666901,La Posada Meter Station,,,
+616051165,way,40.5350285,-122.3776793,Moore Road Substation,,,
+616351541,way,34.2518430,-118.2899716,DISTRIBUTING STATION 48,34500;4800,Los Angeles Department of Water and Power,distribution
+620791965,way,36.1583759,-115.3153237,Hualapai Substation,138000,,
+622689811,way,40.5699979,-122.3141796,East Redding Substation,,,
+622694658,way,40.5746895,-122.3894801,Waldon Street Substation,,,
+634026481,way,33.9986135,-114.2165277,Bouse Switchyard,161000,Western Area Power Administration,distribution
+644411857,way,34.2368091,-118.7029630,Chatsworth Substation,66000,,
+646210780,way,33.8169959,-117.9764883,Clair Substation,69000;12000,Anaheim Public Utilities,distribution
+646210781,way,33.8374704,-117.9683395,Hannum Substation,69000;12000,Anaheim Public Utilities,distribution
+646210782,way,33.8310548,-117.9114350,Anaheim Substation,69000;12000,Anaheim Public Utilities,distribution
+646210783,way,33.8534206,-117.8569314,Dowling Substation,69000;12000,Anaheim Public Utilities,distribution
+646210784,way,33.8563931,-117.7683182,Fairmont Substation,69000;12000,Anaheim Public Utilities,distribution
+646210785,way,33.8644368,-117.7466407,Park Substation,69000;12000,Anaheim Public Utilities,distribution
+647620530,way,34.2046804,-119.0964405,Colonia Substation,66000;16340,Southern California Edison,distribution
+647620531,way,34.2207053,-119.0085188,Camarillo Substation,66000;16340,Southern California Edison,distribution
+647620534,way,34.2642210,-119.0108704,Somis Substation,66000;16340,Southern California Edison,distribution
+647620537,way,34.1460247,-119.0956569,Estero Substation,66000;16340,Southern California Edison,distribution
+647620539,way,34.1738042,-119.1567982,Levy Substation,66000;16340,Southern California Edison,distribution
+647620541,way,34.2559970,-119.2418562,San Miguel Substation,66000;16340,Southern California Edison,distribution
+647620543,way,34.4455733,-119.2421031,Ojai Substation,66000;16340,Southern California Edison,distribution
+647620546,way,34.2261528,-119.1758689,Gonzales Substation,66000;16340,Southern California Edison,distribution
+649385739,way,34.1038981,-118.4133333,Distributing Station 103 and Franklin Power Plant,34500;4800,Los Angeles Department of Water and Power,distribution
+650910489,way,34.2563176,-118.5879118,Distributing Station No. 88,34500;4800,Los Angeles Department of Water and Power,distribution
+651565677,way,34.1603234,-118.5006624,LADWP Distributing Station No. 130,34500;4800,Los Angeles Department of Water and Power,distribution
+651607143,way,34.1554922,-118.4807909,DISTRIBUTING STATION 83,34500;4800,Los Angeles Department of Water and Power,distribution
+652570166,way,33.7878506,-118.3002889,DISTRIBUTING STATION 123,34500;4800,Los Angeles Department of Water and Power,distribution
+652587979,way,33.9482030,-118.3936038,DISTRIBUTING STATION 111,34500;4800,Los Angeles Department of Water and Power,distribution
+652987427,way,34.1673110,-118.5886539,LADWP Distributing Station No. 792,34500;4800,Los Angeles Department of Water and Power,distribution
+652987577,way,34.1867938,-118.6110657,Distributing Station 136,34500;4800,Los Angeles Department of Water and Power,distribution
+652988454,way,34.1665332,-118.6229606,DISTRIBUTING STATION 129,34500;4800,,distribution
+652988948,way,34.1240406,-118.3753331,LADWP Distributing Station No. 115,34500;4800,Los Angeles Department of Water and Power,distribution
+652989655,way,34.1879727,-118.6433490,Distributing Station 77,34500;4800,Los Angeles Department of Water and Power,distribution
+652990445,way,34.2018045,-118.4591518,DISTRIBUTING STATION 81,34500;4800,Los Angeles Department of Water and Power,distribution
+652994774,way,34.1944645,-118.4394308,DISTRIBUTING STATION 140,34500;4800,Los Angeles Department of Water and Power,distribution
+652995460,way,34.2349933,-118.4512208,Distributing Station 133,34500;4800,Los Angeles Department of Water and Power,distribution
+652996554,way,34.1318467,-118.4399443,DISTRIBUTING STATION 124,34500;4800,Los Angeles Department of Water and Power,distribution
+652998332,way,34.1706697,-118.3959259,DISTRIBUTING STATION 57,34500;4800,Los Angeles Department of Water and Power,distribution
+655138668,way,34.1601231,-118.5525282,LADWP Distributing Station No. 91,34500;4800,Los Angeles Department of Water and Power,distribution
+655138771,way,34.1723551,-118.5528987,DISTRIBUTING STATION 65,34500;4800,Los Angeles Department of Water and Power,distribution
+655138860,way,34.3121338,-118.4242614,LADWP Distributing Station 96,34500;4800,Los Angeles Department of Water and Power,distribution
+655139036,way,34.3078152,-118.4505674,Distributing Station 107,34500;4800,Los Angeles Department of Water and Power,distribution
+655287791,way,34.1139151,-118.1894541,Distributing Station 2,34500;4800,Los Angeles Department of Water and Power,distribution
+655440407,way,33.7495291,-118.2793900,Distributing Station 3,34500;4800,Los Angeles Department of Water and Power,distribution
+655450950,way,34.0867042,-118.2145252,Distributing Station 36,34500;4800,Los Angeles Department of Water and Power,distribution
+655482902,way,33.9312451,-118.3762291,DISTRIBUTING STATION 47,34500;4800,Los Angeles Department of Water and Power,distribution
+655483684,way,34.0830925,-118.1783651,DISTRIBUTING STATION 50,34500;4800,Los Angeles Department of Water and Power,distribution
+655484265,way,33.7780939,-118.2658275,DISTRIBUTING STATION 51,34500;4800,Los Angeles Department of Water and Power,distribution
+655486159,way,34.0693021,-118.3465832,Distributing Station 55,34500;4800,Los Angeles Department of Water and Power,distribution
+655487219,way,34.0638170,-118.2999966,Distributing Station 61,34500;4800,Los Angeles Department of Water and Power,distribution
+655487442,way,34.2060356,-118.4228177,DISTRIBUTING STATION 62,34500;4800,Los Angeles Department of Water and Power,distribution
+655488279,way,34.2567431,-118.5287650,DISTRIBUTING STATION 68,34500;4800,Los Angeles Department of Water and Power,distribution
+655488317,way,34.2640700,-118.4592090,LADWP Distributing Station No. 69,34500;4800,Los Angeles Department of Water and Power,distribution
+655488562,way,34.1579784,-118.4396700,DISTRIBUTING STATION 73,34500;4800,Los Angeles Department of Water and Power,distribution
+655514990,way,33.9585397,-118.4337207,Distributing Station 137,34500;4800,Los Angeles Department of Water and Power,distribution
+655516229,way,34.2362502,-118.5011257,LADWP Distributing Station No. 131,34500;4800,Los Angeles Department of Water and Power,distribution
+655818854,way,34.0800096,-118.3099730,DISTRIBUTING STATION 87,34500;4800,Los Angeles Department of Water and Power,distribution
+655818899,way,33.7276321,-118.2929906,DISTRIBUTING STATION 89,34500;4800,Los Angeles Department of Water and Power,distribution
+655821595,way,34.1206811,-118.2262082,Distributing Station 93,34500;4800,Los Angeles Department of Water and Power,distribution
+655822102,way,33.7401095,-118.2687590,DISTRIBUTING STATION 121,34500;4800,Los Angeles Department of Water and Power,distribution
+655825776,way,34.1942035,-118.3886230,DISTRIBUTING STATION 100,34500;4800,Los Angeles Department of Water and Power,distribution
+655826291,way,34.2627952,-118.4272864,LADWP Distributing Station No. 101,34500;4800,Los Angeles Department of Water and Power,distribution
+655826994,way,33.8471682,-118.2914464,LADWP Distributing Station No. 105,34500;4800,Los Angeles Department of Water and Power,distribution
+655830785,way,34.2227253,-118.3885787,DISTRIBUTING STATION 67,34500;4800,Los Angeles Department of Water and Power,distribution
+655831419,way,34.2290209,-118.5985869,DISTRIBUTING STATION 74,34500;4800,Los Angeles Department of Water and Power,distribution
+662572163,way,37.8004402,-122.2419727,8th Ave Substation,,Pacific Gas and Electric Company,substation
+674705026,way,35.9404041,-115.1186457,Bicentennial Substation,138000,NV Energy,
+676714269,way,33.8530413,-118.1666446,Sunnyside Substation,66000,,
+677345394,way,32.4919645,-116.9447665,CFE,,Comisión Federal de Electricidad,
+681536623,way,37.9047609,-122.0609909,Walnut Creek Substation,12000;4000,Pacific Gas and Electric Company,distribution
+688096231,way,37.4033888,-121.9059343,Montague Substation,115000,Pacific Gas and Electric Company,minor_distribution
+689360657,way,32.6005269,-114.7360511,Laguna Substation,69000,,distribution
+689408573,way,40.8592127,-121.7529606,Carberry Switching Station,230000,Pacific Gas and Electric Company,generation
+689414801,way,40.8902602,-121.7969002,Hatchet Ridge Collector Substation,230000,,generation
+691497714,way,35.2371362,-118.0545653,Barren Ridge Switching Station,230000,Los Angeles Department of Water and Power,transmission
+700974838,way,39.5751281,-119.5303433,Newton Substation,120000,NV Energy,transmission
+700974840,way,39.5697283,-119.5401518,Apple Data Center,120000,NV Energy,industrial
+710704326,way,41.5850267,-117.8489182,Orovada Substation,,,
+711541435,way,40.7180012,-122.9343909,Trinity Substation,115000,Pacific Gas and Electric Company,distribution
+713948718,way,37.7561118,-121.4168439,Ladrino Foods,115000,,industrial
+722835502,way,34.1580226,-118.2671150,Fremont Substation,,Southern California Edison,
+723912823,way,38.2834889,-118.0195419,Candelaria,,,transmission
+727674147,way,39.2086928,-121.3030354,Smartsville Substation,60000,Pacific Gas and Electric,distribution
+731998899,way,37.8761070,-122.2457737,Grizzly Substation,115000,,
+733171758,way,32.9805965,-117.2555556,Del Mar Substation,69000,San Diego Gas & Electric,distribution
+733742943,way,33.2533269,-117.0858841,Lilac Substation,69000,San Diego Gas & Electric,
+734084456,way,34.1928918,-118.9195159,Pharmacy Substation,66000,Amgen,industrial
+734085311,way,33.9699978,-117.7742754,Mesa-Mira Loma western transition station,500000,Southern California Edison,transition
+734085313,way,33.9867187,-117.7143574,Mesa-Mira Loma eastern transition station,500000,Southern California Edison,transition
+737372047,way,37.5250772,-122.3563049,Hillsdale Junction,60000,,
+740851418,way,38.4532010,-122.7442881,Monroe Substation,,Pacific Gas and Electric Company,
+741753437,way,37.4229452,-122.0784848,Central Utility Plant,,,yes
+746635519,way,41.9252197,-124.1394248,Morrison Creek Substation,69000,,
+746876900,way,38.4900526,-122.6661381,Rincon Substation,115000,Pacific Gas and Electric Company,distribution
+746876905,way,38.5920750,-122.5785818,Calistoga Substation,60000;12000,Pacific Gas and Electric Company,distribution
+746982434,way,35.9686432,-115.1666938,Keehn Substation,138000,NV Energy,
+756109651,way,41.7331395,-120.3668890,Davis Creek Substation,115000,,
+756396718,way,41.5642140,-120.4138182,Cedarville Junction Substation,115000;69000,,
+756396726,way,41.5315452,-120.1820345,Cedarville Substation,69000,,
+757812163,way,37.9021481,-122.2966647,Fairmount Substation,,Pacific Gas and Electric,
+761043373,way,35.6008203,-119.4375390,Semitropic Substation,115000,,
+770782288,way,34.4386277,-118.5152155,Haskell Substation,66000,Southern California Edison,substation
+771716879,way,32.9049184,-117.1731632,Mesa Rim Substation,69000,San Diego Gas & Electric,distribution
+785309456,way,34.1055821,-118.3587663,Nichols Canyon,230000,Los Angeles Department of Water and Power,transition
+786268795,way,38.6560394,-121.3361806,Arcade Creek substation,69000,Sacramento Municipal Utility District,minor_distribution
+807379856,way,37.4616278,-122.2773497,Emerald Lake Substation,,Pacific Gas and Electric Company,distribution
+821245520,way,37.6096867,-120.8467609,Tuolumne Substation,115000,Turlock Irrigation District,distribution
+821247255,way,37.6272067,-120.9349217,Mariposa Station,,Modesto Irrigation District,
+825203501,way,39.5059909,-116.8591415,Frontier Substation,230000,,transmission
+826588505,way,38.3840599,-121.3803156,S-142,,SASD,
+828024039,way,36.1094710,-119.5576041,Corcoran Substation,115000,Pacific Gas and Electric Company,
+828024040,way,36.1386226,-119.5764766,Waukena Substation,115000,,
+830711016,way,36.2044947,-116.1136254,Charleston Park Substation,138000,,
+830711017,way,36.1324520,-115.9499389,Thousandaire Substation,138000,,
+837863258,way,37.7555913,-121.1463770,Ripon Substation,115000,Pacific Gas and Electric Company,distribution
+842021525,way,37.4155805,-122.0637752,N-221C,115000,,
+842021526,way,37.4167683,-122.0631577,N-225,115000,,
+844590130,way,40.8156886,-116.4950334,Falcon Substation,345000;120000,,distribution
+844837079,way,33.3874614,-117.5824449,Basilone Substation,,,
+849561013,way,33.5581488,-116.6397669,Tony Lappos Substation,34000,Anza Electric Cooperative,
+850492495,way,37.5951588,-120.8468097,Hughson Substation,115000,Turlock Irrigation District,minor_distribution
+850515578,way,37.4189560,-120.8490740,Hilmar Substation,,Turlock Irrigation District,distribution
+859725891,way,33.9256409,-116.9876261,Edison Dylan Substation,115000,Southern California Edison,transmission
+863391527,way,34.2073713,-116.3690148,Nugget Substation,33000;25000,Southern California Edison,distribution
+865190320,way,37.7005872,-121.7334824,Las Positas Substation,230000,Pacific Gas and Electric Company,
+873098676,way,39.7302615,-121.7963060,Notre Dame Substation,115000,Pacific Gas and Electric Company,distribution
+876403378,way,41.8814137,-123.8646538,Patrick's Creek Substation,115000,,
+884225176,way,38.0157488,-121.0138807,Bellota Substation,230000,Pacific Gas and Electric Company,transmission
+885906120,way,39.1698803,-121.6610022,Pease Substation,115000,Pacific Gas and Electric Company,distribution
+888505628,way,37.5746906,-121.8659990,Calaveras Substation,115000,San Francisco Public Utilities Commission,
+893296457,way,35.8336156,-115.0115455,Sloan Canyon Switchyard,230000,,transmission
+896330856,way,40.1713705,-121.0853040,Big Meadows Substation,115000;60000,,
+896565296,way,40.8799250,-121.7196168,Burney Forest Products,,Pacific Gas and Electric Company,industrial
+897214643,way,40.4099581,-120.6419115,Milwood Substation,60000,Lassen Municipal Utility District,
+910086725,way,34.0864261,-118.3206753,Gower Substation,,,yes
+912590236,way,34.0497894,-118.4114306,DWP Sub B,,,
+913007447,way,32.8817496,-117.2298523,I-5 Switch Station,,,
+916400626,way,36.3267733,-119.4390715,Goshen Substation,66000;12000,Southern California Edison,distribution
+917508444,way,33.7468698,-116.9757077,Hemet Substation,,Southern California Edison,
+918508128,way,36.0087300,-115.6311190,Sandy Valley Substation,138000,Valley Electric Association,
+934956976,way,33.3742870,-117.5548397,Japanese Mesa Substation,,,
+935140048,way,32.8401079,-117.2753524,La Jolla Substation,69000,San Diego Gas & Electric,distribution
+935151028,way,36.2932074,-115.2954036,Elkhorn Substation,138000,,
+935670738,way,32.6081616,-117.0945795,Bay Boulevard Substation,230000;69000,San Diego Gas & Electric,transmission
+937497089,way,33.9779973,-117.3701875,Riverside Electrical Substation,66000,Riverside Public Utilities,distribution
+940918950,way,32.5621903,-117.0266922,Electric Substation,,,
+941197139,way,40.8785498,-117.1528576,Valmy Substation,345000;115000,,transmission
+954128650,way,36.3574697,-119.3128000,Riverway Substation,66000;12000,Southern California Edison,distribution
+954456538,way,36.3296996,-119.2790526,Visalia Substation,66000;12000,Southern California Edison,distribution
+955156230,way,36.0671895,-119.0345727,Porterville Substation,66000;12000,Southern California Edison,distribution
+964460924,way,39.5395079,-122.2630176,Logan Creek Substation,230000,Pacific Gas and Electric Company,distribution
+968247269,way,38.3745453,-121.4527759,Franklin Substation,230000,Sacramento Municipal Utility District,transmission
+968633445,way,37.5600754,-118.6747660,Sherwin Substation,115000,,transmission
+969872104,way,32.5284780,-117.0138789,CFE Tijuana I,,Comisión Federal de Electricidad,
+970415842,way,42.1613852,-121.7911632,Snow Goose Substation,500000;230000,,transmission
+972388469,way,34.1024764,-117.5451350,Arbors Substation,66000,,
+973117167,way,38.0420939,-122.7866533,Olema Sub,60000;12000,Pacific Gas and Electric Company,distribution
+973121627,way,37.9411985,-122.7062054,Bolinas Sub,60000;12000,Pacific Gas and Electric Company,distribution
+973123697,way,38.0548563,-122.7598921,Tocaloma Sub,60000;4000,Pacific Gas and Electric Company,distribution
+973124783,way,37.8940427,-122.1787224,Las Aromas Substation,12000;4000,Pacific Gas and Electric Company,minor_distribution
+977743635,way,34.1555420,-117.4325252,Falcon Ridge Substation,66000,Southern California Edison,
+986830922,way,33.5151775,-116.7885330,Lake Riverside Substation,34000,,
+986835505,way,37.8364445,-122.2201850,Florence Substation,,Pacific Gas and Electric Company,distribution
+987276818,way,38.7308716,-121.3652745,Walerga PFE Substation,69000,Sacramento Municipal Utility District,minor_distribution
+995970501,way,33.9988922,-117.3488828,Hunter Substation,66000,Riverside Public Utilities,
+996924660,way,42.1207916,-122.5477731,Green Springs Substation,,PacifiCorp,minor_distribution
+997557146,way,36.6006752,-118.0725652,Distribution Station 154,,,
+1000692522,way,41.3335776,-120.1183754,Eagleville Substation,69000,,
+1000692526,way,41.4418853,-120.1483653,Steamboat Substation,69000,,
+1001275284,way,41.8458254,-120.1678032,Fort Bidwell Substation,69000,,
+1001275289,way,41.6135290,-120.1819395,Lake City Substation,69000,,
+1002115072,way,41.9533514,-121.4714162,Tule Lake Substation,69000,,
+1006618935,way,37.7447316,-121.8578410,North Dublin Substation,230000,Pacific Gas and Electric Company,
+1006624965,way,37.7385208,-121.7712233,Cayetano Substation,230000,Pacific Gas and Electric Company,
+1016483141,way,36.4860750,-118.8356538,Kaweah 3 Substation,66000,Southern California Edison,generation
+1019311460,way,33.8794982,-118.2481835,Edison Jersey Substation,66000,Southern California Edison,
+1022984358,way,33.2472601,-116.6759808,Warner Substation,69000,San Diego Gas & Electric,
+1024712279,way,34.0936065,-117.6501014,Upland Substation,66000;4160,Southern California Edison,
+1024994823,way,37.8082866,-121.2880730,Louise Substation,60000,Pacific Gas and Electric Company,minor_distribution
+1024994836,way,37.7978669,-121.2741906,Vierra Substation,115000,Pacific Gas and Electric Company,distribution
+1027073986,way,36.4613805,-118.8798834,Kaweah 2 Substation,66000,Southern California Edison,generation
+1028521626,way,37.3076199,-121.8803304,Paralleling Station 7,,Caltrain,traction
+1028522822,way,37.3460776,-121.9208217,Traction Power Facility 2,115000;25000,Caltrain,traction
+1028556921,way,37.3787202,-122.0316538,Paralleling Station 6,,Caltrain,traction
+1028561169,way,37.4267967,-122.1382112,Paralleling Station 5,,Caltrain,traction
+1028562072,way,37.5369788,-122.2968015,Paralleling Station 4,,Caltrain,traction
+1028563552,way,37.5899840,-122.3677950,Paralleling Station 3,,Caltrain,traction
+1028572730,way,37.6565442,-122.4048633,Traction Power Facility 1,115000;25000,Caltrain,traction
+1028573276,way,37.7094241,-122.4015557,Paralleling Station 2,,Caltrain,traction
+1028573893,way,37.7644433,-122.3934747,Paralleling Station 1,,Caltrain,traction
+1037240847,way,35.0142018,-118.9775577,Wind Gap Substation,,,
+1039239470,way,37.4689833,-122.4302864,Half Moon Bay Substation,60000,Pacific Gas and Electric Company,
+1040139791,way,36.4143345,-119.1890423,Venice Hill Substation,66000;12000,Southern California Edison,distribution
+1040353714,way,36.4146125,-119.2967048,Chatham Substation,66000;12000,Southern California Edison,distribution
+1052321299,way,34.1013056,-117.3682977,Rialto Substation,33000;12000;4160,,
+1057780465,way,36.2829726,-119.3320361,Liberty Substation,66000;12000,Southern California Edison,distribution
+1058284417,way,36.6319342,-120.8786523,Las Aguilas Switching Station,230000,Pacific Gas and Electric Company,generation
+1058324264,way,37.0186152,-120.9759240,Padre Flat Substation,230000,,generation
+1058982567,way,40.2693221,-121.0881158,Hamilton Branch Substation,60000,,
+1059210744,way,37.2386068,-121.7907606,Santa Teresa Substation,115000,Pacific Gas and Electric Company,transmission
+1059572038,way,41.2166519,-117.1811742,Rabbit Creek Substation,115000,,
+1059983334,way,38.3315645,-120.6697458,Electra Substation,230000,Pacific Gas and Electric Company,generation
+1060166266,way,36.3867368,-119.0263549,Lemon Cove Substation,66000;12000,Southern California Edison,distribution
+1060956895,way,37.7334623,-122.4305302,Substation M,,Pacific Gas and Electric Company,distribution
+1060958057,way,37.7613360,-122.4664798,Station N,,Pacific Gas and Electric Company,distribution
+1066716356,way,36.3419044,-119.5928919,Mascot Substation,66000;12000,Southern California Edison,distribution
+1068801785,way,36.3415654,-119.3671413,Oak Grove Substation,66000;12000,Southern California Edison,distribution
+1070740656,way,33.2858815,-116.9586686,Rincon Substation,69000,San Diego Gas & Electric,
+1072883354,way,34.0600782,-117.3066348,Century Substation,66000,City of Colton Electric Utility,minor_distribution
+1073712188,way,39.5559229,-119.4355401,Chukar,120000,,transmission
+1076393874,way,36.4534837,-118.8879297,Three Rivers Substation,66000;12000,Southern California Edison,distribution
+1076393877,way,36.4650781,-118.8620255,Kaweah 1 Substation,66000,Southern California Edison,generation
+1079363196,way,37.9094186,-122.3068847,Waldo Substation,,Pacific Gas and Electric Company,
+1081705952,way,37.7368900,-122.3769706,Hunters Point Substation,115000,Pacific Gas and Electric Company,transmission
+1081720082,way,37.8076265,-122.4145321,Beach Street Substation,,Pacific Gas and Electric Company,
+1081724559,way,37.8035663,-122.4329689,Marina Substation,,Pacific Gas and Electric Company,
+1083296845,way,35.6017701,-119.4387454,Highway 46 Substation,115000,Pacific Gas and Electric Company,
+1086573549,way,35.9567425,-115.1622941,Larson Substation,138000,NV Energy,
+1091125495,way,40.1825409,-122.2447371,Red Bluff Substation,,,
+1094966789,way,38.4449851,-121.8262386,Dixon Substation,60000,Pacific Gas and Electric Company,minor_distribution
+1099466026,way,33.8659336,-118.3484581,Perry Substation,,,
+1105169016,way,34.8569106,-114.6260832,Murl L. Shaver Substation,69000,Needles Public Utilites Authority,
+1105679305,way,34.0735394,-117.4293156,Thrive Fontana Substation,66000,Southern California Edison,distribution
+1105686723,way,34.2403082,-116.9103781,Village Substation,34000,Bear Valley Electric Service Company,yes
+1105687109,way,34.2653898,-116.8495881,Bear City Substation,34000,Bear Valley Electric Service Company,yes
+1105973965,way,34.8505524,-114.6196901,Bill Yoney Substation,69000,Needles Public Utilites Authority,
+1119290406,way,38.5862246,-121.4732190,Station E,115000,Sacramento Municipal Utility District,transmission
+1119377093,way,32.6610518,-115.4958779,Río Nuevo,161000;13800,,distribution
+1119377107,way,32.6400813,-115.4543607,Nacozari,161000;13800,,distribution
+1119377109,way,32.6345826,-115.4183257,Skyworks,161000,,industrial
+1122160434,way,40.9946029,-118.1436809,Blue Mountain Substation,,,
+1128122696,way,41.7730531,-124.2078825,Belmont Substation,69000,,
+1131099802,way,40.9343009,-117.7464607,Grass Valley Substation,115000,NV Energy,
+1133259828,way,41.2152582,-117.2457041,Getchell Substation,,,
+1149027270,way,33.6936306,-117.8675028,Fairview Substation,,Southern California Edison,distribution
+1149477447,way,34.4866088,-118.5139284,Haskell Canyon Switching Station,230000,Los Angeles Department of Water and Power,transmission
+1150854111,way,37.8712199,-122.0461114,Robles Substation,,Pacific Gas and Electric Company,minor_distribution
+1151662292,way,33.8587402,-117.4407298,El Sobrante Substation,33000,Southern California Edison,minor_distribution
+1154090289,way,38.4807756,-120.8450034,Plymouth Substation,60000,Pacific Gas and Electric Company,minor_distribution
+1154710859,way,37.7873910,-122.3938177,Embarcadero Substation,230000,Pacific Gas and Electric Company,transmission
+1155632040,way,38.0173130,-121.8466103,Delta Energy Center,230000,,generation
+1155654407,way,37.9461825,-121.7597517,Lone Tree Substation,230000,Pacific Gas and Electric Company,
+1155671644,way,37.6725183,-121.8595230,Radium Substation,,Pacific Gas and Electric Company,
+1157350994,way,41.8517797,-124.1479949,Lake Earl Substation,69000,,
+1159284789,way,38.4454052,-121.4617855,Carson Ice,69000,Sacramento Municipal Utility District,generation
+1160790993,way,34.1361743,-116.1802469,Hi Desert substation,115000;33000;25000,Southern California Edison,distribution
+1163383415,way,36.2397372,-119.4753163,Laurel Substation,66000;12000,Southern California Edison,distribution
+1163941020,way,34.8435196,-114.6185198,Needles Substation,69000,Needles Public Utility Authority,distribution
+1164918125,way,35.3620874,-118.9232947,Magunden Substation,,Pacific Gas and Electric Company,distribution
+1164927149,way,36.0519261,-119.3043615,Tipton Substation,66000;12000,Southern California Edison,distribution
+1164927150,way,36.0805531,-119.1791685,Woodville Substation,66000;12000,Southern California Edison,distribution
+1164927151,way,36.3427378,-119.3920883,Elcans Substation,66000,Southern California Edison,industrial
+1164927152,way,36.2049934,-119.3410468,Dairymans Substation,66000,Southern California Edison,industrial
+1164927153,way,36.1854317,-119.3341690,Protein Substation,66000,Southern California Edison,industrial
+1164927154,way,36.1669553,-119.2068475,Bliss Substation,66000;12000,Southern California Edison,distribution
+1164927155,way,36.2043193,-119.0920145,Lindsay Substation,66000;12000,Southern California Edison,distribution
+1164927159,way,36.1460141,-119.0577663,Strathmore Substation,66000;12000,Southern California Edison,distribution
+1164927160,way,36.1313703,-119.3292546,Lourich Substation,66000,Southern California Edison,industrial
+1164927161,way,36.1238926,-119.3944775,Octol Substation,66000;12000,Southern California Edison,distribution
+1168128542,way,38.3155347,-122.6811305,Penngrove Substation,110000,Pacific Gas and Electric,minor_distribution
+1169210365,way,34.1525818,-117.2314919,San Manuel Substation,66000,,
+1169508739,way,40.4237056,-120.6545373,Chestnut 1 Substation,60000,Lassen Municipal Utility District,
+1170451500,way,39.5194348,-119.4764170,Wildhorse,120000,,transmission
+1178707684,way,40.5412112,-118.2672340,Thunder Mountain Substation,,,transmission
+1180910602,way,37.9632356,-122.0079700,Babel Substation,,Pacific Gas and Electric Company,
+1180910603,way,37.9868020,-122.0403362,Gill Substation,,Pacific Gas and Electric Company,
+1181446578,way,40.3354209,-118.2739860,Oreana Substation,120000,,
+1181455934,way,36.2651899,-115.0613649,"Ryze Renewables Las Vegas, LLC",69000,,industrial
+1188009740,way,40.8779124,-123.9945999,Ultra Power Substation,,PG&E,
+1188009742,way,40.8798024,-123.9805789,Blue Lake Substation,,Pacific Gas and Electric Company,
+1188009744,way,40.9057399,-124.0344206,Essex Substation,,PG&E,
+1189816829,way,38.0845559,-122.2578038,A912,,,yes
+1193280942,way,35.6016192,-119.5799622,Goose Lake Substation,,Pacific Gas and Electric Company,
+1194038329,way,32.6275061,-114.5357074,Orchard Substation,230000;69000,,
+1195224306,way,38.1068656,-122.2766572,783,,,
+1195224316,way,38.1007112,-122.2701689,493,,,
+1196886988,way,35.3445281,-113.9060769,Grey Hawk Solar Substation,69000,,generation
+1198088381,way,35.1808505,-113.8020810,Hualapi Substation,69000,,
+1208688071,way,38.5175930,-121.9511473,Winters,60000,Pacific Gas and Electric Company,
+1210134387,way,32.7052724,-114.6660477,Cocopah Substation,69000,,
+1210796733,way,38.3901781,-121.3532196,Waterman-Grant Line Substation,69000,Sacramento Municipal Utility District,minor_distribution
+1211015649,way,32.3696453,-117.0664904,Subestación Presidente Juárez,230000;115000,,generation;transmission
+1215491987,way,40.9454002,-117.7153547,Winnemucca Substation,115000,NV Energy,distribution
+1217911215,way,39.4951059,-119.4380139,Comstock Meadows,120000,,transmission
+1217914905,way,39.4979417,-119.4329116,Google Data Center,120000,,industrial
+1219765681,way,32.7388794,-114.6334795,Winterhaven Substation,34500,,
+1220576033,way,38.5845050,-121.4968511,Station G,115000,Sacramento Municipal Utility District,transmission
+1220577827,way,38.5634670,-121.4645646,Mid City Substation,115000,Sacramento Municipal Utility District,transmission
+1221495142,way,34.0779082,-117.4881665,Declez Substation,66000,Southern California Edison,
+1223943572,way,34.8060904,-118.3249200,Polaris Substation,,AES,generation
+1223950431,way,34.6048033,-117.4498054,Hamlin Substation,230000,AES,generation
+1225317177,way,41.7442676,-118.2065163,Kings River Substation,,,
+1234169495,way,32.6176927,-114.6186118,Waldrip Substation,69000,,
+1234453878,way,32.6924003,-114.5307255,Sanguinetti Substation,69000,,
+1234453887,way,32.6982861,-114.5964395,Yuma Palms Temp Substation,69000,,
+1234453889,way,32.7025685,-114.6208247,Quechan Substation,69000,,
+1234483709,way,32.7370556,-114.5130013,Mittry Substation,69000,,
+1235732695,way,37.4749000,-121.1782869,Rogers Substation,115000,Turlock Irrigation District,minor_distribution
+1238714293,way,36.1440258,-115.2153786,Lindell Substation,69000,NV Energy,
+1239524760,way,41.4879510,-120.5859538,Goose Lake Substation,69000,,
+1239557254,way,41.0913415,-121.1788353,Muck Valley Substation,69000,,
+1239557255,way,41.1328138,-121.1376206,Big Valley Lumber Company Substation,69000,,
+1239737160,way,40.9608721,-120.5034728,Madeline Substation,69000,,
+1239737164,way,41.3699128,-120.5395976,Likely Substation,69000,,
+1242725090,way,37.8275395,-122.3679053,Treasure Island Switchyard,12000,San Francisco Public Utilities Commission,distribution
+1243592491,way,37.7802003,-122.4665909,Richmond Substation,,Pacific Gas and Electric Company,
+1244213586,way,36.7780639,-119.6742071,Airways Substation,115000,,
+1246640082,way,37.7997374,-122.2145371,PG&E Boston Substation,,Pacific Gas and Electric Company,
+1247729969,way,39.0517758,-121.6961989,Sutter Substation,230000,Western Area Power Administration,generation
+1247827172,way,38.5675117,-121.5688827,Post Substation,115000,Pacific Gas and Electric Company,minor_distribution
+1248907781,way,33.6995717,-116.2429051,Avenue #48 Substation,92000,Imperial Irrigation District,yes
+1249384484,way,34.0271630,-117.1112756,Tennessee Substation,66000,,
+1249384490,way,34.0601316,-117.1766220,Redlands Substation,66000,,
+1249384509,way,34.0632768,-117.1207471,Mentone Substation,115000,,
+1253848635,way,36.0578081,-115.0079737,Google Data Center,230000,,industrial
+1256348450,way,39.7606558,-121.6188800,Paradise Substation,115000,Pacific Gas and Electric Company,transmission
+1257085914,way,39.6707122,-120.2479947,Cemetery Substation,60000,,minor_distribution
+1265261716,way,37.6423274,-121.0430316,Rosemore Substation,230000,Modesto Irrigation District,distribution
+1266298474,way,37.5323110,-121.2593418,Ingram Creek Substation,115000,Pacific Gas and Electric Company,distribution
+1266650815,way,37.7104390,-121.4899411,Schulte Switching Station,115000,Pacific Gas and Electric Company,transmission
+1271276985,way,37.8087838,-121.2765337,Howland Road Substation,115000,Pacific Gas and Electric Company,minor_distribution
+1272055892,way,37.7315501,-121.1154004,Ripon Cogen,,,generation
+1272093749,way,37.8564378,-120.9122468,Riverbank Switching Station,115000,Pacific Gas and Electric Company,switching
+1272201645,way,37.3763503,-121.9509727,Kifer Receiving Station,115000;60000,Silicon Valley Power,
+1272854599,way,37.7691581,-120.9077251,Riverbank Substation,115000,Pacific Gas and Electric Company,distribution
+1273559791,way,36.4301332,-121.3325147,Soledad Substation,115000;60000,,
+1274243304,way,40.5193398,-122.3158655,Airport Substation,230000,Redding Electric Utility,transmission
+1274244401,way,40.7151239,-122.4212108,Shasta Substation,230000,Western Area Power Administration,generation
+1275346020,way,40.7022808,-122.9248609,Weaverville Substation,60000,Western Area Power Administration,minor_distribution
+1275427493,way,40.8829514,-121.7034941,Burney Forest Products,,Pacific Gas and Electric Company,
+1276250545,way,38.3691227,-120.7967676,Martell Substation,60000,Pacific Gas and Electric Company,distribution
+1278236495,way,38.2159051,-122.1123865,Cordelia Substation,115000,Pacific Gas and Electric Company,distribution
+1279207485,way,38.5286079,-121.7522215,UC Davis Substation,115000,Pacific Gas and Electric Company,minor_distribution
+1279994315,way,40.8879327,-121.6710537,Burney Substation,60000,,
+1280011755,way,40.8014354,-121.4483431,Lost Creek 2 Substation,12000;60000,,
+1280081494,way,37.5948646,-122.4888897,Pacifica Substation,,Pacific Gas and Electric Company,minor_distribution
+1280084966,way,40.5880405,-121.0915911,Bogard Substation,60000,,
+1280084969,way,40.7448686,-121.2779711,Halls Flat Substation,60000,Pacific Gas and Electric,
+1280784113,way,41.7608120,-124.1634678,Redwood Substation,69000,,
+1280784117,way,41.7660471,-124.1991484,North Crest Substation,69000,,
+1280784119,way,41.8854131,-124.1405932,Smith River Substation,69000,,
+1281063689,way,41.7329039,-124.0974379,Miller Redwood Substation,69000,,
+1281073798,way,41.8482112,-123.9667356,Gasquet Substation,115000,,
+1282256525,way,33.9608985,-117.4274578,Mountain View Substation,66000,,distribution
+1283857401,way,33.9045635,-117.4666325,Kaiser Substation,66000,,
+1284460715,way,33.8461224,-116.5051490,Farrell Substation,115000,,
+1284485105,way,33.9326134,-116.5043748,Aventura Substation,33000;12000,,
+1294858690,way,34.0769776,-117.5008010,Strip Substation,66000,Southern California Edison,industrial
+1295086785,way,35.5002365,-119.1519574,Lerdo Sub,,Pacific Gas and Electric Company,yes
+1295105100,way,34.1571863,-117.3390270,Muscoy Substation,33000;4160,Southern California Edison,
+1295105128,way,34.1206866,-117.3103658,Mt. Vernon Substation,33000;4160,,
+1295566516,way,33.9235344,-117.2847057,Outlaw P.T.,33000,,
+1295566780,way,33.8042966,-117.5099655,Retreat P.T.,33000;12000,,
+1295566781,way,33.8184501,-117.5178733,Fighter P.T.,33000;12000,,
+1295566782,way,33.8289034,-117.5151551,Temescal P.T.,33000;12000;4160,,
+1295566787,way,33.8400679,-117.5217114,Stroh P.T.,33000;4160,,
+1296437629,way,40.4123756,-120.6609139,Richmond Substation,60000,Lassen Municipal Utility District,
+1296437632,way,40.4144977,-120.7382960,Five Mile Substation,60000,Lassen Municipal Utility District,
+1296448097,way,40.3682671,-120.2648492,Honey Lake Substation,60000,,
+1296448099,way,40.3625562,-120.3997700,Lambert Lane Substation,60000,Lassen Municipal Utility District,
+1296448102,way,40.3819162,-120.5745800,Johnstonville Substation,60000,Lassen Municipal Utility District,
+1296517473,way,33.7268884,-117.8685656,Edinger Substation,12000;4160,Southern California Edison,yes
+1296517614,way,33.7145093,-117.9205547,Talbert Substation,66000,Southern California Edison,
+1302573502,way,39.0129723,-121.4185130,Wheatland Substation,60000,Pacific Gas and Electric Company,distribution
+1304935570,way,37.6155148,-118.3973577,Zack Substation,55000,Southern California Edison,distribution
+1347239766,way,33.3559044,-117.1122858,Monserate,33000,San Deigo Gas and Electric,generation
+1354978003,way,37.8645452,-122.2588201,Berkeley T Substation,,Pacific Gas and Electric,
+1357563547,way,38.4998097,-122.4591906,Silverado Substation,115000,Pacific Gas and Electric Company,distribution
+1358123438,way,34.1629986,-118.8368810,Southern California Edison Thousand Oaks,,Southern California Edison,
+1359675934,way,39.3682089,-122.2694681,Delevan Substation,230000,Pacific Gas and Electric,generation
+1360059154,way,39.4807365,-119.9927125,Fleish,,NV Energy,generation
+1360386256,way,39.8012393,-120.6448314,Mohawk Substation,60000,Plumas-Sierra Rural Electric Cooperative,distribution
+1360820376,way,39.8196978,-120.3751382,Beckworth Substation,60000,Plumas-Sierra Rural Electric Cooperative,distribution
+1360820378,way,39.7567211,-120.3709017,Marble Substation,60000,Plumas-Sierra Rural Electric Cooperative,distribution
+1361074779,way,39.7988732,-120.1597325,Chilcoot Substation,60000,Plumas-Sierra Rural Electric Cooperative,minor_distribution
+1361619040,way,39.6680790,-120.2430013,Loyalton Substation,60000,,distribution
+1361888244,way,39.5935121,-120.3811605,Sierraville Substation,60000,Plumas-Sierra Rural Electric Cooperative,minor_distribution
+1365274618,way,38.0246497,-121.9611930,Willow Pass Substation,115000;60000;21000;12000;7200;2400,Pacific Gas and Electric Company,distribution
+1376883612,way,33.1371821,-116.2944821,Narrows Substation,,,
+1377035989,way,32.5335193,-115.5113809,Subestación Cucapáh,400000;230000,Comisión Federal de Electricidad,
+1377601421,way,37.6317461,-120.9742934,Sierra Substation,,Modesto Irrigation District,industrial
+1378308338,way,39.4684690,-119.0627294,Lahontan,120000,,
+1378700010,way,32.4185551,-114.7159660,Subestación maniobras combustión interna,230000,Comisión Federal de Electricidad,generation
+1379614767,way,39.6461337,-120.2179443,Sierra Brooks Substation,,,distribution
+1379614769,way,39.4703996,-120.1046587,Stampede Dam substation,,,generation
+1387033933,way,37.7451592,-122.4528854,Portola Substation,,Pacific Gas and Electric Company,
+1392439443,way,37.5225602,-120.8437080,Geer Substation,,Turlock Irrigation District,minor_distribution
+1392456526,way,37.6858561,-121.0039123,Woodrow Station,,Modesto Irrigation District,
+1394089883,way,39.7711429,-120.6177229,Greagle Substation,60000,Plumas-Sierra Rural Electric Cooperative,minor_distribution
+1415297056,way,35.8404697,-115.4330604,Goodsprings Substation,,,
+1416227982,way,32.5150224,-116.9939281,Subestacion 20 de Noviembre,,Comisión Federal de Electricidad,minor_distribution
+1417656191,way,37.8850157,-122.2550790,Ridge Substation,12000;4000,Pacific Gas and Electric Company,distribution
+1420630278,way,38.0446379,-122.2577096,Oleum Substation,115000,Pacific Gas and Electric Company,
+1421928013,way,40.3128313,-120.4921391,Edgemont Substation,60000,,
+1421928017,way,40.1552473,-120.3519267,Herlong Substation,60000,,
+1421928018,way,40.1445097,-120.1703256,Patton Substation,60000,,
+1421948086,way,40.2996733,-121.2448879,Collins Pine Company Substation,34500,,
+1421948088,way,40.3025291,-121.2270228,Chester Substation,60000;34500,,
+1421948093,way,40.2976012,-121.0180072,Mount Lassen Substation,60000,,
+1421948094,way,40.2998877,-121.0015104,Westwood Substation,60000,,
+1421948095,way,40.3469369,-120.9046164,Coppervale Substation,60000,,
+1426769638,way,39.1293206,-123.7117919,Elk Substation,,Pacific Gas and Electric Company,
+1427875340,way,37.4894735,-120.8380846,F Street Substation,,Turlock Irrigation District,minor_distribution
+1430102610,way,37.3362735,-121.8781896,Markham Substation,115000,Pacific Gas and Electric Company,generation
+1435254655,way,33.8136675,-116.5320704,Thornhill Substation,115000;12000,,distribution
+1442517879,way,32.9025366,-114.4800364,Senator Wash Substation,69000,,
+1450291623,way,34.6564195,-120.4523700,Lompoc Substation,115000,,distribution
+1450406546,way,34.6035761,-120.4569457,Manville Substation,115000,Pacific Gas and Electric Company,distribution
+1450794174,way,37.4363029,-121.1321119,Marshall Substation,69000,Turlock Irrigation District,distribution
+1460196120,way,34.5041302,-114.3430678,Kiowa Substation,69000,UniSource Energy Services,
+1462370333,way,37.9259073,-122.0714228,EBMUD,115000,East Bay Municipal Utility District,yes
+1464397566,way,37.3155776,-121.0148952,Newman Substation,,Pacific Gas and Electric Company,yes
+1465315898,way,37.4104545,-121.1725447,Fink Switching Station,230000,Pacific Gas and Electric Company,transmission
+1465393858,way,35.2081296,-114.1029283,Unisource Coyote Breaker Substation,,,
+1465393870,way,32.7083933,-113.9680326,Tacna Substation,69000,Wellton-Mohawk Irrigation and Drainage District,distribution
+1468138878,way,34.6847822,-120.6038779,Surf Substation,115000,Pacific Gas and Electric Company,distribution
+1468141250,way,34.6429083,-120.4546146,Lompoc - Control Center,115000,,yes
+1474290842,way,37.2393777,-121.7792913,Humminbird Substation,115000,,transition
+1479106626,way,32.6407483,-114.2151006,Wellton-Mohawk #3 Substation,34500;4160,Wellton-Mohawk Irrigation and Drainage District,
+1484070421,way,37.6091235,-120.9928555,Crows Landing Substation,,TID,
+1485094828,way,33.6909598,-114.5724651,Second Avenue,33000;12000,,
+1485094830,way,33.5248433,-114.6559992,Ripley,33000;12000,,
+1485094832,way,32.8807863,-114.4734462,Imperial Dam Substation,34500,,
+1485094833,way,32.8663184,-114.4901182,Barret Substation,34500,,
+1485094834,way,32.7814962,-114.5745317,Bard Substation,34500,,
+1485094835,way,32.7791963,-114.6343983,Siphon Drop,34500,,
+1485094836,way,33.0273990,-114.9867323,Mesquite,,,
+1485094837,way,32.6994119,-115.2832264,Verde Substation,34500,,
+1485094838,way,32.7229766,-115.3375586,Verde,,,
+1485094839,way,32.9531633,-115.4232712,Alamorio,,,
+1485094846,way,34.5661422,-118.0589613,Palmdale,,,
+1485094853,way,35.9585659,-120.8635455,Texaco,,,
+1485094877,way,38.7960904,-122.7671457,Fumarole,,,
+1485094947,way,33.3845762,-117.2369944,Avocado Substation,69000,,
+1485094997,way,33.8591337,-118.1856815,Linden,,Southern California Edison,
+1485095062,way,34.8805612,-118.9009979,Castaic,,,
+1485095178,way,39.5722361,-121.1280785,Yuba Co Water Agency,,,
+1485095202,way,38.1381557,-120.3702061,Stanislaus,,,
+1485095209,way,37.6465790,-120.7732187,Reinway Substation,69000,Modesto Irrigation District,minor_distribution
+1485095210,way,37.5798637,-120.6453437,Hawkins Substation,69000,Turlock Irrigation District,minor_distribution
+1485095219,way,37.6824215,-121.0858207,Finney Substation,,Modesto Irrigation District,
+1485095249,way,38.8849679,-121.0671935,Flint Substation,115000,Pacific Gas and Electric Company,minor_distribution
+1485095257,way,40.3003830,-120.1941989,Amdee,,,
+1489036365,way,37.6521582,-121.0012411,Enslen Station,,Modesto Irrigation District,yes
+1492309495,way,40.5945569,-124.1352176,Newberg Substation,,Pacific Gas and Electric Company,
+1492309642,way,33.9355210,-118.0943125,Floraday,,,
+1492309742,way,36.5495990,-120.1113287,Valley Nitrogen,,,
+1493622955,way,37.8820813,-121.2904274,French Camp Substation,,Pacific Gas and Electric Company,yes
+1493638470,way,37.5870351,-120.9356111,Roeding Substation,,TID,yes
+1509131618,way,40.0074283,-121.2507035,Belden Switchyard,230000,Pacific Gas and Electric Company,generation
+1527947280,way,39.5836407,-119.0772039,Patua,120000,,
+1527996414,way,36.5321389,-119.8816492,Caruthers Substation,,Pacific Gas and Electric Company,
+1532581824,way,32.8554562,-114.4823146,Laguna Dredge Substation,69000,,
+1532581990,way,32.7518186,-113.8848593,Snyder Distribution Substation,69000,Wellton-Mohawk Irrigation and Drainage District,
+1532865714,way,32.5568277,-117.0453025,Seaward Substation,,,yes
+1549519136,way,38.6546754,-121.1889280,SMUD Folsom Operations Center,,Sacramento Municipal Utility District,industrial
+1552705228,way,36.8689179,-121.5493618,San Benito Substation,115000,Pacific Gas and Electric Company,minor_distribution
+2901498,relation,33.6764853,-116.1723056,Coachella City Substation,92000,Imperial Irrigation District,
+2901499,relation,33.6729069,-116.1155404,Coachella Valley Substation,230000;161000;92000,Imperial Irrigation District,
+2901500,relation,33.6386812,-116.1362957,Thermal Substation,92000,Imperial Irrigation District,
+2901502,relation,33.6699393,-116.1571981,52nd Avenue Substation,92000,Imperial Irrigation District,
+7042144,relation,34.2808564,-118.4783097,Rinaldi Receiving Station,500000;230000;34500,Los Angeles Department of Water and Power,transmission
+9113560,relation,34.0482450,-118.5264917,Distributing Station 29,,Los Angeles Department of Water and Power,distribution
+11351566,relation,34.0006667,-118.3784687,La Cienega Substation,220000;66000,Southern California Edison,transmission
+12201885,relation,35.1470784,-114.5971510,Mohave Substation,500000,Southern California Edison,
+12202159,relation,37.3360126,-118.4815393,Control Substation,230000,,
+12202178,relation,33.7050285,-115.6266673,Julian Hinds Substation,230000,,
+12202188,relation,33.8104972,-115.4527258,Eagle Mountain Substation,230000,,
+12204669,relation,34.5642973,-117.3198626,Victorville Substation,500000;287000,,transmission
+12204687,relation,42.0059168,-121.3167070,Malin Substation,500000;230000,PacifiCorp,transmission
+12204895,relation,38.4034895,-121.9202262,Vaca Dixon Substation,500000,Pacific Gas and Electric Company,
+12331797,relation,32.6790263,-116.9838422,Miguel Substation,500000;230000,San Diego Gas & Electric,transmission
+12333299,relation,32.6274510,-116.1191750,Jacumba Substation,500000,,
+12333319,relation,34.3112933,-118.4851294,Sylmar Converter Station,500000,Los Angeles Department of Water and Power,converter
+13764643,relation,37.4787801,-122.2195323,Switching Station 1,,Caltrain,traction
+13791347,relation,32.8330901,-117.1340410,Kearny Substation,69000,San Diego Gas & Electric,distribution
+14217235,relation,36.3235784,-119.6488609,Hanford Substation,66000;12000,Southern California Edison,distribution
+14391219,relation,37.7568233,-122.3860796,Potrero Switchyard,230000;115000,Pacific Gas and Electric Company,transmission
+15617525,relation,37.7974253,-121.6032072,Kelso Substation,230000,Pacific Gas and Electric Company,transmission
+17022833,relation,41.5002978,-120.5333491,Warner Substation,230000;69000,,
+17022834,relation,41.0513959,-121.4082820,McArthur Substation,69000;60000,,
+17022835,relation,41.2007875,-120.9419404,Adin Substation,69000,,
+19772604,relation,37.7607240,-122.4935932,Judah Substation,,Pacific Gas and Electric Company,distribution
+19772624,relation,37.7420329,-122.4933572,Taraval Substation,,Pacific Gas and Electric Company,distribution
+19927324,relation,36.1430603,-115.2457433,Rosanna Substation,69000,Nevada Power Company,

@@ -4,7 +4,7 @@ __pycache__/
 .idea/
 # raw downloads are re-fetchable; keep the repo small
 data/*.xlsx
-data/osm_substations.csv
+# data/osm_substations.csv is committed on purpose (130 KB, ODbL-attributed): CI needs it to geocode
 outputs/projects_all.csv
 outputs/cluster15_projects.csv
 # snapshots: keep projects.csv (small, the diff needs it), drop the raw xlsx copies

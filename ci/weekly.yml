@@ -1,0 +1,112 @@
+name: weekly
+
+on:
+  schedule:
+    - cron: "0 14 * * 1"   # every Monday 14:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  issues: write
+
+concurrency:
+  group: weekly-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      run_date: ${{ steps.stamp.outputs.date }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install
+        run: pip install -e .
+
+      - name: Stamp
+        id: stamp
+        run: echo "date=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+
+      # `caiso-siting download` exits 1 if either CAISO file fails to fetch, which fails the job.
+      # No silent fallback to stale data: a stale snapshot would produce an empty, misleading diff.
+      - name: Download CAISO reports
+        run: caiso-siting download
+
+      # queue -> cluster15 -> nodes -> snapshot -> diff -> site, in that order (see cli.weekly)
+      - name: Weekly pipeline
+        run: caiso-siting weekly
+
+      - name: Commit snapshot, outputs and site
+        env:
+          RUN_DATE: ${{ steps.stamp.outputs.date }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # quoted pathspecs: git expands them and silently skips .gitignore'd files
+          # (raw xlsx snapshots, outputs/projects_all.csv, outputs/cluster15_projects.csv)
+          git add -- 'data/snapshots/*/projects.csv' 'outputs/*.csv' 'outputs/*.md' 'outputs/nodes_map.html' site
+          if git diff --cached --quiet; then
+            echo "nothing changed; skipping commit"
+          else
+            git commit -m "weekly: ${RUN_DATE} snapshot + site"
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+
+      - name: Open or update the weekly diff issue
+        uses: actions/github-script@v7
+        env:
+          RUN_DATE: ${{ steps.stamp.outputs.date }}
+        with:
+          script: |
+            const fs = require('fs');
+            const path = 'outputs/diff_latest.md';
+            if (!fs.existsSync(path)) { core.info('no diff_latest.md (first snapshot); no issue'); return; }
+            let body = fs.readFileSync(path, 'utf8');
+            // "more than the header": a "## Changes (N)" section with N > 0; if the marker is
+            // missing for any reason, fall back to "more than a title line".
+            const m = body.match(/^## Changes \((\d+)\)/m);
+            const nontrivial = m ? Number(m[1]) > 0 : body.trim().split('\n').length > 1;
+            if (!nontrivial) { core.info('diff has no row-level changes; no issue'); return; }
+            const LIMIT = 60000;
+            if (body.length > LIMIT) {
+              const note = '\n\n_…truncated: the full diff is in outputs/diff_latest.md in the repository._';
+              body = body.slice(0, LIMIT - note.length) + note;
+            }
+            const title = `Weekly diff ${process.env.RUN_DATE}`;
+            const { owner, repo } = context.repo;
+            const open = await github.paginate(github.rest.issues.listForRepo, { owner, repo, state: 'open', per_page: 100 });
+            const existing = open.find(i => i.title === title && !i.pull_request);
+            if (existing) {
+              await github.rest.issues.update({ owner, repo, issue_number: existing.number, body });
+              core.info(`updated issue #${existing.number}`);
+            } else {
+              const r = await github.rest.issues.create({ owner, repo, title, body, labels: ['weekly-diff'] });
+              core.info(`opened issue #${r.data.number}`);
+            }
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

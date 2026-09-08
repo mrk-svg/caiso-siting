@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weekly diff · CAISO node intelligence</title>
+<style>
+:root{--fg:#1b1b1b;--muted:#5b5b5b;--bg:#fbfbf9;--line:#dcdcd6;--card:#fff;--accent:#1d4ed8;--warn:#9a3412;--warnbg:#fff4ec}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+header{border-bottom:1px solid var(--line);background:var(--card)}
+header .in{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;gap:6px 18px;
+  align-items:baseline}
+header .brand{font-weight:700;margin-right:auto}
+header nav a{white-space:nowrap}
+main{max-width:1180px;margin:0 auto;padding:16px}
+h1{font-size:1.6rem;margin:.2em 0 .3em}
+h2{font-size:1.2rem;margin:1.4em 0 .4em;border-bottom:1px solid var(--line);padding-bottom:.2em}
+h3{font-size:1.05rem;margin:1.2em 0 .3em}
+.sub{color:var(--muted);margin:0 0 .8em}
+.disclaimer{background:var(--warnbg);border-left:4px solid var(--warn);padding:8px 12px;margin:12px 0;font-size:.92rem}
+.warn{color:var(--warn);font-weight:600}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:14px 0}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.tile .n{font-size:1.5rem;font-weight:700;line-height:1.15}.tile .l{color:var(--muted);font-size:.85rem}
+.tbl{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:8px;margin:8px 0 16px}
+table{border-collapse:collapse;width:100%;font-size:.9rem;font-variant-numeric:tabular-nums}
+th,td{padding:6px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;white-space:nowrap}
+th{background:#f1f1ec;position:sticky;top:0}
+td.num,th.num{text-align:right}
+tr:last-child td{border-bottom:0}
+td.wrap,th.wrap{white-space:normal;min-width:16em}
+dl.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:8px 0}
+dl.kv dt{font-weight:600}dl.kv dd{margin:0}
+.md table{width:auto}
+.md pre,.md code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em}
+.md code{background:#eeeee8;padding:1px 4px;border-radius:3px}
+footer{max-width:1180px;margin:24px auto 40px;padding:12px 16px;border-top:1px solid var(--line);color:var(--muted);
+  font-size:.85rem}
+footer p{margin:.3em 0}
+@media (max-width:600px){body{font-size:14px}main{padding:10px}th,td{padding:5px 7px}}
+</style>
+</head>
+<body>
+<header><div class="in">
+<span class="brand"><a href="index.html">CAISO node intelligence</a></span>
+<nav><a href="index.html">Home</a> · <a href="map.html">Map</a> ·
+<a href="note.html">Node Watch</a> · <a href="diff.html">Weekly diff</a></nav>
+</div></header>
+<main>
+<h1>Weekly diff</h1><p>first diff appears after the second weekly snapshot</p>
+<p class="disclaimer">No figure on this site states a cause. CAISO files carry no withdrawal reason beyond &quot;IC Request&quot;.</p>
+</main>
+<footer>
+<p>Sources: CAISO Public Queue Report and Cluster 15 Interconnection Requests report (CAISO report run date 2026-09-07);
+CAISO / PTO notices on Cluster 16 POI availability; substation positions &copy; OpenStreetMap contributors, ODbL;
+parcel and zoning layers from Kings County and Kern County GIS.</p>
+<p>All MW are net-to-grid as filed. Cluster 15 deliverability is requested, not allocated.
+Nothing here is load-side.</p>
+<p>Pipeline commit <code>09a4b64</code> · pipeline run <code>2026-09-08T01:44:31Z</code> · site built <code>2026-09-08T01:44:32Z</code></p>
+</footer>
+</body>
+</html>

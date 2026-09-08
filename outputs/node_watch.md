@@ -1,12 +1,12 @@
-# CAISO Node Watch — draft 2026-09-07
+# CAISO Node Watch — draft 2026-09-08
 
-Sources: CAISO Public Queue Report (run date 2026-09-07), CAISO Cluster 15 report (posted 2026-07-16),
+Sources: CAISO Public Queue Report (run date 2026-09-08), CAISO Cluster 15 report (posted 2026-07-16),
 CAISO notice "PG&E information on POI availability for Cluster 16" (2026-01-15), OpenStreetMap substations (ODbL).
 All MW are net-to-grid as filed. No figure below states a *cause*; the CAISO files carry none.
 
 ## The state of the queue in three numbers
 
-- **Legacy pipeline (Cluster 14 and earlier):** 266 active projects, 74,687 MW,
+- **Legacy pipeline (Cluster 14 and earlier):** 265 active projects, 74,687 MW,
   92% with storage, 214 already under executed IAs.
 - **Cluster 15 today:** 86 active projects, 28,449 MW (22,005 MW storage);
   84 projects / 30,564 MW withdrawn since intake. CAISO's July 2025 briefing put the studied set at
@@ -50,6 +50,7 @@ Transmission Interconnection Handbook will not reflect this "until updated, no E
 | poi_base                   | county         | utility   |   pipeline_storage_mw |   operating_storage_mw |   wd_recent_storage_mw |   storage_churn |
 |:---------------------------|:---------------|:----------|----------------------:|-----------------------:|-----------------------:|----------------:|
 | ETIWANDA SUBSTATION        | SAN BERNARDINO | SCE       |                   418 |                    101 |                   1899 |            3.66 |
+| LOS BANOS - GATES #1       | FRESNO         | PGAE      |                   492 |                      0 |                   1700 |            3.46 |
 | VIEJO                      | ORANGE         | SCE       |                   302 |                      0 |                   1029 |            3.4  |
 | MIRA LOMA SUBSTATION       | SAN BERNARDINO | SCE       |                   680 |                      0 |                   2031 |            2.99 |
 | CIELO AZUL SUBSTATION      | LA PAZ         | DCRT      |                  1408 |                      0 |                   4136 |            2.94 |
@@ -58,7 +59,6 @@ Transmission Interconnection Handbook will not reflect this "until updated, no E
 | DELANEY SUBSTATION         | MARICOPA       | DCRT      |                   881 |                      0 |                   2331 |            2.65 |
 | IMPERIAL VALLEY SUBSTATION | IMPERIAL       | SDGE      |                   425 |                    550 |                   2455 |            2.52 |
 | SPRINGVILLE SUBSTATION     | TULARE         | SCE       |                   345 |                      0 |                    774 |            2.24 |
-| LUGO                       | SAN BERNARDINO | SCE       |                  2327 |                      0 |                   5062 |            2.18 |
 
 Example of why the window matters — Whirlwind (Kern, SCE): all-time churn 1.32 looks like a graveyard; storage churn over the last 5 years is 0.25, with 2,120 MW operating and 3,273 MW in pipeline. The old number describes 2008-era wind projects, not today's batteries.
 
@@ -84,12 +84,12 @@ These developers had upgrade cost estimates in hand when they left. That is the 
 | poi_base                                     | county         | utility   |   c15_active_mw |   c15_fcds_req_mw |   wd_recent_mw |   legacy_active_mw | c16_poi_status   |
 |:---------------------------------------------|:---------------|:----------|----------------:|------------------:|---------------:|-------------------:|:-----------------|
 | DRY LAKE SW STA                              | KINGS          | PGAE      |            2950 |              2050 |              0 |                  0 | AVAILABLE        |
-| LOS BANOS - GATES #3                         | FRESNO         | PGAE      |             800 |               800 |              0 |                  0 |                  |
 | HASSAYAMPA                                   | MARICOPA       | SDGE      |             700 |                 0 |              0 |                  0 |                  |
 | LUGO-PISGAH                                  | SAN BERNARDINO | SCE       |             700 |                 0 |            150 |                  0 |                  |
 | MAGUNDEN-PASTORIA                            | KERN           | SCE       |             600 |                 0 |              0 |                  0 |                  |
-| NORTH GILA - HOODOO WASH (SDGE PORTION ONLY) | YUMA           | SDGE      |             500 |                 0 |              0 |                  0 |                  |
 | QUINTO SW STA                                | MERCED         | PGAE      |             500 |               500 |            100 |                150 |                  |
+| NORTH GILA - HOODOO WASH (SDGE PORTION ONLY) | YUMA           | SDGE      |             500 |                 0 |              0 |                  0 |                  |
+| QUINTO SW STA- FINK SW STA                   | STANISLAUS     | PGAE      |             400 |               400 |              0 |                  0 |                  |
 | RIO OSO SUBSTATION                           | SUTTER         | PGAE      |             400 |                 0 |            100 |                  0 |                  |
 
 ## Cluster 15 survival by node (lowest first; >500 MW requested)
@@ -121,21 +121,20 @@ These developers had upgrade cost estimates in hand when they left. That is the 
 | poi_base                           | county          |   pipeline_mw | geo_method      |   geo_score |
 |:-----------------------------------|:----------------|--------------:|:----------------|------------:|
 | DELANEY-COLORADO RIVER             | MARICOPA        |          3200 | line-one-end    |        0.7  |
-| TROUT CANYON SUBSTATION            | CLARK           |          3000 | none            |        0.78 |
-| MANNING                            | FRESNO          |          2662 | none            |        0.67 |
+| TROUT CANYON SUBSTATION            | CLARK           |          3000 | county-centroid |        0.3  |
+| MANNING                            | FRESNO          |          2662 | county-centroid |        0.3  |
 | TRANQUILITY                        | FRESNO          |          1575 | override-approx |        0.8  |
 | EAST COUNTY SUBSTATION             | BAJA CALIFORNIA |          1573 | none            |        0.8  |
-| HOODOO WASH SWITCHYARD             | YUMA            |          1570 | none            |        0.56 |
-| CIELO AZUL SUBSTATION              | LA PAZ          |          1350 | none            |        0.53 |
+| HOODOO WASH SWITCHYARD             | YUMA            |          1570 | county-centroid |        0.3  |
+| CIELO AZUL SUBSTATION              | LA PAZ          |          1350 | county-centroid |        0.3  |
 | MANNING-MIDWAY                     | FRESNO          |          1150 | line-one-end    |        0.7  |
 | COLORADO RIVER - PALO VERDE        | LA PAZ          |          1000 | line-one-end    |        0.7  |
-| ARCO                               | KERN            |           915 | none            |        0.67 |
-| CALCITE SUBSTATION                 | SAN BERNARDINO  |           893 | none            |        0.62 |
+| ARCO                               | KERN            |           915 | county-centroid |        0.3  |
+| CALCITE SUBSTATION                 | SAN BERNARDINO  |           893 | county-centroid |        0.3  |
 | DELANEY SUBSTATION                 | MARICOPA        |           850 | none            |        0.71 |
-| LOS BANOS - GATES #3               | FRESNO          |           800 | line-one-end    |        0.7  |
 | HASSAYAMPA                         | MARICOPA        |           700 | none            |        0.63 |
-| TEHACHAPI CONCEPTUAL SUBSTATION #1 | KERN            |           600 | none            |        0.09 |
-| OTAY MESA SWITCHYARD               | SAN DIEGO       |           550 | none            |        0.62 |
+| TEHACHAPI CONCEPTUAL SUBSTATION #1 | KERN            |           600 | county-centroid |        0.3  |
+| OTAY MESA SWITCHYARD               | SAN DIEGO       |           550 | county-centroid |        0.3  |
 
 ## Caveats (say these out loud to any reader)
 

@@ -5,19 +5,34 @@ BESS developers and land brokers in the CAISO footprint who can't afford LandGat
 
 Not a "Grid-Ready Score". Transparent, sourced layers — every number traceable to a CAISO row.
 
+## Install
+
+    pip install -e .[dev]          # Python 3.10+; pandas, openpyxl, requests, tabulate
+    caiso-siting --help
+    python -m pytest -q            # 137 tests, ~15 s
+
 ## Layout
 
-    common.py            shared normalizers: county cleanup, POI node key, line-endpoint split
-    caiso_queue.py       Public Queue Report parser (Cluster 14 and earlier + completed + withdrawn)
-    cluster15.py         Cluster 15 report parser (different schema)
-    nodes.py             unify both per node, geocode, join POI-availability statements, emit map + node_watch.md
-    diff.py              weekly snapshot + diff of both CAISO files -> outputs/diff_latest.md (the newsletter engine)
-    parcels.py           parcels / zoning / general plan within N km of a POI from public county ArcGIS services
-    data/                raw downloads (gitignored), poi_overrides.csv (hand-verified coordinates),
-                         poi_availability.csv (official per-POI Cluster 16 statements, each row sourced)
-    outputs/             CSVs, nodes_map.html, node_watch.md
+    src/caiso_siting/
+      config.py          paths (CAISO_SITING_ROOT or nearest parent with data/), provenance stamps
+      common.py          shared normalizers: county cleanup, POI node key, line-endpoint split
+      queue_report.py    Public Queue Report parser (Cluster 14 and earlier + completed + withdrawn)
+      cluster15.py       Cluster 15 report parser (different schema)
+      nodes.py           unify per node, geocode, county-centroid fallback, POI availability, map, node_watch.md
+      diff.py            weekly snapshot + diff -> outputs/diff_latest.md (the newsletter engine)
+      parcels.py         parcels / zoning / general plan within N km of a POI (public county ArcGIS)
+      site.py            static site -> site/ (index, map, per-node pages, diff, note) for GitHub Pages
+      cli.py             `caiso-siting` entry point
+    tests/               pytest suite (synthetic CAISO-layout fixtures + real-file smoke tests + header-drift guard)
+    data/                raw downloads (gitignored), osm_substations.csv (committed, ODbL), poi_overrides.csv,
+                         poi_availability.csv, snapshots/YYYY-MM-DD/projects.csv
+    outputs/             CSVs, nodes_map.html, node_watch.md, diff_latest.md
+    site/                generated static site
+    .github/workflows/   ci.yml (ruff + pytest), weekly.yml (Monday cron: download, run, snapshot, deploy, diff issue)
+    DATA.md              data dictionary — every column, unit, source, caveat
+    DATA_LICENSES.md     source terms and the attribution each output must carry
 
-## Metrics — which one you may quote
+## Metrics — which one you may quote (full definitions in DATA.md)
 
 | metric            | definition                                                            | quote it? |
 |-------------------|-----------------------------------------------------------------------|-----------|
@@ -36,13 +51,15 @@ The CAISO files contain no withdrawal reason beyond "IC Request"; never state a 
     #    https://www.caiso.com/documents/publicqueuereport.xlsx              -> data/publicqueuereport.xlsx
     #    https://www.caiso.com/documents/cluster-15-interconnection-requests.xlsx -> data/cluster15.xlsx
     # 2. refresh substations only occasionally (OSM changes slowly) — see "Substation coordinates"
-    pip install -r requirements.txt
-    python3 caiso_queue.py
-    python3 cluster15.py
-    python3 nodes.py                 # nodes.csv, map, node_watch.md
-    python3 diff.py snapshot         # store this week's rows under data/snapshots/YYYY-MM-DD/
-    python3 diff.py                  # compare the two latest snapshots -> outputs/diff_latest.md
-    open outputs/nodes_map.html
+    caiso-siting download            # both CAISO files (needs normal internet)
+    caiso-siting weekly              # = queue, cluster15, nodes, snapshot, diff, site — in order
+    open site/index.html
+
+    # or step by step
+    caiso-siting queue | cluster15 | nodes | snapshot | diff | site
+
+On GitHub the same thing runs every Monday 14:00 UTC via `.github/workflows/weekly.yml`, commits the snapshot and
+site, deploys Pages, and opens an issue titled "Weekly diff <date>". Set the repo's Pages source to "GitHub Actions" once.
 
 Snapshot zero is 2026-09-07. The first real diff exists after the second weekly download.
 `diff.py` reports NEW, WITHDRAWN, COMPLETED, MW_CHANGE, COD_SLIP / COD_PULLED_IN, IA_STATUS, DELIV_CHANGE, POI_CHANGE, GONE —
@@ -50,8 +67,8 @@ each as the difference between two CAISO rows. Self-tested against a mutated sna
 
 ## Parcels around a stated-available POI
 
-    python3 parcels.py "DRY LAKE SW STA" --km 5      # needs normal internet; run from your own terminal
-    python3 parcels.py --all-available --km 5
+    caiso-siting parcels "DRY LAKE SW STA" --km 5    # needs normal internet
+    caiso-siting parcels --all-available --km 5
 
 Public layers wired in (verified live 2026-09-07): Kings County parcels + general plan; Kern County zoning.
 Live check: 40 Kings parcels within 5 km of the proposed Dry Lake 500 kV station, all agricultural, 160–320-acre sections;
