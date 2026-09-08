@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.0 — 2026-09-08
+
+TPD allocation layer (`tpd.py`, `caiso-siting tpd`): CAISO's 2024 and 2025 allocation cycle results joined per node —
+requested, allocated and denied MW; on node pages, the index and the Node Watch. 156 tests.
+`layers.py`: CEC transmission-line placement for line POIs (cache `data/poi_lines.csv`, method `cec-line`) and Williamson Act + CEC siting screens for parcel tables. 168 tests.
+Not free/public and therefore not built: per-POI network-upgrade cost tables (cluster study reports are served via RIMS login).
+
 ## 1.1.0 — 2026-09-08
 
 Package layout (`src/caiso_siting`, `pyproject.toml`, `caiso-siting` CLI with `queue`, `cluster15`, `nodes`, `snapshot`,

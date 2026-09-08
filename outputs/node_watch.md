@@ -45,6 +45,29 @@ Transmission Interconnection Handbook will not reflect this "until updated, no E
 | LUGO                    | SAN BERNARDINO | SCE       |                500 |            1798 |              0 |           4953 |            2.18 |           0.29 |
 | TESLA                   | ALAMEDA        | PGAE      |               1280 |            1000 |            436 |           2180 |            0.76 |           0.33 |
 
+## 2025 TPD allocation cycle by node — requested vs allocated vs denied (CAISO results xlsx, posted 2026-05-04)
+
+| poi_base                    | county          | utility   |   tpd25_projects |   tpd25_req_mw |   tpd25_alloc_mw |   tpd25_denied_mw |   tpd24_fcdsa_projects |
+|:----------------------------|:----------------|:----------|-----------------:|---------------:|-----------------:|------------------:|-----------------------:|
+| MOSS LANDING                | MONTEREY        | PGAE      |                1 |           1500 |             1500 |                 0 |                      0 |
+| GATES SUBSTATION            | FRESNO          | PGAE      |                2 |           1396 |              396 |              1000 |                      3 |
+| COLORADO RIVER - PALO VERDE | LA PAZ          | SCE       |                1 |           1000 |                0 |              1000 |                      0 |
+| EAST COUNTY SUBSTATION      | BAJA CALIFORNIA | SDGE      |                1 |            973 |                0 |               973 |                      1 |
+| COLORADO RIVER SUBSTATION   | RIVERSIDE       | SCE       |                3 |            875 |                0 |               875 |                      1 |
+| LAMBIE SWITCHING STATION    | SOLANO          | PGAE      |                2 |            800 |              400 |               400 |                      0 |
+| IMPERIAL VALLEY SUBSTATION  | IMPERIAL        | SDGE      |                3 |            777 |                0 |               777 |                      2 |
+| TROUT CANYON SUBSTATION     | CLARK           | GLW       |                2 |            625 |                0 |               625 |                      1 |
+| RIO HONDO SUBSTATION        | LOS ANGELES     | SCE       |                2 |            600 |              600 |                 0 |                      6 |
+| WHEELER RIDGE               | KERN            | PGAE      |                1 |            600 |                0 |               600 |                      0 |
+| RECTOR SUBSTATION           | TULARE          | SCE       |                2 |            550 |              350 |               200 |                      0 |
+| CONTRA COSTA SUBSTATION     | CONTRA COSTA    | PGAE      |                2 |            550 |              449 |                 0 |                      0 |
+| OTAY MESA SWITCHYARD        | SAN DIEGO       | SDGE      |                2 |            550 |                0 |               550 |                      0 |
+| MOORPARK SUBSTATION         | VENTURA         | SCE       |                1 |            500 |              462 |                 0 |                      1 |
+| VACA-DIXON                  | SOLANO          | PGAE      |                2 |            500 |              500 |                 0 |                      0 |
+
+"Denied" = MW requested by rows that received 0 % in the cycle. Allocation is CAISO's decision under Appendix DD;
+the file states no reason and neither does this table.
+
 ## Storage churn, last 5 years (nodes with >300 MW storage surviving and >300 MW storage withdrawn)
 
 | poi_base                   | county         | utility   |   pipeline_storage_mw |   operating_storage_mw |   wd_recent_storage_mw |   storage_churn |

@@ -2,10 +2,12 @@
 
   queue      parse the Public Queue Report            -> outputs/by_*.csv, projects_all.csv
   cluster15  parse the Cluster 15 report              -> outputs/cluster15_projects.csv
-  nodes      unify, geocode, availability, map, note  -> outputs/nodes.csv, nodes_map.html, node_watch.md
+  nodes      unify, geocode, TPD, availability, map  -> outputs/nodes.csv, nodes_map.html, node_watch.md
+  tpd        parse TPD allocation results            -> outputs/tpd_allocations.csv
   snapshot   store this week's rows                   -> data/snapshots/YYYY-MM-DD/
   diff       compare the two latest snapshots         -> outputs/diff_latest.md
   parcels    parcels/zoning around a POI              -> outputs/parcels_*.csv (needs internet)
+  layers     lines | screen: CEC line placement, Williamson Act + CEC siting screens (needs internet)
   site       build the static site                    -> site/
   weekly     queue + cluster15 + nodes + snapshot + diff + site, in order
   download   fetch both CAISO files (needs internet)
@@ -14,7 +16,7 @@ from __future__ import annotations
 
 import sys
 
-from . import cluster15, diff, nodes, parcels, queue_report
+from . import cluster15, diff, layers, nodes, parcels, queue_report, tpd
 from .config import CLUSTER15_URL, DATA
 
 
@@ -59,9 +61,11 @@ COMMANDS = {
     "queue": lambda a: _run(queue_report, a),
     "cluster15": lambda a: _run(cluster15, a),
     "nodes": lambda a: _run(nodes, a),
+    "tpd": lambda a: _run(tpd, a),
     "snapshot": lambda a: _run(diff, ["snapshot", *a]),
     "diff": lambda a: _run(diff, a),
     "parcels": lambda a: _run(parcels, a),
+    "layers": lambda a: _run(layers, a),
     "site": lambda a: _run(__import__("caiso_siting.site", fromlist=["main"]), a),
     "weekly": weekly,
     "download": download,

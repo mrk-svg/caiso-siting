@@ -83,11 +83,21 @@ Same canonical names where the concept matches. Differences:
 | `storage_churn` | ratio | `wd_recent_storage_mw ÷ (pipeline_storage_mw + operating_storage_mw)`; NaN when no storage survives | **the churn number to quote** |
 | `churn_alltime` | ratio | `wd_alltime_mw ÷ (pipeline_mw + operating_mw)` | no — dominated by 2008–2015 wind/solar |
 | `c15_survival` | ratio | `c15_active_mw ÷ (c15_active_mw + c15_withdrawn_mw)` | yes |
+| `tpd25_projects` | n | projects at the node that sought TPD in CAISO's 2025 allocation cycle (results xlsx posted 2026-05-04) | yes |
+| `tpd25_req_mw` | MW | MW those requests asked for | yes |
+| `tpd25_alloc_mw` | MW | requested × allocation % | yes — this is *allocated* deliverability, the column the C15 "requested" figures lack |
+| `tpd25_denied_mw` | MW | MW requested by rows that received 0 % | yes; the file states no reason and neither may you |
+| `tpd24_fcdsa_projects`, `tpd24_pcdsa_projects` | n | projects allocated Full / Partial Capacity in the 2024 cycle (that file carries no MW) | yes |
 | `c16_poi_status`, `c16_poi_note` | text | latest official statement in `data/poi_availability.csv` for this node: AVAILABLE / UNAVAILABLE / CONDITIONAL / RELIEVED; blank = **no statement**, not availability | yes, citing the notice |
 | `lat`, `lon` | deg | position, see `geo_method` | only with the method stated |
-| `geo_method` | text | `override` (hand-verified, sourced) · `exact` (OSM name) · `line-midpoint` (both ends found) · `fuzzy` (≥0.85, same first token) · `line-one-end` (**one end of a line, not the tap**) · `override-approx` (±km) · `county-centroid` (**position unknown**; median of located nodes in the county) · `none` | |
+| `geo_method` | text | `override` (hand-verified, sourced) · `exact` (OSM name) · `line-midpoint` (both ends found) · `fuzzy` (≥0.85, same first token) · `line-one-end` (**one end of a line, not the tap**) · `override-approx` (±km) · `cec-line` (on the CEC transmission-line geometry from `caiso-siting layers lines`; nearest vertex to the county's located nodes, else length-midpoint — on the right line, still not the exact tap) · `county-centroid` (**position unknown**; median of located nodes in the county) · `none` | |
 | `geo_score` | 0–1 | 1.0 override/exact; fuzzy ratio; ×0.7 for line-one-end; 0.8 approx; 0.3 centroid | |
 | `osm_name` | text | matched OSM feature, or the override note | |
+
+## `outputs/tpd_allocations.csv` — one row per TPD allocation request
+
+`tpd_year, pto, queue_id, allocation_group, status (FCDSA/PCDSA/NONE), allocation_pct, mw_requested (2025 only), mw_allocated, in_generator_queue` + provenance.
+Rows whose `queue_id` is a WDAT number, `-WD`, `CONV` or a PTO code are distribution-level or conversion requests; they do not join to nodes.
 
 ## `outputs/poi_geocode.csv` — every node's geocode decision (audit this before publishing a map)
 
@@ -111,4 +121,5 @@ Snapshot: the `TRACKED` columns of both reports keyed `PUBLIC:<queue_position>` 
 
 ## `outputs/parcels_<name>.csv`
 
-`county, apn, acres, ag, community, township, range_, lat, lon, km_to_poi` + one column per overlay (`kings_general_plan`, `kern_zoning`). No owner names — counties withhold them by statute, and this project would not publish them if they didn't.
+`county, apn, acres, ag, community, township, range_, lat, lon, km_to_poi` + one column per overlay (`kings_general_plan`, `kern_zoning`).
+After `caiso-siting layers screen`: `williamson_act` (Prime / Nonprime / Nonrenewal / FSZ / Mixed / enrolled / blank — DOC 2025 layer, by APN then by polygon) and booleans `excl_base_solar`, `excl_protected_solar`, `excl_technoeconomic_solar`, `tribal_land`, `critical_habitat` (parcel centroid inside a CEC screen polygon). Presence only — the CEC screen layers carry no attributes. No owner names — counties withhold them by statute, and this project would not publish them if they didn't.

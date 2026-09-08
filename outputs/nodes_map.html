@@ -9,7 +9,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy
 const col=c=> c==null?'#9a9a9a': c<0.25?'#2a9d8f': c<1?'#e9c46a':'#e63946';
 for(const p of pts){
   const mw=p.legacy+p.c15; const r=Math.max(4,Math.sqrt(mw)/2.2);
-  const approx = p.method==='line-one-end' || p.method==='fuzzy' || p.method==='override-approx' || p.method==='county-centroid';
+  const approx = p.method==='line-one-end' || p.method==='fuzzy' || p.method==='override-approx' || p.method==='county-centroid' || p.method==='cec-line';
   const centroid = p.method==='county-centroid';
   const ring = p.st==='UNAVAILABLE'?'#000': p.st==='AVAILABLE'?'#1d4ed8':'#222';
   L.circleMarker([p.lat,p.lon],{radius:r,color:ring,weight:p.st?3:1,dashArray:approx?'3,3':null,fillColor:col(p.sc),fillOpacity:approx?.25:.75})

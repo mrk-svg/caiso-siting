@@ -95,6 +95,25 @@ by statute in every California county layer — parcel + APN is what you get; ow
   Vincent (3.5 GW), Whirlwind (3.3 GW), Delaney–Colorado River (3.2 GW), Trout Canyon (3.0 GW), Dry Lake (2.95 GW, all C15).
 - Churn ratio (withdrawn ÷ surviving MW) > 2 at Red Bluff, Lugo, Colorado River: graveyard nodes.
 
+## Deliverability that was actually allocated (v1.2)
+
+`caiso-siting tpd` parses CAISO's 2024 and 2025 TPD allocation cycle results (`data/tpd_2024.xlsx`, `data/tpd_2025.xlsx`,
+public xlsx from the TPD page) and `nodes` joins them per node: `tpd25_req_mw`, `tpd25_alloc_mw`, `tpd25_denied_mw`
+(requested by rows that received 0 %), `tpd24_fcdsa_projects`. 2025 cycle, generator-queue rows: 24.1 GW requested,
+8.5 GW allocated, 15.0 GW denied. Colorado River–Palo Verde asked for 1,000 MW and received 0; East County 973 MW, 0;
+Gates 1,396 requested, 396 allocated. The file states no reason.
+
+Not built, on purpose: per-POI network-upgrade cost tables. They exist in the cluster study reports, which CAISO serves
+through RIMS (login), not as open documents. Nothing in this repo claims a cost.
+
+## Line POIs and siting screens (v1.2, network commands)
+
+    caiso-siting layers lines            # CEC transmission-line geometry -> data/poi_lines.csv; then re-run `nodes`
+    caiso-siting layers screen --all     # Williamson Act (DOC 2025, by APN) + 5 CEC siting screens onto parcels_*.csv
+
+Line POIs ("MIDWAY - GATES") move from one endpoint onto the actual line (`geo_method = cec-line`, score 0.9, nearest
+vertex to the county's located nodes). Screens are presence-only: the CEC layers carry no attributes.
+
 ## Substation coordinates (the hard part the pitch hand-waved)
 
 - HIFLD substations: now "restricted public" on data.gov.

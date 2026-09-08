@@ -44,10 +44,15 @@ METRIC_DEFS = [
     ("churn_alltime", "wd_alltime_mw / (pipeline + operating MW) — historical color only"),
     ("c15_survival", "c15_active / (c15_active + c15_withdrawn)"),
     ("c15_fcds_req_mw", "C15 active MW that requested Full Capacity Deliverability Status (requested, not allocated)"),
+    ("tpd25_projects", "projects at the node that sought TPD in CAISO's 2025 allocation cycle"),
+    ("tpd25_req_mw", "MW at the node that sought TPD in CAISO's 2025 allocation cycle"),
+    ("tpd25_alloc_mw", "MW allocated in that cycle (requested × allocation %)"),
+    ("tpd25_denied_mw", "MW requested by rows that received 0 %"),
+    ("tpd24_fcdsa_projects", "projects at the node allocated Full Capacity in the 2024 cycle"),
 ]
 
 TOP_COLS = ["poi_base", "county", "utility", "legacy_active_mw", "c15_active_mw", "operating_mw",
-            "wd_recent_mw", "storage_churn", "c15_survival", "c16_poi_status"]
+            "wd_recent_mw", "storage_churn", "c15_survival", "tpd25_denied_mw", "c16_poi_status"]
 
 CSS = """
 :root{--fg:#1b1b1b;--muted:#5b5b5b;--bg:#fbfbf9;--line:#dcdcd6;--card:#fff;--accent:#1d4ed8;--warn:#9a3412;--warnbg:#fff4ec}
@@ -108,6 +113,7 @@ $body
 </main>
 <footer>
 <p>Sources: CAISO Public Queue Report and Cluster 15 Interconnection Requests report (CAISO report run date $run_date);
+CAISO 2024 and 2025 Transmission Plan Deliverability allocation cycle results;
 CAISO / PTO notices on Cluster 16 POI availability; substation positions &copy; OpenStreetMap contributors, ODbL;
 parcel and zoning layers from Kings County and Kern County GIS.</p>
 <p>All MW are net-to-grid as filed. Cluster 15 deliverability is requested, not allocated.
@@ -131,7 +137,7 @@ def fmt(col: str, v) -> str:
     """MW columns as integers with thousands separators, ratios to 2 dp, NaN as n/a."""
     if v is None or (isinstance(v, float) and pd.isna(v)) or v == "":
         return "n/a" if col in ("storage_churn", "churn_alltime", "c15_survival", "geo_score") else ""
-    if col.endswith("_mw"):
+    if col.endswith("_mw") or col.endswith("_projects"):
         return f"{float(v):,.0f}"
     if col in ("storage_churn", "churn_alltime", "c15_survival", "geo_score"):
         return f"{float(v):.2f}"
@@ -141,7 +147,7 @@ def fmt(col: str, v) -> str:
 
 
 def is_num(col: str) -> bool:
-    return col.endswith("_mw") or col in ("storage_churn", "churn_alltime", "c15_survival", "geo_score", "lat", "lon",
+    return col.endswith(("_mw", "_projects")) or col in ("storage_churn", "churn_alltime", "c15_survival", "geo_score", "lat", "lon",
                                           "queue_position")
 
 
@@ -348,6 +354,8 @@ def index_page(nodes: pd.DataFrame, projects: pd.DataFrame, slugs: dict[str, str
     avail = nodes[nodes.c16_poi_status.fillna("") != ""].sort_values(["c16_poi_status", "pipeline_mw"],
                                                                      ascending=[True, False])
     n_pages = len(slugs)
+    tpd = nodes[nodes.get("tpd25_req_mw", pd.Series(0, index=nodes.index)) > 0] \
+        .sort_values("tpd25_req_mw", ascending=False).head(15)
     body = f"""<h1>CAISO interconnection nodes</h1>
 <p class="sub">Public Queue Report + Cluster 15 report, unified per point of interconnection, joined to official
 Cluster 16 POI statements. CAISO report run date {esc(prov['run_date'])}. Every number traces to a CAISO row.</p>
@@ -358,6 +366,11 @@ Cluster 16 POI statements. CAISO report run date {esc(prov['run_date'])}. Every 
 <p class="sub">storage_churn = storage MW withdrawn in the last {RECENT_YEARS} years ÷ (active + operating storage MW).
 c15_survival = C15 active ÷ (C15 active + C15 withdrawn). Click a node for its projects and geocode provenance.</p>
 {table(top, TOP_COLS, links)}
+<h2>TPD allocation, 2025 cycle</h2>
+<p class="sub">Top 15 nodes by MW that sought Transmission Plan Deliverability in CAISO's 2025 allocation cycle.</p>
+{table(tpd, ['poi_base', 'county', 'utility', 'tpd25_req_mw', 'tpd25_alloc_mw', 'tpd25_denied_mw',
+             'tpd24_fcdsa_projects'], links)}
+<p>"Denied" = MW requested by rows that received 0 % in the cycle. The CAISO file states no reason.</p>
 <h2>Official Cluster 16 POI statements</h2>
 <p class="sub">Encoded only where a CAISO / PTO notice names the POI. Absence of a row is not availability.
 The latest dated statement per POI wins.</p>

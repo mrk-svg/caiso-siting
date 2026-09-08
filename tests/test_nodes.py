@@ -384,3 +384,20 @@ def test_build_nodes_real_invariants(real_nodes):
     assert n.c15_survival.dropna().between(0, 1).all()
     assert n.pipeline_mw.is_monotonic_decreasing
     assert len(n) > 500
+
+
+@pytest.mark.real_data
+def test_join_tpd_real_invariants(real_nodes, real_projects):
+    for f in ("tpd_2024.xlsx", "tpd_2025.xlsx"):
+        if not (nodes.DATA / f).exists():
+            pytest.skip(f"real data file missing: {f}")
+    pq, _ = real_projects
+    n = nodes.join_tpd(real_nodes.copy(), pq)
+    assert len(n) == len(real_nodes)
+    for c in nodes.TPD_COLS:
+        assert c in n.columns, c
+        assert n[c].notna().all() and (n[c] >= 0).all(), c
+    assert (n.tpd25_alloc_mw <= n.tpd25_req_mw + 1e-6).all()
+    assert (n.tpd25_denied_mw <= n.tpd25_req_mw + 1e-6).all()
+    assert (n.tpd25_projects > 0).sum() > 50
+    assert n.tpd25_req_mw.sum() > 0 and n.tpd24_fcdsa_projects.sum() > 0

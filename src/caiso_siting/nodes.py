@@ -26,6 +26,10 @@ Metric definitions (read before quoting any of them):
   storage_churn           wd_recent_storage_mw / (active + operating storage MW)   <- the one to quote
   churn_alltime           wd_alltime_mw / (pipeline + operating MW)                 <- historical color only
   c15_survival            c15_active / (c15_active + c15_withdrawn)
+  tpd25_req_mw            MW at the node that sought TPD in CAISO's 2025 allocation cycle
+  tpd25_alloc_mw          MW allocated in that cycle (requested × allocation %)
+  tpd25_denied_mw         MW requested by rows that received 0 %
+  tpd24_fcdsa_projects    projects at the node allocated Full Capacity in the 2024 cycle
 None of these say WHY anything withdrew. The files carry no reason beyond "IC Request".
 """
 from __future__ import annotations
@@ -36,7 +40,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from . import cluster15
+from . import cluster15, tpd
 from . import queue_report as caiso_queue
 from .common import norm_poi, poi_endpoints
 from .config import DATA, OUT, RECENT_YEARS, add_provenance
@@ -188,6 +192,30 @@ def build_nodes(pq: pd.DataFrame, c15: pd.DataFrame) -> pd.DataFrame:
     return nodes.sort_values("pipeline_mw", ascending=False).reset_index(drop=True)
 
 
+TPD_COLS = ["tpd25_projects", "tpd25_req_mw", "tpd25_alloc_mw", "tpd25_denied_mw",
+            "tpd24_fcdsa_projects", "tpd24_pcdsa_projects"]
+
+
+def join_tpd(nodes: pd.DataFrame, pq: pd.DataFrame) -> pd.DataFrame:
+    """Allocated deliverability per node from CAISO's TPD allocation cycle results (data/tpd_*.xlsx).
+    Joined through the public report on queue position — all sheets, because a project allocated in
+    2024 may have withdrawn since and its node should still show the history."""
+    t = tpd.load_all()
+    if t.empty:
+        for c in TPD_COLS:
+            nodes[c] = 0.0
+        print("tpd: no data/tpd_*.xlsx files — TPD columns are zero")
+        return nodes
+    pn = tpd.per_node(t, pq)
+    nodes = nodes.merge(pn, left_on="node_key", right_index=True, how="left")
+    for c in TPD_COLS:
+        nodes[c] = nodes[c].fillna(0.0)
+    hit = nodes.tpd25_projects > 0
+    print(f"tpd: {hit.sum()} nodes with 2025 TPD requests; requested {nodes.tpd25_req_mw.sum():,.0f} MW, "
+          f"allocated {nodes.tpd25_alloc_mw.sum():,.0f} MW, denied {nodes.tpd25_denied_mw.sum():,.0f} MW")
+    return nodes
+
+
 def join_availability(nodes: pd.DataFrame) -> pd.DataFrame:
     path = DATA / "poi_availability.csv"
     nodes["c16_poi_status"] = ""
@@ -218,11 +246,30 @@ def geocode_nodes(nodes: pd.DataFrame) -> pd.DataFrame:
     geo = pd.DataFrame(rows)
     geo.to_csv(OUT / "poi_geocode.csv", index=False)
     nodes = nodes.merge(geo.drop(columns="poi_base"), on="node_key", how="left")
+    nodes = apply_line_cache(nodes)
     nodes = county_centroid_fallback(nodes)
     located = nodes.lat.notna() & (nodes.geo_method != "county-centroid")
     print(f"geocode: {located.sum()}/{len(nodes)} nodes located ({located.mean():.0%}); "
           f"{nodes.loc[located, 'pipeline_mw'].sum() / nodes.pipeline_mw.sum():.0%} of pipeline MW; "
           f"methods {nodes.geo_method.value_counts().to_dict()}")
+    return nodes
+
+
+def apply_line_cache(nodes: pd.DataFrame) -> pd.DataFrame:
+    """data/poi_lines.csv (from `caiso-siting layers lines`) places line POIs on CEC line geometry.
+    It only replaces positions that are one-end or missing; hand overrides and exact matches stand."""
+    path = DATA / "poi_lines.csv"
+    if not path.exists():
+        return nodes
+    cache = pd.read_csv(path).drop_duplicates("node_key").set_index("node_key")
+    hit = nodes.node_key.isin(cache.index) & nodes.geo_method.isin(["line-one-end", "none"])
+    nodes.loc[hit, "lat"] = nodes.loc[hit, "node_key"].map(cache.lat).values
+    nodes.loc[hit, "lon"] = nodes.loc[hit, "node_key"].map(cache.lon).values
+    nodes.loc[hit, "geo_method"] = "cec-line"
+    nodes.loc[hit, "geo_score"] = 0.9
+    nodes.loc[hit, "osm_name"] = ("CEC line: " + cache.tline_name.astype(str) + " " + cache.kv.astype(str) + " kV")\
+        .reindex(nodes.loc[hit, "node_key"]).values
+    print(f"cec-line cache: {hit.sum()} line POIs placed on transmission-line geometry")
     return nodes
 
 
@@ -268,7 +315,7 @@ L.tileLayer('https://tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png',{{attribution
 const col=c=> c==null?'#9a9a9a': c<0.25?'#2a9d8f': c<1?'#e9c46a':'#e63946';
 for(const p of pts){{
   const mw=p.legacy+p.c15; const r=Math.max(4,Math.sqrt(mw)/2.2);
-  const approx = p.method==='line-one-end' || p.method==='fuzzy' || p.method==='override-approx' || p.method==='county-centroid';
+  const approx = p.method==='line-one-end' || p.method==='fuzzy' || p.method==='override-approx' || p.method==='county-centroid' || p.method==='cec-line';
   const centroid = p.method==='county-centroid';
   const ring = p.st==='UNAVAILABLE'?'#000': p.st==='AVAILABLE'?'#1d4ed8':'#222';
   L.circleMarker([p.lat,p.lon],{{radius:r,color:ring,weight:p.st?3:1,dashArray:approx?'3,3':null,fillColor:col(p.sc),fillOpacity:approx?.25:.75}})
@@ -310,6 +357,7 @@ def write_node_watch(nodes: pd.DataFrame, pq: pd.DataFrame, c15: pd.DataFrame) -
     clean = nodes[(nodes.c15_active_mw > 0) & (nodes.wd_recent_mw < 300)].sort_values("c15_active_mw", ascending=False).head(8)
     survivors = nodes[nodes.c15_withdrawn_mw + nodes.c15_active_mw > 500].sort_values("c15_survival").head(8)
     avail = nodes[nodes.c16_poi_status != ""].sort_values("c16_poi_status")
+    tpd_tbl = nodes[nodes.tpd25_req_mw > 0].sort_values("tpd25_req_mw", ascending=False).head(15)
     approx = nodes[(nodes.pipeline_mw > 500) & nodes.geo_method.isin(["line-one-end", "fuzzy", "override-approx", "county-centroid", "none"])] \
         .sort_values("pipeline_mw", ascending=False)
 
@@ -348,6 +396,13 @@ Transmission Interconnection Handbook will not reflect this "until updated, no E
 ## Top nodes by total pipeline MW (legacy + C15)
 
 {tbl(top, ['poi_base','county','utility','legacy_active_mw','c15_active_mw','operating_mw','wd_recent_mw','storage_churn','c15_survival'])}
+
+## 2025 TPD allocation cycle by node — requested vs allocated vs denied (CAISO results xlsx, posted 2026-05-04)
+
+{tbl(tpd_tbl, ['poi_base','county','utility','tpd25_projects','tpd25_req_mw','tpd25_alloc_mw','tpd25_denied_mw','tpd24_fcdsa_projects'])}
+
+"Denied" = MW requested by rows that received 0 % in the cycle. Allocation is CAISO's decision under Appendix DD;
+the file states no reason and neither does this table.
 
 ## Storage churn, last {RECENT_YEARS} years (nodes with >300 MW storage surviving and >300 MW storage withdrawn)
 
@@ -392,6 +447,7 @@ def main() -> None:
     OUT.mkdir(exist_ok=True)
     pq, c15 = load_projects()
     nodes = build_nodes(pq, c15)
+    nodes = join_tpd(nodes, pq)
     nodes = join_availability(nodes)
     nodes = geocode_nodes(nodes)
     nodes = add_provenance(nodes, "publicqueuereport.xlsx+cluster15.xlsx",
@@ -402,7 +458,7 @@ def main() -> None:
     pd.set_option("display.width", 220, "display.max_columns", 30)
     print(f"\n{len(nodes)} nodes; {(nodes.pipeline_mw > 0).sum()} with active pipeline")
     print(nodes.head(15)[["poi_base", "county", "utility", "legacy_active_mw", "c15_active_mw", "operating_mw",
-                          "wd_recent_mw", "wd_alltime_mw", "storage_churn", "churn_alltime", "c15_survival",
+                          "wd_recent_mw", "storage_churn", "c15_survival", "tpd25_req_mw", "tpd25_alloc_mw", "tpd25_denied_mw",
                           "c16_poi_status", "geo_method"]].to_string(index=False))
     print("\nwrote outputs/nodes.csv, poi_geocode.csv, nodes_map.html, node_watch.md")
 
