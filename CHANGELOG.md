@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.3.2 — 2026-09-08 — security review
+
+Tool-driven review of the three attack surfaces (downloaded files, published site, unattended CI); see `SECURITY.md`.
+Fixed: the map popup inserted source strings (POI, county, OSM name, notes) into the DOM unescaped and serialised
+its data into a `<script>` block without neutralising `</` — a hostile string in a CAISO/PG&E file could have run
+in every viewer's browser (stored XSS); values are now escaped in the browser and `</` is neutralised, with a
+regression test. Leaflet now loads with subresource-integrity hashes. OASIS requests moved from HTTP to HTTPS.
+Dependency floors raised for the two advisories in the transitive tree (urllib3 ≥ 2.7.0, idna ≥ 3.15).
+Dependabot added for pip and GitHub Actions. Verified clean: every downloaded `.xlsx` inspected — no macros or
+embedded executables (`wdat_pge.xlsx` carries Excel external-workbook links, ignored by pandas); all site text
+passes `html.escape`; zero formula-like cells in any output CSV; no secrets in the tree; bandit reports only the
+`git rev-parse` provenance call (fixed argv, no shell). 307 tests.
+
 ## 1.3.1 — 2026-09-08 — correctness
 
 An adversarial audit of every published number found five defects that would have put wrong figures in front of

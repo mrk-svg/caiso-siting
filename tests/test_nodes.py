@@ -628,3 +628,22 @@ def test_node_storage_never_exceeds_capped_project_storage(real_projects):
         over = df[df.storage_mw > df.net_mw.fillna(-1) + 1e-6]
         assert (over.net_mw.fillna(0) <= 0).all()
         assert (df.storage_mw <= df.storage_component_mw + 1e-6).all()
+
+
+def test_map_escapes_hostile_source_text(tmp_path, monkeypatch):
+    """A POI name containing markup must not reach the map DOM unescaped (stored XSS via a CAISO file)."""
+    monkeypatch.setattr(nodes, "OUT", tmp_path)
+    evil = 'EVIL<img src=x onerror=alert(1)>'
+    df = pd.DataFrame([dict(
+        node_key="EVIL", poi_base=evil, county="KERN", utility="SCE", state="CA", lat=35.0, lon=-119.0,
+        legacy_active_mw=100.0, c15_active_mw=0.0, operating_mw=0.0, pipeline_mw=100.0,
+        wd_recent_mw=0.0, wd_recent_storage_mw=0.0, wd_alltime_mw=0.0, wd_post_phase2_mw=0.0,
+        storage_churn=float("nan"), c15_survival=float("nan"), c16_poi_status="", c16_poi_note="",
+        geo_score=1.0, geo_method="exact", osm_name="</script><script>alert(2)</script>",
+    )])
+    nodes.write_map(df)
+    html = (tmp_path / "nodes_map.html").read_text()
+    assert "</script><script>alert(2)" not in html          # JSON payload cannot close the script block
+    assert "<\\/script>" in html
+    assert "esc(p.poi)" in html and "esc(p.osm)" in html      # popup fields go through the escaper
+    assert 'integrity="sha256-' in html                         # Leaflet loads with SRI

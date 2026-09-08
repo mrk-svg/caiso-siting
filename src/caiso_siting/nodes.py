@@ -401,12 +401,15 @@ def write_map(nodes: pd.DataFrame) -> None:
                   p2=round(r.wd_post_phase2_mw), sc=f(r.storage_churn), surv=f(r.c15_survival),
                   st=r.c16_poi_status, note=r.c16_poi_note, score=r.geo_score, method=r.geo_method, osm=r.osm_name)
              for _, r in pts.iterrows()]
+    # '</' -> '<\/' so no source string can close the <script> block (valid JSON, identical in JS)
+    pts_json = json.dumps(feats).replace("</", "<\\/")
     html = f"""<!doctype html><html><head><meta charset="utf-8"><title>CAISO interconnection nodes</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <style>html,body,#m{{height:100%;margin:0;font-family:system-ui}} .lg{{background:#fff;padding:8px 10px;border-radius:6px;font-size:12px;line-height:1.55;max-width:260px}}</style>
 </head><body><div id="m"></div><script>
-const pts={json.dumps(feats)};
+const pts={pts_json};
+const esc=v=>v==null?'':String(v).replace(/[&<>"']/g,c=>({{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}}[c]));
 const m=L.map('m').setView([36.3,-119.3],6);
 L.tileLayer('https://tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png',{{attribution:'&copy; OpenStreetMap; data: CAISO public queue + Cluster 15 reports + CAISO POI notices'}}).addTo(m);
 const col=c=> c==null?'#9a9a9a': c<0.25?'#2a9d8f': c<1?'#e9c46a':'#e63946';
@@ -416,12 +419,12 @@ for(const p of pts){{
   const centroid = p.method==='county-centroid';
   const ring = p.st==='UNAVAILABLE'?'#000': p.st==='AVAILABLE'?'#1d4ed8':'#222';
   L.circleMarker([p.lat,p.lon],{{radius:r,color:ring,weight:p.st?3:1,dashArray:approx?'3,3':null,fillColor:col(p.sc),fillOpacity:approx?.25:.75}})
-   .bindPopup(`<b>${{p.poi}}</b><br>${{p.county}} / ${{p.utility}}`+
-     (p.st?`<br><b>C16 POI: ${{p.st}}</b> — ${{p.note}}`:'')+
+   .bindPopup(`<b>${{esc(p.poi)}}</b><br>${{esc(p.county)}} / ${{esc(p.utility)}}`+
+     (p.st?`<br><b>C16 POI: ${{esc(p.st)}}</b> — ${{esc(p.note)}}`:'')+
      `<br>Legacy active ${{p.legacy}} MW · C15 active ${{p.c15}} MW · Operating ${{p.op}} MW`+
      `<br>Withdrawn last {RECENT_YEARS}y: ${{p.wdr}} MW (storage ${{p.wdrs}}) · after Phase II: ${{p.p2}} MW · all-time ${{p.wda}} MW`+
      `<br>Storage churn: ${{p.sc??'n/a'}} · C15 survival: ${{p.surv??'n/a'}}`+
-     `<br><small>geocode ${{p.method}} ${{p.score}} → ${{p.osm}}${{approx?' — APPROXIMATE, not the tap point':''}}</small>`).addTo(m);
+     `<br><small>geocode ${{esc(p.method)}} ${{esc(p.score)}} → ${{esc(p.osm)}}${{approx?' — APPROXIMATE, not the tap point':''}}</small>`).addTo(m);
 }}
 const lg=L.control({{position:'bottomleft'}}); lg.onAdd=()=>{{const d=L.DomUtil.create('div','lg');
 d.innerHTML='<b>Size</b> = pipeline MW (legacy + C15)<br><b>Fill</b> = storage churn since {RECENT_FROM_YEAR} (withdrawn storage ÷ surviving storage)<br>'+

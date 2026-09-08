@@ -304,7 +304,7 @@ def test_fetch_daily_empty_when_nothing_confirmed(tmp_path):
 def test_oasis_datetime_and_urls():
     assert oasis.oasis_datetime(pd.Timestamp("2026-01-01 08:00")) == "20260101T08:00-0000"
     u = oasis.prc_lmp_url("WINDHUB_2_N001", pd.Timestamp("2026-01-01 08:00"), pd.Timestamp("2026-02-01 08:00"))
-    assert u.startswith("http://oasis.caiso.com/oasisapi/SingleZip?")
+    assert u.startswith("https://oasis.caiso.com/oasisapi/SingleZip?")
     for part in ("queryname=PRC_LMP", "startdatetime=20260101T08%3A00-0000", "enddatetime=20260201T08%3A00-0000",
                  "version=1", "market_run_id=DAM", "node=WINDHUB_2_N001", "resultformat=6"):
         assert part in u, part

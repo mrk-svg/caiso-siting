@@ -14,7 +14,7 @@ queried for a row unless confirmed == 'yes' with a non-empty pnode; `suggest` wr
 confirmed='no' and never touches a confirmed row. PNode ids are never guessed by code — they come from
 data/pnodes.csv (ATL_PNODE) and a human confirms each one against the POI it belongs to.
 
-OASIS SingleZip API (http://oasis.caiso.com/oasisapi/SingleZip): one GET per query, the response is a zip
+OASIS SingleZip API (https://oasis.caiso.com/oasisapi/SingleZip): one GET per query, the response is a zip
 holding one CSV (resultformat=6). Datetimes are YYYYMMDDTHH:MM-0000 (UTC). A single PRC_LMP request may
 span at most ~31 days, so `fetch` goes month by month and caches each raw CSV under
 data/oasis_cache/<pnode>/<YYYY-MM>.csv; cached months are never re-downloaded.
@@ -40,7 +40,7 @@ import pandas as pd
 from .common import norm_poi
 from .config import DATA, OUT, add_provenance
 
-OASIS_BASE = "http://oasis.caiso.com/oasisapi/SingleZip"
+OASIS_BASE = "https://oasis.caiso.com/oasisapi/SingleZip"
 POLITE_DELAY = 5.0          # seconds between OASIS calls; OASIS throttles and blocks bursts
 MIN_HOURS = 8               # a day needs at least 8 prices for top-4 minus bottom-4 to mean anything
 MATCH_MIN = 0.85            # same fuzzy rule as nodes.Geocoder

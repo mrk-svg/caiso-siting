@@ -1,2 +1,2 @@
 """caiso-siting: free-data CAISO interconnection node intelligence for BESS developers."""
-__version__ = "1.3.1"
+__version__ = "1.3.2"
