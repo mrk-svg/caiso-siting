@@ -25,7 +25,8 @@ Every column, its unit, its source and its caveat. If a number in a note or a no
 | `type_1..3`, `fuel_1..3`, `mw_1..3` | text / MW | Type-n, Fuel-n, MW-n | up to three generating components |
 | `net_mw` | MW | Net MWs to Grid | net at the POI |
 | `poi_mw` | MW | = `net_mw` | the figure to use whenever "capacity" is meant |
-| `storage_mw` | MW | derived | sum of `mw_n` where the component is Storage/Battery; **can exceed `net_mw` for hybrids** |
+| `storage_component_mw` | MW | derived | raw nameplate sum of `mw_n` where the component is Storage/Battery — uncapped, so it **can exceed `net_mw`** for hybrids |
+| `storage_mw` | MW | derived | `storage_component_mw` capped at `net_mw` — the figure any ratio may use. Filings that report `net_mw` as 0 keep the component MW (the battery is not erased), so a handful of rows still exceed their net-to-grid figure |
 | `has_storage`, `has_solar`, `has_wind`, `is_standalone_storage` | bool | derived from types/fuels | |
 | `deliverability` | text | Full Capacity, Partial or Energy Only | FULL CAPACITY / PARTIAL CAPACITY / ENERGY ONLY |
 | `tpd_pct` | % | TPD Allocation Percentage | |
@@ -70,13 +71,13 @@ Same canonical names where the concept matches. Differences:
 
 | column | unit | definition | quote it? |
 |---|---|---|---|
-| `node_key`, `poi_base`, `county`, `utility` | | key; most common label/county/utility across both reports | |
+| `node_key`, `poi_base`, `county`, `utility`, `state` | | key; most common label/county/utility/state (CA / NV / AZ / MX) across both reports | |
 | `legacy_active_projects/_mw/_storage_mw` | n / MW | ACTIVE rows in the public report | yes |
 | `c15_active_projects/_mw/_storage_mw` | n / MW | ACTIVE rows in the C15 report | yes |
 | `operating_projects/_mw/_storage_mw` | n / MW | COMPLETED rows in the public report | yes |
 | `pipeline_mw`, `pipeline_storage_mw` | MW | legacy active + C15 active | yes |
 | `wd_alltime_projects/_mw/_storage_mw` | n / MW | every withdrawn row since 2006, both reports | historical colour only |
-| `wd_recent_projects/_mw/_storage_mw` | n / MW | withdrawn in the last `RECENT_YEARS` (5) years, both reports | yes |
+| `wd_recent_projects/_mw/_storage_mw` | n / MW | withdrawn in `RECENT_FROM_YEAR`…this year, both reports (a calendar-year window; the current year is partial). `_storage_mw` is the storage MW of those rows, each project's storage components capped at its net-to-grid figure — the handful of filings that report net-to-grid as 0 keep the component MW, so `wd_recent_storage_mw` exceeds `wd_recent_mw` at 3 nodes today | yes |
 | `c15_withdrawn_projects/_mw/_storage_mw` | n / MW | withdrawn rows in the C15 report | yes |
 | `wd_post_phase2_mw` | MW | public-report withdrawals with Phase II/FAS complete | yes, as a stage signal; **never as a cause** |
 | `c15_fcds_req_mw` | MW | C15 active MW that *requested* Full Capacity | yes, with the word "requested" |
@@ -86,21 +87,48 @@ Same canonical names where the concept matches. Differences:
 | `tpd25_projects` | n | projects at the node that sought TPD in CAISO's 2025 allocation cycle (results xlsx posted 2026-05-04) | yes |
 | `tpd25_req_mw` | MW | MW those requests asked for | yes |
 | `tpd25_alloc_mw` | MW | requested × allocation % | yes — this is *allocated* deliverability, the column the C15 "requested" figures lack |
-| `tpd25_denied_mw` | MW | MW requested by rows that received 0 % | yes; the file states no reason and neither may you |
+| `tpd25_denied_mw` | MW | MW requested by rows that received exactly 0 % — refused outright | yes; the file states no reason and neither may you |
+| `tpd25_unalloc_mw` | MW | `tpd25_req_mw − tpd25_alloc_mw`: MW refused outright **plus** the remainder left by partial allocations | yes — **this is "what the developer did not get"**, and the number to quote over `tpd25_denied_mw` |
+| `tpd25_unknown_mw` | MW | MW requested by rows carrying no allocation percentage in the file; 0 today | yes, as a completeness check |
 | `tpd24_fcdsa_projects`, `tpd24_pcdsa_projects` | n | projects allocated Full / Partial Capacity in the 2024 cycle (that file carries no MW) | yes |
+| `wdat_active_projects`, `wdat_active_mw` | n / MW | ACTIVE requests in the wholesale distribution (WDAT) queue at the **same substation** — `data/wdat_pge.xlsx`, PG&E only today. A WDAT request connects below CAISO's transmission grid and carries **no CAISO deliverability** unless separately studied | yes, never as CAISO pipeline |
+| `wdat_active_storage_mw` | MW | storage MW attributed from `wdat_active_mw` — **an assumption**: the PG&E file publishes one MW figure per request, so storage-only requests count in full and solar+storage requests count at half. Today: 160 of 1,011 active requests carry storage, and 362 of their 479 MW is attributed as storage. The split is not published | only with the assumption stated |
+| `wdat_inservice_mw` | MW | WDAT MW already in service at that substation | yes |
+| `wdat_withdrawn_mw` | MW | WDAT MW withdrawn at that substation (all-time in the file) | yes |
 | `lmp_tb4_12mo_mean` | $/MWh | TB4 spread of day-ahead LMP at the confirmed PNode (`data/poi_pnodes.csv`): mean over every day fetched of (mean of the 4 highest hourly DAM LMPs − mean of the 4 lowest). NaN unless the node has a confirmed PNode and `caiso-siting oasis fetch` has run | yes, as **a first-pass storage revenue screen, not a revenue forecast** — energy arbitrage with perfect foresight, no RA, no AS, no real-time, no losses |
 | `lmp_tb4_12mo_p90` | $/MWh | 90th percentile of the same daily TB4 spread | with the same caveat |
 | `lmp_months` | n | months of OASIS data behind the two numbers; 0 = nothing fetched for this node | |
 | `c16_poi_status`, `c16_poi_note` | text | latest official statement in `data/poi_availability.csv` for this node: AVAILABLE / UNAVAILABLE / CONDITIONAL / RELIEVED; blank = **no statement**, not availability | yes, citing the notice |
 | `lat`, `lon` | deg | position, see `geo_method` | only with the method stated |
-| `geo_method` | text | `override` (hand-verified, sourced) · `exact` (OSM name) · `line-midpoint` (both ends found) · `fuzzy` (≥0.85, same first token) · `line-one-end` (**one end of a line, not the tap**) · `override-approx` (±km) · `cec-line` (on the CEC transmission-line geometry from `caiso-siting layers lines`; nearest vertex to the county's located nodes, else length-midpoint — on the right line, still not the exact tap) · `county-centroid` (**position unknown**; median of located nodes in the county) · `none` | |
-| `geo_score` | 0–1 | 1.0 override/exact; fuzzy ratio; ×0.7 for line-one-end; 0.8 approx; 0.3 centroid | |
+| `geo_method` | text | `override` (hand-verified, sourced) · `exact` (OSM name) · `line-midpoint` (both ends found) · `fuzzy` (≥0.85, same first token) · `line-one-end` (**one end of a line, not the tap**) · `override-approx` (±km) · `cec-line` (on the CEC transmission-line geometry from `caiso-siting layers lines`; nearest vertex to the county's located nodes, else length-midpoint — on the right line, still not the exact tap) · `ambiguous` (an exact OSM name match, but features sharing that name sit more than `AMBIGUOUS_KM` (50 km) apart — **the position may be the wrong one**) · `state-mismatch` (the matched position was provably outside the filed state and was rejected; the node falls back to a county centroid) · `county-centroid` (**position unknown**; median of located nodes in the county) · `none` | |
+| `geo_score` | 0–1 | 1.0 override/exact; fuzzy ratio; ×0.7 for line-one-end; 0.8 approx; 0.5 ambiguous; 0.3 centroid; 0.0 state-mismatch | |
 | `osm_name` | text | matched OSM feature, or the override note | |
 
 ## `outputs/tpd_allocations.csv` — one row per TPD allocation request
 
 `tpd_year, pto, queue_id, allocation_group, status (FCDSA/PCDSA/NONE), allocation_pct, mw_requested (2025 only), mw_allocated, in_generator_queue` + provenance.
 Rows whose `queue_id` is a WDAT number, `-WD`, `CONV` or a PTO code are distribution-level or conversion requests; they do not join to nodes.
+
+## `outputs/wdat_projects.csv` — one row per wholesale distribution (WDAT) request
+
+From `caiso-siting wdat` over `data/wdat_pge.xlsx` (PG&E's Wholesale Distribution Queue; PG&E is the only PTO
+publishing one today). These requests connect **below** CAISO's transmission grid: they are not in the CAISO queue and
+carry **no CAISO deliverability** unless separately studied. Never add their MW to pipeline MW.
+
+`request_received, queue_position, process_applied, process, status, proposed_cod, current_cod, actual_cod, county,
+poi, gen_type, net_mw, ia_status, notes, utility, status_raw, sheet_status, poi_mw, has_storage, has_solar,
+is_standalone_storage, storage_mw, poi_base, node_key, queue_year, cluster` + provenance.
+
+| column | meaning |
+|---|---|
+| `status_raw` / `sheet_status` | PG&E's own word ("Active", "In Service", "Withdrawn") / normalised ACTIVE / COMPLETED / WITHDRAWN |
+| `process` | Fast Track / Detailed Study / Independent Study / DGSP / Cluster |
+| `net_mw` | the single MW figure the file publishes per request — there is no per-component breakdown |
+| `storage_mw` | **an assumption**: `net_mw` for a storage-only request, half for a solar+storage request, 0 otherwise (160 of 1,011 active requests carry storage; 362 of their 479 MW is attributed). The split is not published — say so whenever you quote it |
+| `node_key` | `common.norm_poi(Substation)`, so a WDAT substation that is also a CAISO POI lands on the same node |
+
+WDAT queue numbers ("2179-WD") are the ids the TPD allocation files use for distribution-level requests, so
+`outputs/tpd_allocations.csv` rows with `in_generator_queue == False` join here on `queue_position`.
 
 ## `outputs/poi_geocode.csv` — every node's geocode decision (audit this before publishing a map)
 

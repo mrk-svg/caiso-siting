@@ -11,6 +11,7 @@ import pytest
 
 from caiso_siting import nodes
 from caiso_siting.common import norm_poi
+from caiso_siting.config import RECENT_YEARS
 
 # ------------------------------------------------------------------- fixtures
 
@@ -195,6 +196,106 @@ def test_line_endpoint_can_come_from_override(osm, tmp_path):
     assert r["osm_name"] == "Manning | CAISO notice"
 
 
+# --------------------------------------------------- state-aware picking
+
+# Two OSM features share the name "Valley": a CA substation in Riverside and the NV switchyard
+# CAISO's C15 rows file under Nye NV. They are ~350 km apart.
+VALLEY_ROWS = [
+    ("Valley Substation", 33.79, -117.20, 500.0),     # Riverside CA, higher kV
+    ("Valley Switch", 36.80, -116.30, 230.0),         # Nye NV
+]
+AMBIGUOUS_ROWS = [
+    ("Valley", 33.79, -117.20, 500.0),
+    ("Valley", 36.80, -116.30, 230.0),                # same key, > AMBIGUOUS_KM apart
+]
+CLOSE_ROWS = [
+    ("Gates", 36.00, -120.10, 500.0),
+    ("Gates", 36.02, -120.12, 230.0),                 # same key, ~3 km apart: not ambiguous
+]
+
+
+def geocoder(rows, tmp_path, name="none.csv") -> nodes.Geocoder:
+    return nodes.Geocoder(osm_frame(rows), tmp_path / name)
+
+
+def test_pick_prefers_a_candidate_inside_the_filed_state(tmp_path):
+    g = geocoder([("Valley", 33.79, -117.20, 500.0), ("Valley", 36.80, -116.30, 230.0)], tmp_path)
+    ca = g.match("VALLEY", "CA")[0]
+    nv = g.match("VALLEY", "NV")[0]
+    assert (ca.lat, ca.lon) == (33.79, -117.20)
+    assert (nv.lat, nv.lon) == (36.80, -116.30)       # the 230 kV NV feature beats the 500 kV CA one
+    # with no state the highest-kV candidate still wins
+    assert g.match("VALLEY")[0].kv == 500.0
+
+
+def test_pick_falls_back_to_highest_kv_when_no_candidate_is_in_state(tmp_path):
+    g = geocoder(VALLEY_ROWS, tmp_path)
+    r = g.match("VALLEY SUBSTATION", "OR")[0]         # nothing in Oregon
+    assert (r.lat, r.kv) == (33.79, 500.0)
+
+
+def test_pick_flags_ambiguous_when_candidates_are_far_apart(tmp_path):
+    g = geocoder(AMBIGUOUS_ROWS, tmp_path)
+    assert g.match("VALLEY")[0]["_ambiguous"] is True
+    # once the state narrows it to one candidate the ambiguity is gone
+    assert g.match("VALLEY", "NV")[0]["_ambiguous"] is False
+
+
+def test_pick_is_not_ambiguous_for_nearby_duplicates(tmp_path):
+    g = geocoder(CLOSE_ROWS, tmp_path)
+    r = g.match("GATES")[0]
+    assert r["_ambiguous"] is False and r.kv == 500.0
+    assert nodes.AMBIGUOUS_KM == 50
+
+
+def test_geocode_poi_reports_ambiguous_method_and_half_score(tmp_path):
+    g = geocoder(AMBIGUOUS_ROWS, tmp_path)
+    r = g.geocode_poi("VALLEY 230 kV")
+    assert r["method"] == "ambiguous" and r["score"] == 0.5
+    assert (r["lat"], r["lon"]) == (33.79, -117.20)
+    # the state resolves it: one candidate left, exact again
+    nv = g.geocode_poi("VALLEY 230 kV", "NV")
+    assert nv["method"] == "exact" and nv["score"] == 1.0 and nv["lat"] == 36.80
+
+
+def test_geocode_poi_rejects_an_out_of_state_position(tmp_path):
+    g = geocoder([("Valley Switch", 33.79, -117.20, 230.0)], tmp_path)   # only a CA feature exists
+    ok = g.geocode_poi("VALLEY SWITCH 230 kV", "CA")
+    assert ok["method"] == "exact" and ok["lat"] == 33.79
+    bad = g.geocode_poi("VALLEY SWITCH 230 kV", "NV")                    # CAISO filed it in Nye NV
+    assert bad["method"] == "state-mismatch"
+    assert bad["lat"] is None and bad["lon"] is None and bad["score"] == 0.0
+    assert "not in NV" in bad["osm_name"] and "Valley Switch" in bad["osm_name"]
+    assert "state-mismatch" in nodes.APPROX_METHODS
+
+
+def test_geocode_poi_keeps_a_position_when_the_state_is_unknown(tmp_path):
+    g = geocoder([("Valley Switch", 33.79, -117.20, 230.0)], tmp_path)
+    for st in (None, "", "TX"):
+        assert g.geocode_poi("VALLEY SWITCH", st)["method"] == "exact"
+
+
+def test_geocode_poi_never_rejects_a_hand_override(tmp_path):
+    """An override is hand-verified against a source; a bounding box does not get to veto it."""
+    ov = write_overrides(tmp_path / "ov.csv", [("TROUT CANYON", 33.79, -117.20, "no", "CAISO notice")])
+    g = nodes.Geocoder(osm_frame(VALLEY_ROWS), overrides_path=ov)
+    r = g.geocode_poi("TROUT CANYON 230 kV", "NV")     # coordinates are in CA, filed NV
+    assert r["method"] == "override" and r["lat"] == 33.79 and r["score"] == 1.0
+
+
+def test_geocode_poi_rejects_an_out_of_state_approximate_override(tmp_path):
+    ov = write_overrides(tmp_path / "ov.csv", [("TROUT CANYON", 33.79, -117.20, "yes", "plant centroid")])
+    g = nodes.Geocoder(osm_frame(VALLEY_ROWS), overrides_path=ov)
+    assert g.geocode_poi("TROUT CANYON", "NV")["method"] == "state-mismatch"   # only 'override' is exempt
+    assert g.geocode_poi("TROUT CANYON", "CA")["method"] == "override-approx"
+
+
+def test_geocode_poi_rejects_an_out_of_state_line_midpoint(tmp_path):
+    g = geocoder([("North Gila", 32.70, -114.50, 500.0), ("Hoodoo Wash", 32.90, -114.10, 500.0)], tmp_path)
+    assert g.geocode_poi("NORTH GILA - HOODOO WASH 500 kV", "AZ")["method"] == "line-midpoint"
+    assert g.geocode_poi("NORTH GILA - HOODOO WASH 500 kV", "OR")["method"] == "state-mismatch"
+
+
 def test_unresolvable_poi_reports_none_with_best_score(gc):
     r = gc.geocode_poi("ZZYZX ROAD 115 kV")
     assert r["method"] == "none" and r["lat"] is None and r["lon"] is None
@@ -204,27 +305,27 @@ def test_unresolvable_poi_reports_none_with_best_score(gc):
 # ------------------------------------------------------ county_centroid_fallback
 
 def node_frame(rows) -> pd.DataFrame:
-    df = pd.DataFrame(rows, columns=["node_key", "county", "lat", "lon", "geo_method", "geo_score",
-                                     "osm_name", "pipeline_mw"])
-    return df
+    """Columns county_centroid_fallback reads. `state` keys the centroid together with the county."""
+    return pd.DataFrame(rows, columns=["node_key", "state", "county", "lat", "lon", "geo_method",
+                                       "geo_score", "osm_name", "pipeline_mw"])
 
 
 def test_county_centroid_fallback(capsys):
     n = node_frame([
-        ("A", "KERN", 35.0, -118.0, "exact", 1.0, "a", 100),
-        ("B", "KERN", 36.0, -119.0, "fuzzy", 0.9, "b", 100),
-        ("C", "KERN/LOS ANGELES", 37.0, -120.0, "exact", 1.0, "c", 100),   # counts toward KERN (first county)
-        ("D", "KERN/KINGS", np.nan, np.nan, "none", 0.0, None, 500),       # -> KERN centroid
-        ("E", "KINGS", 36.1, -119.9, "exact", 1.0, "e", 10),
-        ("F", "KINGS", 36.2, -119.8, "exact", 1.0, "f", 10),
-        ("G", "KINGS", np.nan, np.nan, "none", 0.0, None, 50),             # only 2 located -> stays NaN
-        ("H", "", np.nan, np.nan, "none", 0.0, None, 5),
+        ("A", "CA", "KERN", 35.0, -118.0, "exact", 1.0, "a", 100),
+        ("B", "CA", "KERN", 36.0, -119.0, "fuzzy", 0.9, "b", 100),
+        ("C", "CA", "KERN/LOS ANGELES", 37.0, -120.0, "exact", 1.0, "c", 100),  # KERN (first county)
+        ("D", "CA", "KERN/KINGS", np.nan, np.nan, "none", 0.0, None, 500),      # -> CA KERN centroid
+        ("E", "CA", "KINGS", 36.1, -119.9, "exact", 1.0, "e", 10),
+        ("F", "CA", "KINGS", 36.2, -119.8, "exact", 1.0, "f", 10),
+        ("G", "CA", "KINGS", np.nan, np.nan, "none", 0.0, None, 50),            # only 2 located -> stays NaN
+        ("H", "CA", "", np.nan, np.nan, "none", 0.0, None, 5),
     ])
     out = nodes.county_centroid_fallback(n)
     d = out.set_index("node_key").loc["D"]
     assert d.geo_method == "county-centroid" and d.geo_score == 0.3
     assert (d.lat, d.lon) == (36.0, -119.0)                       # median of the three KERN nodes
-    assert d.osm_name == "median of located nodes in KERN"
+    assert d.osm_name == "median of located nodes in CA KERN"
     g = out.set_index("node_key").loc["G"]
     assert pd.isna(g.lat) and g.geo_method == "none"
     assert pd.isna(out.set_index("node_key").loc["H", "lat"])
@@ -233,15 +334,68 @@ def test_county_centroid_fallback(capsys):
     assert "1 nodes placed at county centroids (500 MW)" in capsys.readouterr().out
 
 
+def test_county_centroid_keys_on_state_and_county():
+    """Two same-named counties in different states must not pool: CA and NV both have a 'LINCOLN'
+    here, and the NV node must never be dragged to the CA median."""
+    n = node_frame([
+        ("CA1", "CA", "LINCOLN", 38.0, -121.0, "exact", 1.0, "a", 1),
+        ("CA2", "CA", "LINCOLN", 38.2, -121.2, "exact", 1.0, "b", 1),
+        ("CA3", "CA", "LINCOLN", 38.4, -121.4, "exact", 1.0, "c", 1),
+        ("CA4", "CA", "LINCOLN", np.nan, np.nan, "none", 0.0, None, 1),
+        ("NV1", "NV", "LINCOLN", 37.5, -114.5, "exact", 1.0, "d", 1),
+        ("NV2", "NV", "LINCOLN", 37.7, -114.7, "exact", 1.0, "e", 1),
+        ("NV3", "NV", "LINCOLN", np.nan, np.nan, "none", 0.0, None, 1),   # only 2 NV sources -> unplaced
+    ])
+    out = nodes.county_centroid_fallback(n).set_index("node_key")
+    assert (out.loc["CA4", "lat"], out.loc["CA4", "lon"]) == (38.2, -121.2)
+    assert out.loc["CA4", "osm_name"] == "median of located nodes in CA LINCOLN"
+    assert pd.isna(out.loc["NV3", "lat"])          # would have been placed in CA if county alone keyed it
+
+
+def test_county_centroid_ignores_out_of_state_sources():
+    """A source node whose own position is outside its filed state cannot drag the county median."""
+    n = node_frame([
+        ("A", "NV", "NYE", 36.0, -116.0, "exact", 1.0, "a", 1),
+        ("B", "NV", "NYE", 37.0, -117.0, "exact", 1.0, "b", 1),
+        ("C", "NV", "NYE", 33.9, -117.5, "exact", 1.0, "wrong state", 1),   # in CA, filed NV
+        ("D", "NV", "NYE", np.nan, np.nan, "none", 0.0, None, 1),
+    ])
+    out = nodes.county_centroid_fallback(n).set_index("node_key")
+    assert pd.isna(out.loc["D", "lat"])            # only 2 usable sources once C is rejected
+    assert out.loc["C", "lat"] == 33.9             # the bad source itself is left alone here
+
+
 def test_county_centroid_ignores_prior_centroids_as_sources():
     n = node_frame([
-        ("A", "KERN", 35.0, -118.0, "county-centroid", 0.3, "x", 1),
-        ("B", "KERN", 35.0, -118.0, "county-centroid", 0.3, "x", 1),
-        ("C", "KERN", 35.0, -118.0, "county-centroid", 0.3, "x", 1),
-        ("D", "KERN", np.nan, np.nan, "none", 0.0, None, 1),
+        ("A", "CA", "KERN", 35.0, -118.0, "county-centroid", 0.3, "x", 1),
+        ("B", "CA", "KERN", 35.0, -118.0, "county-centroid", 0.3, "x", 1),
+        ("C", "CA", "KERN", 35.0, -118.0, "county-centroid", 0.3, "x", 1),
+        ("D", "CA", "KERN", np.nan, np.nan, "none", 0.0, None, 1),
+        ("E", "CA", "FRESNO", 36.7, -119.8, "exact", 1.0, "e", 1),   # keeps `loc` non-empty (see below)
     ])
     out = nodes.county_centroid_fallback(n)
     assert pd.isna(out.set_index("node_key").loc["D", "lat"])
+
+
+def test_county_centroid_with_no_located_nodes_is_a_noop():
+    n = node_frame([
+        ("A", "CA", "KERN", np.nan, np.nan, "none", 0.0, None, 1),
+        ("B", "CA", "KERN", np.nan, np.nan, "none", 0.0, None, 1),
+    ])
+    out = nodes.county_centroid_fallback(n)
+    assert out.lat.isna().all() and out.geo_method.tolist() == ["none", "none"]
+
+
+def test_geocode_nodes_survives_a_missing_osm_file(monkeypatch, tmp_path):
+    data, out = tmp_path / "data", tmp_path / "out"
+    data.mkdir()
+    out.mkdir()
+    monkeypatch.setattr(nodes, "DATA", data)
+    monkeypatch.setattr(nodes, "OUT", out)
+    monkeypatch.setattr(nodes.Geocoder.__init__, "__defaults__", (data / "poi_overrides.csv",))
+    n = pd.DataFrame({"node_key": ["A"], "poi_base": ["A"], "county": ["KERN"], "state": ["CA"],
+                      "pipeline_mw": [1.0]})
+    assert nodes.geocode_nodes(n).geo_method.tolist() == ["none"]
 
 
 # ------------------------------------------------------------ join_availability
@@ -289,6 +443,7 @@ def test_geocode_nodes_writes_csv_to_out(monkeypatch, tmp_path):
         "node_key": ["WHIRLWIND", "VINCENT", "NORTH GILA HOODOO WASH", "NOWHERE"],
         "poi_base": ["WHIRLWIND SUBSTATION", "VINCENT", "NORTH GILA - HOODOO WASH", "NOWHERE"],
         "county": ["KERN", "LOS ANGELES", "YUMA", "KERN"],
+        "state": ["CA", "CA", "AZ", "CA"],
         "pipeline_mw": [100.0, 50.0, 25.0, 10.0],
     })
     geo = nodes.geocode_nodes(n).set_index("node_key")
@@ -415,3 +570,61 @@ def test_join_wdat_real_invariants(real_nodes):
     assert (n.wdat_active_projects > 0).sum() > 50
     assert (n.wdat_active_storage_mw <= n.wdat_active_mw + 1e-6).all()
     assert n.loc[n.wdat_active_projects == 0, "wdat_active_mw"].eq(0).all()
+
+
+# --------------------------------------------- real-data geography invariants
+
+@pytest.mark.real_data
+def test_published_nodes_have_no_out_of_state_position():
+    """Every position in outputs/nodes.csv must survive the wrong-state check. A node placed in the
+    wrong state is a map that lies; geocode_poi is supposed to demote those to `state-mismatch`."""
+    path = nodes.OUT / "nodes.csv"
+    if not path.exists():
+        pytest.skip("outputs/nodes.csv not built (run `caiso-siting nodes`)")
+    n = pd.read_csv(path)
+    assert {"lat", "lon", "state", "geo_method"} <= set(n.columns)
+    bad = n[[nodes.in_state(r.lat, r.lon, r.state) is False for r in n.itertuples()]]
+    assert bad.empty, (
+        f"{len(bad)} published nodes sit outside the state they were filed under:\n"
+        + bad[["node_key", "state", "county", "lat", "lon", "geo_method", "osm_name"]].head(15).to_string())
+    # a node the geocoder rejected carries no position at all
+    rejected = n[n.geo_method == "state-mismatch"]
+    assert rejected.lat.isna().all() and rejected.lon.isna().all()
+
+
+@pytest.mark.real_data
+def test_recent_window_is_five_years_inclusive():
+    assert nodes.RECENT_FROM_YEAR == nodes.THIS_YEAR - RECENT_YEARS + 1
+    assert nodes.THIS_YEAR - nodes.RECENT_FROM_YEAR + 1 == RECENT_YEARS   # 5 calendar years, not 6
+
+
+@pytest.mark.real_data
+def test_recent_storage_never_exceeds_recent_mw_except_on_zero_net_filings(real_nodes, real_projects):
+    """storage_mw is capped at net_mw, so the storage share of a node's recent withdrawals cannot
+    exceed the withdrawals themselves — except where the underlying filing carries net_mw <= 0 and
+    the component nameplate is all there is."""
+    n = real_nodes
+    over = n[n.wd_recent_storage_mw > n.wd_recent_mw + 1e-6]
+    pq, c15 = real_projects
+    both = pd.concat([pq, c15], ignore_index=True, sort=False)
+    recent_wd = both[(both.sheet_status == "WITHDRAWN")
+                     & (both.withdrawn_year.fillna(0) >= nodes.RECENT_FROM_YEAR)]
+    for nk in over.node_key:
+        rows = recent_wd[recent_wd.node_key == nk]
+        assert not rows.empty, nk
+        assert (rows.net_mw.fillna(0) <= 0).all(), (
+            f"{nk}: storage exceeds withdrawn MW but the filings carry a positive net_mw\n"
+            + rows[["project_name", "net_mw", "storage_mw"]].to_string())
+    # every node with a positive net_mw behind it obeys the inequality
+    ok = n[~n.node_key.isin(over.node_key)]
+    assert (ok.wd_recent_storage_mw <= ok.wd_recent_mw + 1e-6).all()
+    assert len(over) < 10, "the zero-net_mw exception should stay a handful of filings"
+
+
+@pytest.mark.real_data
+def test_node_storage_never_exceeds_capped_project_storage(real_projects):
+    pq, c15 = real_projects
+    for df in (pq, c15):
+        over = df[df.storage_mw > df.net_mw.fillna(-1) + 1e-6]
+        assert (over.net_mw.fillna(0) <= 0).all()
+        assert (df.storage_mw <= df.storage_component_mw + 1e-6).all()

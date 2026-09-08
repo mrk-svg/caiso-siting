@@ -20,15 +20,20 @@ Metric definitions (read before quoting any of them):
   pipeline_mw             the two above
   operating_mw            completed MW in the public report
   wd_alltime_mw           every withdrawn MW since 2006 (includes dead wind/solar-era projects)
-  wd_recent_mw            withdrawn in the last RECENT_YEARS years (both reports)
-  wd_recent_storage_mw    the storage share of wd_recent_mw
+  wd_recent_mw            withdrawn in RECENT_FROM_YEAR..this year, both reports (a calendar-year window;
+                          the current year is partial)
+  wd_recent_storage_mw    storage MW of those rows — each project's storage components capped at its
+                          net-to-grid figure. Equal to or below wd_recent_mw except for the handful of
+                          filings that report net-to-grid as 0 (there the component MW is kept, so the
+                          battery is not erased); 3 nodes today.
   wd_post_phase2_mw       withdrew AFTER Phase II / Facilities Study results (public report only)
   storage_churn           wd_recent_storage_mw / (active + operating storage MW)   <- the one to quote
   churn_alltime           wd_alltime_mw / (pipeline + operating MW)                 <- historical color only
   c15_survival            c15_active / (c15_active + c15_withdrawn)
   tpd25_req_mw            MW at the node that sought TPD in CAISO's 2025 allocation cycle
   tpd25_alloc_mw          MW allocated in that cycle (requested × allocation %)
-  tpd25_denied_mw         MW requested by rows that received 0 %
+  tpd25_denied_mw         MW requested by rows that received exactly 0 %
+  tpd25_unalloc_mw        requested - allocated (refused + the remainder of partial allocations)
   tpd24_fcdsa_projects    projects at the node allocated Full Capacity in the 2024 cycle
   wdat_active_mw          MW of active WDAT (distribution-level) requests at the same substation (PG&E file today)
   wdat_inservice_mw       WDAT MW already in service at that substation
@@ -48,10 +53,14 @@ import pandas as pd
 
 from . import cluster15, tpd, wdat
 from . import queue_report as caiso_queue
-from .common import norm_poi, poi_endpoints
+from .common import haversine_km, in_state, norm_poi, poi_endpoints
 from .config import DATA, OUT, RECENT_YEARS, add_provenance
 
+RECENT_FROM_YEAR = pd.Timestamp.today().year - RECENT_YEARS + 1  # inclusive first year of the window
+
 THIS_YEAR = pd.Timestamp.today().year
+AMBIGUOUS_KM = 50   # OSM features sharing a name further apart than this make the position untrustworthy
+APPROX_METHODS = ["line-one-end", "fuzzy", "override-approx", "county-centroid", "ambiguous", "state-mismatch", "none"]
 
 
 # ------------------------------------------------------------------ geocoding
@@ -84,15 +93,30 @@ class Geocoder:
                                                           note=str(r.get("note", "manual"))[:80],
                                                           approx=str(r.get("approx", "no")).strip().lower() == "yes")
 
-    def _pick(self, idxs):
-        return self.osm.loc[idxs].sort_values("kv", ascending=False, na_position="last").iloc[0]
+    def _pick(self, idxs, state: str | None = None):
+        """Choose among OSM features that share a name. A candidate inside the state the developer
+        filed wins over a higher-voltage one elsewhere (OSM has a 'Valley Substation' in Riverside CA
+        and CAISO has a VALLEY SWITCH in Nye NV). The picked row carries `_ambiguous` when the
+        surviving candidates are more than AMBIGUOUS_KM apart, so the caller can flag the position."""
+        sub = self.osm.loc[list(idxs)]
+        if state:
+            keep = sub[[in_state(r.lat, r.lon, state) is not False for r in sub.itertuples()]]
+            if len(keep):
+                sub = keep
+        ambiguous = False
+        if len(sub) > 1:
+            lat0, lon0 = sub.lat.iloc[0], sub.lon.iloc[0]
+            ambiguous = any(haversine_km(lat0, lon0, r.lat, r.lon) > AMBIGUOUS_KM for r in sub.itertuples())
+        row = sub.sort_values("kv", ascending=False, na_position="last").iloc[0].copy()
+        row["_ambiguous"] = ambiguous
+        return row
 
-    def match(self, name: str):
+    def match(self, name: str, state: str | None = None):
         k = norm_poi(name)
         if not k:
             return None, 0.0
         if k in self.by_key:
-            return self._pick(self.by_key[k]), 1.0
+            return self._pick(self.by_key[k], state), 1.0
         toks = set(k.split())
         cands = [kk for kk in self.keys if toks <= set(kk.split()) or set(kk.split()) <= toks]
         best, score = None, 0.0
@@ -103,17 +127,28 @@ class Geocoder:
         # fuzzy must share the first token: MOSS LANDING != CROWS LANDING, EAST COUNTY != EAST CITY
         if best is None or score < 0.85 or best.split()[0] != k.split()[0]:
             return None, score
-        return self._pick(self.by_key[best]), score
+        return self._pick(self.by_key[best], state), score
 
-    def geocode_poi(self, poi: str) -> dict:
+    def geocode_poi(self, poi: str, state: str | None = None) -> dict:
+        r = self._geocode(poi, state)
+        # A position outside the state the developer filed is provably wrong: demote it rather than
+        # publish it. The county-centroid fallback then places the node (from same-state nodes only).
+        if r["lat"] is not None and in_state(r["lat"], r["lon"], state) is False and r["method"] != "override":
+            return dict(lat=None, lon=None, osm_name=f"rejected: {r['osm_name']} is not in {state}",
+                        score=0.0, method="state-mismatch")
+        return r
+
+    def _geocode(self, poi: str, state: str | None = None) -> dict:
         k = norm_poi(poi)
         if k in self.overrides:
             o = self.overrides[k]
             return dict(lat=o["lat"], lon=o["lon"], osm_name=o["note"],
                         score=0.8 if o["approx"] else 1.0, method="override-approx" if o["approx"] else "override")
-        whole, ws = self.match(poi)                       # "VACA-DIXON" is one substation
+        whole, ws = self.match(poi, state)                # "VACA-DIXON" is one substation
         if whole is not None and ws == 1.0:
-            return dict(lat=whole.lat, lon=whole.lon, osm_name=whole["name"], score=1.0, method="exact")
+            amb = bool(whole.get("_ambiguous"))
+            return dict(lat=whole.lat, lon=whole.lon, osm_name=whole["name"],
+                        score=0.5 if amb else 1.0, method="ambiguous" if amb else "exact")
         ends = poi_endpoints(poi)
         # an override may exist for one endpoint (e.g. HARLAN in "MANNING-HARLAN")
         hits = []
@@ -122,7 +157,7 @@ class Geocoder:
                 o = self.overrides[e]
                 hits.append((pd.Series(dict(lat=o["lat"], lon=o["lon"], name=o["note"])), 1.0))
             else:
-                hits.append(self.match(e))
+                hits.append(self.match(e, state))
         good = [(r, s) for r, s in hits if r is not None]
         if not good:
             return dict(lat=None, lon=None, osm_name=None, score=max(s for _, s in hits), method="none")
@@ -162,7 +197,7 @@ def build_nodes(pq: pd.DataFrame, c15: pd.DataFrame) -> pd.DataFrame:
 
     both = pd.concat([pq, c15], ignore_index=True, sort=False)
     both = both[both[key] != ""]
-    recent = both["withdrawn_year"].fillna(0) >= THIS_YEAR - RECENT_YEARS
+    recent = both["withdrawn_year"].fillna(0) >= RECENT_FROM_YEAR
     wd = both["sheet_status"] == "WITHDRAWN"
 
     parts = [
@@ -181,11 +216,14 @@ def build_nodes(pq: pd.DataFrame, c15: pd.DataFrame) -> pd.DataFrame:
         nodes = nodes.join(p, how="outer")
     nodes = nodes.fillna(0)
 
+    if "state" not in both:
+        both["state"] = ""
     labels = both.groupby(key).agg(
         poi_base=("poi_base", lambda s: s.mode().iloc[0]),
         county=("county", lambda s: s[s != ""].mode().iloc[0] if (s != "").any() else ""),
-        utility=("utility", lambda s: s[s != ""].mode().iloc[0] if (s != "").any() else ""))
-    nodes = labels.join(nodes, how="right").fillna({"poi_base": "", "county": "", "utility": ""}).reset_index()
+        utility=("utility", lambda s: s[s != ""].mode().iloc[0] if (s != "").any() else ""),
+        state=("state", lambda s: s[s.fillna("") != ""].mode().iloc[0] if (s.fillna("") != "").any() else ""))
+    nodes = labels.join(nodes, how="right").fillna({"poi_base": "", "county": "", "utility": "", "state": ""}).reset_index()
     nodes = nodes[nodes[key] != ""]
 
     nodes["pipeline_mw"] = nodes.legacy_active_mw + nodes.c15_active_mw
@@ -198,8 +236,8 @@ def build_nodes(pq: pd.DataFrame, c15: pd.DataFrame) -> pd.DataFrame:
     return nodes.sort_values("pipeline_mw", ascending=False).reset_index(drop=True)
 
 
-TPD_COLS = ["tpd25_projects", "tpd25_req_mw", "tpd25_alloc_mw", "tpd25_denied_mw",
-            "tpd24_fcdsa_projects", "tpd24_pcdsa_projects"]
+TPD_COLS = ["tpd25_projects", "tpd25_req_mw", "tpd25_alloc_mw", "tpd25_denied_mw", "tpd25_unknown_mw",
+            "tpd25_unalloc_mw", "tpd24_fcdsa_projects", "tpd24_pcdsa_projects"]
 
 
 def join_tpd(nodes: pd.DataFrame, pq: pd.DataFrame) -> pd.DataFrame:
@@ -291,8 +329,8 @@ def geocode_nodes(nodes: pd.DataFrame) -> pd.DataFrame:
     gc = Geocoder(load_osm(osm_path) if osm_path.exists() else pd.DataFrame(columns=["key", "name", "lat", "lon", "voltage"]),
                   DATA / "poi_overrides.csv")
     rows = []
-    for nk, poi in nodes[["node_key", "poi_base"]].drop_duplicates("node_key").itertuples(index=False):
-        r = gc.geocode_poi(poi)
+    for nk, poi, st in nodes[["node_key", "poi_base", "state"]].drop_duplicates("node_key").itertuples(index=False):
+        r = gc.geocode_poi(poi, st)
         rows.append(dict(node_key=nk, poi_base=poi, lat=r["lat"], lon=r["lon"], osm_name=r["osm_name"],
                          geo_score=round(r["score"], 2), geo_method=r["method"]))
     geo = pd.DataFrame(rows)
@@ -330,17 +368,24 @@ def county_centroid_fallback(nodes: pd.DataFrame) -> pd.DataFrame:
     `county-centroid` (score 0.3) so aggregate maps stop silently omitting a fifth of the MW.
     Multi-county strings ("KERN/KINGS") use the first county. Never used for anything but display."""
     loc = nodes[nodes.lat.notna() & ~nodes.geo_method.isin(["county-centroid"])].copy()
-    loc["c1"] = loc.county.str.split("/").str[0]
+    # only source positions that are inside the state they were filed under (an out-of-state
+    # geocode would otherwise drag every unlocated node in that county across the border)
+    if loc.empty:                       # nothing located (e.g. no OSM file): nothing to anchor to
+        print("county-centroid fallback: no located nodes to anchor to — skipped")
+        return nodes
+    loc = loc[pd.Series([in_state(r.lat, r.lon, r.state) is not False for r in loc.itertuples()],
+                        index=loc.index, dtype=bool)]
+    loc["c1"] = loc.state.fillna("") + "|" + loc.county.str.split("/").str[0]
     cent = loc.groupby("c1").agg(lat=("lat", "median"), lon=("lon", "median"), n=("lat", "size"))
     cent = cent[cent.n >= 3]
     miss = nodes.lat.isna()
-    c1 = nodes.county.fillna("").str.split("/").str[0]
+    c1 = nodes.state.fillna("") + "|" + nodes.county.fillna("").str.split("/").str[0]
     hit = miss & c1.isin(cent.index)
     nodes.loc[hit, "lat"] = c1[hit].map(cent.lat).values
     nodes.loc[hit, "lon"] = c1[hit].map(cent.lon).values
     nodes.loc[hit, "geo_method"] = "county-centroid"
     nodes.loc[hit, "geo_score"] = 0.3
-    nodes.loc[hit, "osm_name"] = "median of located nodes in " + c1[hit]
+    nodes.loc[hit, "osm_name"] = "median of located nodes in " + c1[hit].str.replace("|", " ", regex=False)
     print(f"county-centroid fallback: {hit.sum()} nodes placed at county centroids ({nodes.loc[hit, 'pipeline_mw'].sum():,.0f} MW)")
     return nodes
 
@@ -367,7 +412,7 @@ L.tileLayer('https://tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png',{{attribution
 const col=c=> c==null?'#9a9a9a': c<0.25?'#2a9d8f': c<1?'#e9c46a':'#e63946';
 for(const p of pts){{
   const mw=p.legacy+p.c15; const r=Math.max(4,Math.sqrt(mw)/2.2);
-  const approx = p.method==='line-one-end' || p.method==='fuzzy' || p.method==='override-approx' || p.method==='county-centroid' || p.method==='cec-line';
+  const approx = ['line-one-end','fuzzy','override-approx','county-centroid','cec-line','ambiguous','state-mismatch'].includes(p.method);
   const centroid = p.method==='county-centroid';
   const ring = p.st==='UNAVAILABLE'?'#000': p.st==='AVAILABLE'?'#1d4ed8':'#222';
   L.circleMarker([p.lat,p.lon],{{radius:r,color:ring,weight:p.st?3:1,dashArray:approx?'3,3':null,fillColor:col(p.sc),fillOpacity:approx?.25:.75}})
@@ -379,12 +424,26 @@ for(const p of pts){{
      `<br><small>geocode ${{p.method}} ${{p.score}} → ${{p.osm}}${{approx?' — APPROXIMATE, not the tap point':''}}</small>`).addTo(m);
 }}
 const lg=L.control({{position:'bottomleft'}}); lg.onAdd=()=>{{const d=L.DomUtil.create('div','lg');
-d.innerHTML='<b>Size</b> = pipeline MW (legacy + C15)<br><b>Fill</b> = storage churn, last {RECENT_YEARS}y (withdrawn storage ÷ surviving storage)<br>'+
+d.innerHTML='<b>Size</b> = pipeline MW (legacy + C15)<br><b>Fill</b> = storage churn since {RECENT_FROM_YEAR} (withdrawn storage ÷ surviving storage)<br>'+
 '<span style="color:#2a9d8f">●</span> &lt;0.25 <span style="color:#e9c46a">●</span> 0.25–1 <span style="color:#e63946">●</span> &gt;1 <span style="color:#9a9a9a">●</span> n/a<br>'+
 '<b>Ring</b>: <span style="color:#1d4ed8">blue</span> = stated AVAILABLE for C16, black = UNAVAILABLE<br>'+
 'Dashed/pale = approximate (line POI or fuzzy match); hollow = county centroid, position unknown';return d;}}; lg.addTo(m);
 </script></body></html>"""
     (OUT / "nodes_map.html").write_text(html)
+
+
+def tpd_from_withdrawn(pq: pd.DataFrame) -> tuple[float, float]:
+    """How much of the 2025 TPD table belongs to projects the public report now lists as withdrawn."""
+    try:
+        t = tpd.load_all()
+        if t.empty:
+            return 0.0, 0.0
+        key = pq[pq.sheet_status == "WITHDRAWN"][["queue_position"]].dropna()
+        key["queue_position"] = key.queue_position.astype(str).str.strip()
+        m = t[(t.tpd_year == 2025) & t.in_generator_queue].merge(key, left_on="queue_id", right_on="queue_position")
+        return float(m.mw_requested.sum()), float(m.mw_allocated.sum())
+    except Exception:  # noqa: BLE001
+        return 0.0, 0.0
 
 
 def write_node_watch(nodes: pd.DataFrame, pq: pd.DataFrame, c15: pd.DataFrame) -> None:
@@ -410,33 +469,39 @@ def write_node_watch(nodes: pd.DataFrame, pq: pd.DataFrame, c15: pd.DataFrame) -
     survivors = nodes[nodes.c15_withdrawn_mw + nodes.c15_active_mw > 500].sort_values("c15_survival").head(8)
     avail = nodes[nodes.c16_poi_status != ""].sort_values("c16_poi_status")
     tpd_tbl = nodes[nodes.tpd25_req_mw > 0].sort_values("tpd25_req_mw", ascending=False).head(15)
-    approx = nodes[(nodes.pipeline_mw > 500) & nodes.geo_method.isin(["line-one-end", "fuzzy", "override-approx", "county-centroid", "none"])] \
+    approx = nodes[(nodes.pipeline_mw > 500) & nodes.geo_method.isin(APPROX_METHODS)] \
         .sort_values("pipeline_mw", ascending=False)
+    wd_recent_all = pd.concat([pqw, w15]).pipe(lambda d: d[d.withdrawn_year.fillna(0) >= RECENT_FROM_YEAR])
+    wd_tpd_req, wd_tpd_alloc = tpd_from_withdrawn(pq)
 
     whirl = nodes[nodes.node_key == "WHIRLWIND"].iloc[0] if (nodes.node_key == "WHIRLWIND").any() else None
     whirl_txt = ""
     if whirl is not None:
         whirl_txt = (f"Example of why the window matters — Whirlwind (Kern, SCE): all-time churn {whirl.churn_alltime:.2f} "
-                     f"looks like a graveyard; storage churn over the last {RECENT_YEARS} years is {whirl.storage_churn:.2f}, "
+                     f"looks like a graveyard; storage churn since {RECENT_FROM_YEAR} is {whirl.storage_churn:.2f}, "
                      f"with {whirl.operating_mw:,.0f} MW operating and {whirl.pipeline_mw:,.0f} MW in pipeline. "
                      f"The old number describes 2008-era wind projects, not today's batteries.")
 
+    run_date = str(pq["source_run_date"].dropna().iloc[0]) if "source_run_date" in pq and pq["source_run_date"].notna().any() else "unknown"
     md = f"""# CAISO Node Watch — draft {pd.Timestamp.today():%Y-%m-%d}
 
-Sources: CAISO Public Queue Report (run date {pd.Timestamp.today():%Y-%m-%d}), CAISO Cluster 15 report (posted 2026-07-16),
+Sources: CAISO Public Queue Report (run date {run_date}), CAISO Cluster 15 report (posted 2026-07-16),
 CAISO notice "PG&E information on POI availability for Cluster 16" (2026-01-15), OpenStreetMap substations (ODbL).
 All MW are net-to-grid as filed. No figure below states a *cause*; the CAISO files carry none.
 
 ## The state of the queue in three numbers
 
 - **Legacy pipeline (Cluster 14 and earlier):** {len(pqa)} active projects, {pqa.net_mw.sum():,.0f} MW,
-  {pqa.has_storage.mean():.0%} with storage, {(pqa.ia_status == 'Executed').sum()} already under executed IAs.
-- **Cluster 15 today:** {len(a15)} active projects, {a15.net_mw.sum():,.0f} MW ({a15.storage_mw.sum():,.0f} MW storage);
-  {len(w15)} projects / {w15.net_mw.sum():,.0f} MW withdrawn since intake. CAISO's July 2025 briefing put the studied set at
-  145 projects / ~68 GW; the cohort has since shed roughly {1 - a15.net_mw.sum()/68000:.0%} of its MW.
-- **Withdrawn, last {RECENT_YEARS} years (both reports):** {pd.concat([pqw, w15]).pipe(lambda d: d[d.withdrawn_year.fillna(0) >= THIS_YEAR - RECENT_YEARS]).net_mw.sum():,.0f} MW,
-  of which {pd.concat([pqw, w15]).pipe(lambda d: d[d.withdrawn_year.fillna(0) >= THIS_YEAR - RECENT_YEARS]).storage_mw.sum():,.0f} MW storage.
-  (All-time since 2006: {pqw.net_mw.sum():,.0f} MW — a number that mostly describes dead wind and solar-era projects.)
+  {pqa.has_storage.mean():.0%} with storage, {(pqa.ia_status == "EXECUTED").sum()} already under executed IAs.
+- **Cluster 15 today:** {len(a15)} active projects, {a15.net_mw.sum():,.0f} MW ({a15.storage_mw.sum():,.0f} MW storage).
+  {len(w15)} projects / {w15.net_mw.sum():,.0f} MW have withdrawn — {w15.net_mw.sum() / (a15.net_mw.sum() + w15.net_mw.sum()):.0%}
+  of the {a15.net_mw.sum() + w15.net_mw.sum():,.0f} MW this file records as entering the cluster.
+  (CAISO's July 2025 briefing put the studied set at 145 projects / ~68 GW; that is a different population from the
+  {len(a15) + len(w15)} requests in this file, so the two are not differenced here.)
+- **Withdrawn {RECENT_FROM_YEAR}–{THIS_YEAR} to date, both reports:** {wd_recent_all.net_mw.sum():,.0f} MW,
+  of which {wd_recent_all.storage_mw.sum():,.0f} MW storage.
+  (All-time since 2006, both reports: {pd.concat([pqw, w15]).net_mw.sum():,.0f} MW — a number that mostly describes
+  dead wind and solar-era projects.)
 
 ## Official Cluster 16 POI statements (the layer no spreadsheet tool has)
 
@@ -451,12 +516,15 @@ Transmission Interconnection Handbook will not reflect this "until updated, no E
 
 ## 2025 TPD allocation cycle by node — requested vs allocated vs denied (CAISO results xlsx, posted 2026-05-04)
 
-{tbl(tpd_tbl, ['poi_base','county','utility','tpd25_projects','tpd25_req_mw','tpd25_alloc_mw','tpd25_denied_mw','tpd24_fcdsa_projects'])}
+{tbl(tpd_tbl, ['poi_base','county','utility','tpd25_projects','tpd25_req_mw','tpd25_alloc_mw','tpd25_unalloc_mw','tpd25_denied_mw','tpd24_fcdsa_projects'])}
 
-"Denied" = MW requested by rows that received 0 % in the cycle. Allocation is CAISO's decision under Appendix DD;
-the file states no reason and neither does this table.
+"Denied" is MW refused outright (0 %); "unalloc" is requested minus allocated, so it also carries the remainder left by
+partial allocations — quote that one for "what the developer did not get". These rows are joined through all three sheets
+of the public report, so a node's TPD history can include requests whose project has since withdrawn
+({wd_tpd_req:,.0f} MW requested / {wd_tpd_alloc:,.0f} MW allocated in the 2025 cycle across all nodes).
+Allocation is CAISO's decision under Appendix DD; the file states no reason and neither does this table.
 
-## Storage churn, last {RECENT_YEARS} years (nodes with >300 MW storage surviving and >300 MW storage withdrawn)
+## Storage churn, {RECENT_FROM_YEAR}–{THIS_YEAR} to date (nodes with >300 MW storage surviving and >300 MW storage withdrawn)
 
 {tbl(hot, ['poi_base','county','utility','pipeline_storage_mw','operating_storage_mw','wd_recent_storage_mw','storage_churn'])}
 
@@ -468,7 +536,7 @@ These developers had upgrade cost estimates in hand when they left. That is the 
 
 {tbl(post2, ['poi_base','county','utility','wd_post_phase2_mw','pipeline_mw','operating_mw'])}
 
-## Cluster 15 nodes with little recent wreckage (<300 MW withdrawn in {RECENT_YEARS} years)
+## Cluster 15 nodes with little recent wreckage (<300 MW withdrawn since {RECENT_FROM_YEAR})
 
 {tbl(clean, ['poi_base','county','utility','c15_active_mw','c15_fcds_req_mw','wd_recent_mw','legacy_active_mw','c16_poi_status'])}
 

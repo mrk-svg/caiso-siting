@@ -17,7 +17,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from .common import clean_county, norm_poi, poi_base
+from .common import cap_storage_mw, clean_county, norm_poi, poi_base, tech_flags
 from .config import CLUSTER15_URL, DATA, OUT, add_provenance
 
 C15_URL = CLUSTER15_URL
@@ -71,16 +71,15 @@ def load(path: Path | None = None) -> pd.DataFrame:
         df[c] = df[c].fillna("").str.strip().str.upper()
 
     fuels = df[["fuel_1", "fuel_2", "fuel_3"]].fillna("").agg(" ".join, axis=1).str.upper()
-    df["has_storage"] = fuels.str.contains("STORAGE|BATTERY")
-    df["has_solar"] = fuels.str.contains("SOLAR|PHOTOVOLTAIC")
-    df["has_wind"] = fuels.str.contains("WIND")
-    df["is_standalone_storage"] = df["has_storage"] & ~df["has_solar"] & ~df["has_wind"]
+    for c, v in tech_flags(fuels).items():
+        df[c] = v
 
     storage_mw = pd.Series(0.0, index=df.index)
     for n in (1, 2, 3):
         is_stor = df[f"fuel_{n}"].fillna("").str.upper().str.contains("STORAGE|BATTERY")
         storage_mw += df[f"mw_{n}"].fillna(0).where(is_stor, 0)
-    df["storage_mw"] = storage_mw
+    df["storage_component_mw"] = storage_mw
+    df["storage_mw"] = cap_storage_mw(storage_mw, df["net_mw"])
 
     # Deliverability requested (C15 asks for it; nothing is allocated yet)
     st = df["service_type"]

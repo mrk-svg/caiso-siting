@@ -143,10 +143,15 @@ PQ_HEADERS = {
 
 
 def write_queue_xlsx(path: Path, header_overrides: dict[str, str] | None = None,
-                     footer: bool = False, run_date: str | None = "09/07/2026") -> Path:
+                     footer: bool = False, run_date: str | None = "09/07/2026",
+                     rows: dict[str, list[list]] | None = None) -> Path:
     """Write a workbook with CAISO's public-queue layout: run-date stamp in row 1, title in
-    row 2, group headers in row 3, column names in row 4, data from row 5."""
+    row 2, group headers in row 3, column names in row 4, data from row 5.
+
+    `rows` replaces the default project rows for the sheets it names (others keep theirs), so a
+    test can exercise one filing shape without disturbing the counts every other test asserts."""
     header_overrides = header_overrides or {}
+    rows = rows or {}
     wb = openpyxl.Workbook()
     wb.remove(wb.active)
     for sheet, header in PQ_HEADERS.items():
@@ -155,7 +160,7 @@ def write_queue_xlsx(path: Path, header_overrides: dict[str, str] | None = None,
         ws.append(["The California ISO Controlled Grid Generation Queue for All: test"])
         ws.append(["Generating Facility", None, None, None, None, None, "MWs"])
         ws.append([header_overrides.get(h, h) for h in header])
-        for row in PQ_ROWS[sheet]:
+        for row in rows.get(sheet, PQ_ROWS[sheet]):
             assert len(row) == len(header), (sheet, len(row), len(header))
             ws.append(row)
         if footer:

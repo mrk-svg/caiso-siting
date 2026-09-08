@@ -75,9 +75,15 @@ def test_storage_mw_and_flags(c15):
     assert by.loc["Alisa Solar Energy Complex 2", "storage_mw"] == 500.0    # fuel 2 = Storage/Battery
     assert by.loc["Alisa Solar Energy Complex 2", "has_solar"]
     assert not by.loc["Alisa Solar Energy Complex 2", "is_standalone_storage"]
-    assert by.loc["Annapurna", "storage_mw"] == 257.0
+    # component nameplate is kept raw; storage_mw is capped at net-to-grid
+    assert by.loc["Annapurna", "storage_component_mw"] == 257.0
+    assert by.loc["Annapurna", "storage_mw"] == 250.0                       # net_mw 250 caps the 257 MW battery
     assert by.loc["Annapurna", "is_standalone_storage"]
-    assert by.loc["Amargosa SEZ", "storage_mw"] == pytest.approx(508.19)
+    assert by.loc["Amargosa SEZ", "storage_component_mw"] == pytest.approx(508.19)
+    assert by.loc["Amargosa SEZ", "storage_mw"] == 500.0                    # net_mw 500
+    assert by.loc["Alisa Solar Energy Complex 2", "storage_component_mw"] == 500.0
+    assert (c15.storage_mw <= c15.net_mw).all()
+    assert (c15.storage_mw <= c15.storage_component_mw).all()
 
 
 def test_cluster_labels_and_constants(c15):

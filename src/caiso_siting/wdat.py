@@ -25,7 +25,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from .common import clean_county, norm_poi, poi_base
+from .common import clean_county, norm_poi, poi_base, tech_flags
 from .config import DATA, OUT, add_provenance
 
 FILES = {"PGAE": "wdat_pge.xlsx", "SCE": "wdat_sce.xlsx", "SDGE": "wdat_sdge.xlsx"}
@@ -104,9 +104,8 @@ def load_utility(util: str, path: Path | None = None) -> pd.DataFrame:
     out["poi"] = out.poi.fillna("").str.strip().str.upper()
     out = out[~out.poi.isin(["", "WITHDRAWN", "N/A", "TBD"])]
     gt = out.gen_type.fillna("").str.upper()
-    out["has_storage"] = gt.str.contains("STORAGE|BATTERY")
-    out["has_solar"] = gt.str.contains("SOLAR|PV")
-    out["is_standalone_storage"] = out.has_storage & ~out.has_solar
+    for c, v in tech_flags(gt).items():
+        out[c] = v
     # the file carries one MW figure per request; attribute it to storage when the request is storage-only,
     # half when it is a solar+storage pair (the split is not published — say so if you quote it)
     out["storage_mw"] = out.net_mw.where(out.is_standalone_storage, out.net_mw / 2).where(out.has_storage, 0.0)

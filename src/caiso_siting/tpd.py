@@ -8,6 +8,11 @@ Sources (CAISO, public xlsx):
   https://www.caiso.com/documents/2024-transmission-plan-deliverability-allocation-cycle-results.xlsx
   https://www.caiso.com/documents/2025-transmission-plan-deliverability-allocation-cycle-results.xlsx
 
+Joined through the public report on queue position across ALL THREE of its sheets, so a node's TPD
+history includes requests whose project has since withdrawn (5,505 MW requested / 450 MW allocated in
+the 2025 cycle). That is deliberate — the allocation happened at that node — but it is not live
+deliverability, and anything published from these columns must say so.
+
 Join key: CAISO queue position ("Q#"). Rows keyed by WDAT numbers, "-WD", "CONV" or PTO codes are
 distribution-level or conversion requests outside the public generator queue; they are kept in
 outputs/tpd_allocations.csv but do not join to nodes.
@@ -16,7 +21,10 @@ Per-node columns added to nodes.csv:
   tpd25_projects        projects at the node that sought TPD in the 2025 cycle
   tpd25_req_mw          MW they requested
   tpd25_alloc_mw        MW allocated (requested × allocation %)
-  tpd25_denied_mw       MW requested by rows that received 0 %
+  tpd25_denied_mw       MW requested by rows that received exactly 0 % (an outright refusal)
+  tpd25_unalloc_mw      requested - allocated: refused MW PLUS the remainder left by partial
+                        allocations. Always >= tpd25_denied_mw; quote this one for "did not get".
+  tpd25_unknown_mw      MW requested by rows with no allocation percentage in the file (0 today)
   tpd24_fcdsa_projects  projects allocated Full Capacity in the 2024 cycle
   tpd24_pcdsa_projects  projects allocated Partial Capacity in the 2024 cycle
 The 2024 file carries no MW, so 2024 is counts only.
@@ -96,8 +104,13 @@ def per_node(tpd: pd.DataFrame, projects: pd.DataFrame) -> pd.DataFrame:
         tpd25_projects=("queue_id", "nunique"),
         tpd25_req_mw=("mw_requested", "sum"),
         tpd25_alloc_mw=("mw_allocated", "sum"),
-        tpd25_denied_mw=("mw_requested", lambda s: s[t25.loc[s.index, "allocation_pct"].fillna(0) == 0].sum()),
+        # exactly 0 % — a refusal. NaN is missing data, not a refusal, and is counted separately.
+        tpd25_denied_mw=("mw_requested", lambda s: s[t25.loc[s.index, "allocation_pct"] == 0].sum()),
+        tpd25_unknown_mw=("mw_requested", lambda s: s[t25.loc[s.index, "allocation_pct"].isna()].sum()),
     )
+    # requested - allocated: the part that was refused outright PLUS the part a partial percentage
+    # left behind. Publishing "denied" alone understates what a developer did not get.
+    g25["tpd25_unalloc_mw"] = (g25.tpd25_req_mw - g25.tpd25_alloc_mw).round(1)
     g24 = t24.groupby("node_key").agg(
         tpd24_fcdsa_projects=("status", lambda s: (s == "FCDSA").sum()),
         tpd24_pcdsa_projects=("status", lambda s: (s == "PCDSA").sum()),

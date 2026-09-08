@@ -165,6 +165,59 @@ def test_findings_use_withdrawal_not_failure():
     assert text.count(". ") + 1 >= 6
 
 
+# ----------------------------------------------- raw-day exclusion & C15 censoring
+
+def test_withdrawal_days_before_the_queue_date_is_excluded_not_month_zero():
+    """A withdrawal dated a few days BEFORE the queue date is a data error. Rounding to months
+    turned it into a legitimate month-0 event, which is an immediate withdrawal that never happened."""
+    rows = [dict(sheet_status="WITHDRAWN", withdrawn_date=Q - pd.Timedelta(days=5)),   # 5 days early
+            dict(sheet_status="WITHDRAWN", withdrawn_date=Q - pd.Timedelta(days=1)),
+            dict(sheet_status="WITHDRAWN", withdrawn_date=Q),                          # same day: kept, t=0
+            dict(sheet_status="WITHDRAWN", withdrawn_date=Q + pd.Timedelta(days=5)),   # 5 days late: kept
+            dict(sheet_status="ACTIVE")]
+    lt, excluded = survival.lifetimes(frame(rows), months(24))
+    assert excluded["excluded_end_before_queue"] == 2
+    assert lt["t"].tolist() == [0, 0, 24]
+    assert lt["event"].tolist() == [True, True, False]
+    # the two excluded rows would each have rounded to month 0 and entered as events
+    assert survival.months_between(pd.Series([Q]), pd.Series([Q - pd.Timedelta(days=5)])).tolist() == [0.0]
+
+
+def test_completion_dated_before_the_queue_date_is_excluded_too():
+    rows = [dict(sheet_status="COMPLETED", actual_cod=Q - pd.Timedelta(days=10)),
+            dict(sheet_status="ACTIVE")]
+    lt, excluded = survival.lifetimes(frame(rows), months(12))
+    assert excluded["excluded_end_before_queue"] == 1
+    assert len(lt) == 1 and not lt["event"].iloc[0]
+
+
+def test_c15_cohort_is_censored_at_its_own_posting_date():
+    """The C15 file cannot observe a withdrawal after it was posted; censoring its ACTIVE rows at
+    the public report's later run date would publish structurally event-free months."""
+    assert survival.C15_CENSOR_DATE == "2026-07-16"
+    q = pd.Timestamp("2025-02-12")                      # the real C15 queue date
+    rows = [dict(cluster="C15", sheet_status="ACTIVE", queue_date=q) for _ in range(6)]
+    pq = frame([dict(cluster="C14", sheet_status="ACTIVE", queue_date=q)] * 6)
+    long_df, summary = survival.analyse(pq, frame(rows), "2026-09-07", max_month=36, min_at_risk=1)
+    s = summary.set_index("cohort")
+    expected = int(survival.months_between(pd.Series([q]), pd.Series([pd.Timestamp(survival.C15_CENSOR_DATE)])).iloc[0])
+    assert expected == 17
+    # C15 stops at its posting date; C14, censored at the public run date, runs ~2 months longer
+    c15_last = long_df[(long_df.cohort == "C15") & (long_df.at_risk > 0)].month.max()
+    c14_last = long_df[(long_df.cohort == "C14") & (long_df.at_risk > 0)].month.max()
+    assert c15_last == expected == 17
+    assert c14_last == 19 and c14_last > c15_last
+    assert s.loc["C15", "follow_up_months"] == 17
+
+
+def test_c15_censor_date_does_not_touch_other_cohorts():
+    q = pd.Timestamp("2025-02-12")
+    rows = [dict(cluster=c, sheet_status="ACTIVE", queue_date=q) for c in ("C13", "C14")]
+    lt13, _ = survival.lifetimes(frame([rows[0]]), "2026-09-07")
+    lt15, _ = survival.lifetimes(frame([{**rows[0], "cluster": "C15"}]), survival.C15_CENSOR_DATE)
+    assert lt13["t"].iloc[0] > lt15["t"].iloc[0]
+
+
 # ------------------------------------------------------------------- real data
 
 @pytest.mark.real_data
@@ -188,3 +241,31 @@ def test_real_data_smoke(real_projects):
         assert (g["at_risk"].diff().dropna() <= 0).all(), c
     assert (long_df.groupby("cohort")["month"].max() == survival.MAX_MONTH).all()
     assert "C15" in survival.render_svg(long_df[long_df.cohort.isin(survival.CLUSTER_COHORTS)])
+
+
+@pytest.mark.real_data
+def test_real_c15_follow_up_stops_at_its_posting_date(real_projects):
+    """C15's real queue date is 2025-02-12; censoring at its own posting date gives 17 months of
+    follow-up, not the 19 the public report's run date would imply (months 18-19 were structurally
+    event-free because the C15 file could not observe them)."""
+    pq, c15 = real_projects
+    run_date = str(pq["source_run_date"].iloc[0])
+    long_df, summary = survival.analyse(pq, c15, run_date)
+    fu = int(summary.set_index("cohort").loc["C15", "follow_up_months"])
+    at_run = survival.months_between(pd.Series([c15.queue_date.mode().iloc[0]]), pd.Series([pd.Timestamp(run_date)]))
+    assert fu == 17
+    assert int(at_run.iloc[0]) == 19 and fu < int(at_run.iloc[0])
+    g = long_df[(long_df.cohort == "C15")]
+    assert g[g.at_risk > 0].month.max() == 17
+    assert g[g.month > 17].events.sum() == 0
+
+
+@pytest.mark.real_data
+def test_real_cohorts_have_no_end_before_queue_rows_left(real_projects):
+    """The raw-day exclusion is what keeps a mis-dated withdrawal out of month 0. Whatever it
+    excludes must not reappear as an event."""
+    pq, c15 = real_projects
+    _, summary = survival.analyse(pq, c15, str(pq["source_run_date"].iloc[0]))
+    s = summary.set_index("cohort")
+    assert (s["excluded_end_before_queue"] >= 0).all()
+    assert (s["n"] == s["events"] + s["censored"]).all()

@@ -6,7 +6,7 @@ import re
 
 import pandas as pd
 import pytest
-from conftest import assert_required_columns, missing_required, write_queue_xlsx
+from conftest import D, assert_required_columns, missing_required, write_queue_xlsx
 
 from caiso_siting import queue_report
 from caiso_siting.config import xlsx_run_date
@@ -96,6 +96,44 @@ def test_storage_flags_and_storage_mw(pq):
     assert by.loc["DEAD WIND", "has_wind"] and by.loc["DEAD WIND", "storage_mw"] == 60.0
 
 
+def test_storage_component_mw_keeps_the_raw_nameplate_sum(pq):
+    by = pq.set_index("project_name")
+    assert by.loc["HYBRID ONE", "storage_component_mw"] == 150.0
+    assert by.loc["STANDALONE BESS", "storage_component_mw"] == 1250.0
+    assert by.loc["GAS PEAKER", "storage_component_mw"] == 0.0
+    assert (pq.storage_mw <= pq.storage_component_mw).all()
+
+
+def test_two_storage_components_are_capped_at_net_mw(tmp_path):
+    """CAISO's RED BLUFF filing lists a pumped-storage component AND a battery component on one
+    1,400 MW POI; summing both doubled the node's storage and inflated storage_churn."""
+    path = write_queue_xlsx(tmp_path / "twostor.xlsx", rows={"Grid GenerationQueue": [
+        # pumped storage 1407 + battery 1400 on a net 1400 MW interconnection
+        ["ETERNAL PUMPED STORAGE", 5001, D(2022, 1, 1), D(2022, 1, 15, 8), "ACTIVE", "Cluster 14",
+         "Pumped Storage", "Storage", None, "Water", "Battery", None, 1407, 1400, None, 1400,
+         "Full Capacity", 100, "Off-Peak Deliverability", "Group A", "TEHAMA", "CA", "PGAE", "Northern",
+         "Red Bluff Substation 500 kV", D(2028, 6, 30, 7), D(2030, 6, 30, 7), None,
+         "Complete", "Complete", "Complete", "None", "Pending"],
+        # a filing with no net MW keeps the component sum (nothing to cap against)
+        ["NO NET MW", 5002, D(2022, 2, 1), D(2022, 2, 15, 8), "ACTIVE", "Cluster 14",
+         "Storage", None, None, "Battery", None, None, 300, None, None, None,
+         "Energy Only", None, None, None, "KERN", "CA", "SCE", "SCE",
+         "Whirlwind Substation 230 kV", D(2028, 6, 30, 7), D(2030, 6, 30, 7), None,
+         "Complete", "Complete", "Complete", "None", "Pending"],
+    ]})
+    act = queue_report.load_all(path).query("sheet_status == 'ACTIVE'").set_index("project_name")
+    red = act.loc["ETERNAL PUMPED STORAGE"]
+    assert red.storage_component_mw == 2807.0          # the raw nameplate sum is still published
+    assert red.storage_mw == 1400.0                    # but the POI figure caps what any ratio may use
+    assert red.net_mw == 1400.0
+    nonet = act.loc["NO NET MW"]
+    assert pd.isna(nonet.net_mw)
+    assert nonet.storage_mw == 300.0 == nonet.storage_component_mw
+    # storage_mw > net_mw is possible ONLY where net_mw is missing or non-positive
+    over = act[act.storage_mw > act.net_mw.fillna(-1)]
+    assert over.index.tolist() == ["NO NET MW"]
+
+
 def test_poi_mw_equals_net_mw(pq):
     assert pq.poi_mw.equals(pq.net_mw)
 
@@ -182,7 +220,7 @@ def test_minor_header_wording_drift_still_maps_by_prefix(tmp_path):
     })
     df = queue_report.load_all(drifted)
     assert_required_columns(df)
-    assert df.set_index("project_name").loc["HYBRID ONE", "ia_status"] == "Executed"
+    assert df.set_index("project_name").loc["HYBRID ONE", "ia_status"] == "EXECUTED"   # normalize upper-cases it
 
 
 def test_footer_disclaimer_row_is_dropped(tmp_path):

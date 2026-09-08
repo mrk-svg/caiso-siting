@@ -1,5 +1,35 @@
 # Changelog
 
+## 1.3.1 — 2026-09-08 — correctness
+
+An adversarial audit of every published number found five defects that would have put wrong figures in front of
+developers. All are fixed and locked by tests (306).
+
+- **Storage MW double-counted.** Six filings list two storage components (RED BLUFF's ETERNAL: 1,407 MW pumped-storage
+  + 1,400 MW battery on a 1,400 MW POI). `storage_mw` is now capped at net-to-grid — the raw sum survives as
+  `storage_component_mw` — which halves RED BLUFF's storage churn from 1.62 to 0.84 and corrects 47 nodes.
+- **"Last 5 years" was six calendar years** (`>= THIS_YEAR - RECENT_YEARS` = 2021–2026). Now 2022 onward, and every
+  heading names the window. Two nodes in the published churn table (Los Banos–Gates #1, Delaney) drop to 0.00: all
+  their withdrawals were in 2021.
+- **A Nevada node was mapped into California at `exact / 1.00`.** VALLEY SWITCH (Nye NV, 2.7 GW) matched OSM's
+  "Valley Substation" in Riverside CA because the picker took the highest voltage. Geocoding is now state-aware,
+  positions provably outside the filed state are rejected (`state-mismatch`), names shared by features >50 km apart
+  are flagged `ambiguous`, and the county-centroid fallback keys on state+county using in-state sources only.
+  Five nodes were in the wrong state; now none.
+- **"The cohort has shed 58% of its MW"** differenced a CAISO briefing's 145-project baseline against a 170-request
+  file. Replaced with the file's own arithmetic: 30,564 MW withdrawn = 52% of the 59,013 MW that entered.
+- **"Storage share"** was the label on a component-nameplate sum that exceeded its own total at 203 nodes. Relabelled
+  everywhere, and the all-time withdrawn figure in the "both reports" bullet now actually covers both reports
+  (412,480 MW, not 381,917).
+
+Also: `tpd25_unalloc_mw` (requested − allocated, so partial allocations are no longer published as "denied 0" —
+SCHULTE requested 187 MW, received 6, and showed 0 denied); NaN allocation percentages counted as `tpd25_unknown_mw`
+rather than refusals; survival exclusions computed on raw days (a withdrawal 5 days before its queue date was
+entering as a month-0 event); Cluster 15 censored at its own posting date, not the public report's later run date
+(follow-up 19 → 17 months, removing two structurally event-free months); one `tech_flags` / `cap_storage_mw`
+definition shared by all three parsers; `ia_status` normalised; and a crash when nothing geocodes (empty list read
+as a column selection) fixed.
+
 ## 1.3.0 — 2026-09-08
 
 WDAT layer (`wdat.py`, PG&E public queue: 4,639 requests; 99 CAISO nodes also carry active distribution-level requests). Document watch (`watch.py`): weekly diff of the CAISO/PTO pages that carry siting documents -> review queue; nothing auto-encoded. 233 tests.

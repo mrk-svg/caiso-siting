@@ -271,3 +271,32 @@ def test_real_per_node(real_wdat):
     assert (pn >= 0).all().all() and pn.notna().all().all()
     assert (pn.wdat_active_storage_mw <= pn.wdat_active_mw + 1e-6).all()
     assert (pn.wdat_active_projects > 0).sum() > 200
+
+
+# ------------------------------------------- shared tech_flags integration
+
+def test_gen_type_flags_come_from_the_shared_definition(w):
+    """wdat now uses common.tech_flags, so 'Solar PV' must still read as solar (the shared rule
+    matches \\bPV\\b, not any 'PV' substring) and a thermal fuel beside a battery is not standalone."""
+    by = w.set_index("queue_position")
+    assert by.loc["0003-WD", "has_solar"] and not by.loc["0003-WD", "has_storage"]
+    assert by.loc["0005-WD", "has_solar"] and by.loc["0005-WD", "has_storage"]
+    assert not by.loc["0001-WD", "has_storage"]                 # 'Engine'
+    assert not by.loc["0001-WD", "is_standalone_storage"]
+
+
+def test_engine_plus_storage_is_not_standalone(tmp_path):
+    rows = [pge_row(D(2024, 1, 1), "0100-WD", "Fast Track", "Active", D(2028, 1, 1), None, None,
+                    "KERN", "HYBRID SUB", "Storage, Engine", 10, "Pending")]
+    df = wdat.load_utility("PGAE", write_wdat_pge(tmp_path / "eng.xlsx", rows=rows))
+    r = df.iloc[0]
+    assert r.has_storage and not r.is_standalone_storage        # ENGINE is in NON_STORAGE_FUELS
+    assert r.storage_mw == 5.0                                  # the non-standalone half split
+
+
+@pytest.mark.real_data
+def test_real_flags_are_internally_consistent(real_wdat):
+    w = real_wdat
+    assert (w.is_standalone_storage <= w.has_storage).all()
+    assert not (w.is_standalone_storage & w.has_solar).any()
+    assert w.has_storage.sum() > 500 and w.has_solar.sum() > 2000

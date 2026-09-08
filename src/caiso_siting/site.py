@@ -23,6 +23,7 @@ from string import Template
 import pandas as pd
 
 from .config import OUT, RECENT_YEARS, SITE
+from .nodes import APPROX_METHODS
 
 DISCLAIMER = ('No figure on this site states a cause. CAISO files carry no withdrawal reason beyond '
               '"IC Request".')
@@ -31,8 +32,6 @@ WDAT_NOTE = "WDAT = distribution-level queue at the same substation, PG&E file t
 WDAT_COLS = ["queue_position", "status_raw", "process", "gen_type", "net_mw", "request_received", "current_cod",
              "ia_status"]
 WDAT_CAP = 50
-
-APPROX_METHODS = {"line-one-end", "fuzzy", "override-approx", "county-centroid", "none"}
 
 # One-line definitions, copied from the docstring at the top of nodes.py (plus the three storage /
 # FCDS columns that docstring omits, defined from the code that computes them).
@@ -43,7 +42,9 @@ METRIC_DEFS = [
     ("pipeline_storage_mw", "storage MW inside legacy_active_mw + c15_active_mw"),
     ("operating_storage_mw", "storage MW inside operating_mw (completed, public report)"),
     ("wd_recent_mw", f"withdrawn in the last {RECENT_YEARS} years (both reports)"),
-    ("wd_recent_storage_mw", "the storage share of wd_recent_mw"),
+    ("wd_recent_storage_mw", "storage MW of those rows — each project's storage components capped at its "
+                             "net-to-grid figure; a handful of filings report net-to-grid as 0 and keep the "
+                             "component MW, so this can exceed the row above at 3 nodes."),
     ("wd_post_phase2_mw", "withdrew AFTER Phase II / Facilities Study results (public report only)"),
     ("wd_alltime_mw", "every withdrawn MW since 2006 (includes dead wind/solar-era projects)"),
     ("storage_churn", "wd_recent_storage_mw / (active + operating storage MW) — the one to quote"),
@@ -54,10 +55,16 @@ METRIC_DEFS = [
     ("tpd25_req_mw", "MW at the node that sought TPD in CAISO's 2025 allocation cycle"),
     ("tpd25_alloc_mw", "MW allocated in that cycle (requested × allocation %)"),
     ("tpd25_denied_mw", "MW requested by rows that received 0 %"),
+    ("tpd25_unalloc_mw", "requested minus allocated: MW refused outright PLUS the remainder left by partial "
+                         "allocations — quote this for 'what the developer did not get'"),
+    ("tpd25_unknown_mw", "MW requested by rows with no allocation percentage in the file; 0 today"),
     ("tpd24_fcdsa_projects", "projects at the node allocated Full Capacity in the 2024 cycle"),
     ("wdat_active_projects", f"active WDAT requests at the same substation ({WDAT_NOTE})"),
     ("wdat_active_mw", "MW of active WDAT (distribution-level) requests at the same substation (PG&E file today)"),
-    ("wdat_active_storage_mw", "storage share of wdat_active_mw"),
+    ("wdat_active_storage_mw", "storage MW attributed from wdat_active_mw — an assumption: the PG&E file "
+                               "publishes one MW figure per request, so storage-only requests count in full "
+                               "and solar+storage requests count at half (160 of 1,011 active requests carry storage; "
+                               "362 of their 479 MW is attributed as storage)."),
     ("wdat_inservice_mw", "WDAT MW already in service at that substation"),
     ("wdat_withdrawn_mw", "WDAT MW withdrawn at that substation (all-time in the file)"),
 ]
@@ -384,9 +391,11 @@ c15_survival = C15 active ÷ (C15 active + C15 withdrawn). Click a node for its 
 {table(top, TOP_COLS, links)}
 <h2>TPD allocation, 2025 cycle</h2>
 <p class="sub">Top 15 nodes by MW that sought Transmission Plan Deliverability in CAISO's 2025 allocation cycle.</p>
-{table(tpd, ['poi_base', 'county', 'utility', 'tpd25_req_mw', 'tpd25_alloc_mw', 'tpd25_denied_mw',
-             'tpd24_fcdsa_projects'], links)}
-<p>"Denied" = MW requested by rows that received 0 % in the cycle. The CAISO file states no reason.</p>
+{table(tpd, ['poi_base', 'county', 'utility', 'tpd25_req_mw', 'tpd25_alloc_mw', 'tpd25_unalloc_mw',
+             'tpd25_denied_mw', 'tpd24_fcdsa_projects'], links)}
+<p>"Denied" is MW refused outright (0 %); "unalloc" is requested minus allocated, so it also carries the remainder
+left by partial allocations. These rows are joined through all three sheets of the public report, so a node's TPD
+history can include requests whose project has since withdrawn. The CAISO file states no reason.</p>
 <h2>Distribution-level (WDAT) activity at CAISO nodes</h2>
 <p class="sub">Top 10 CAISO nodes by active MW in the wholesale distribution (WDAT) queue at the same substation.</p>
 {table(wdat_top, ['poi_base', 'county', 'utility', 'wdat_active_projects', 'wdat_active_mw', 'wdat_inservice_mw'], links)}
@@ -421,6 +430,11 @@ def node_page(r: pd.Series, projects: pd.DataFrame, prov: dict, wdat: pd.DataFra
             why = "marker sits at one end of a transmission line, not at the tap point"
         elif method == "fuzzy":
             why = "name matched an OpenStreetMap substation only approximately"
+        elif method == "ambiguous":
+            why = ("several OSM features share this name more than 50 km apart — the position may be the wrong one")
+        elif method == "state-mismatch":
+            why = ("the matched position was provably outside the filed state and was rejected; this node falls back "
+                   "to a county centroid")
         elif method == "override-approx":
             why = "hand-entered approximate coordinate (e.g. plant centroid), not a verified substation position"
         else:
@@ -435,8 +449,8 @@ def node_page(r: pd.Series, projects: pd.DataFrame, prov: dict, wdat: pd.DataFra
 <dt>lat, lon</dt><dd>{(fmt('lat', lat) + ', ' + fmt('lon', lon)) if has_pos else 'none'}</dd>
 </dl>"""
     body = f"""<h1>{esc(title)}</h1>
-<p class="sub">{esc(r.county) or 'county unknown'} · {esc(r.utility) or 'utility unknown'} ·
-node key <code>{esc(r.node_key)}</code></p>
+<p class="sub">{esc(r.county) or 'county unknown'}{(' (' + esc(r.get('state')) + ')') if r.get('state') else ''} ·
+{esc(r.utility) or 'utility unknown'} · node key <code>{esc(r.node_key)}</code></p>
 {c16}
 <h2>Metrics</h2>
 <div class="tbl"><table><thead><tr><th>metric</th><th class="num">value</th><th class="wrap">definition</th></tr>
@@ -534,7 +548,9 @@ def main() -> None:
     nodes = pd.read_csv(nodes_path, dtype={"node_key": str, "poi_base": str, "county": str, "utility": str,
                                            "c16_poi_status": str, "c16_poi_note": str, "osm_name": str,
                                            "geo_method": str, "pipeline_commit": str, "source_run_date": str})
-    for c in ("county", "utility", "c16_poi_status", "c16_poi_note", "osm_name", "geo_method", "poi_base"):
+    for c in ("county", "utility", "state", "c16_poi_status", "c16_poi_note", "osm_name", "geo_method", "poi_base"):
+        if c not in nodes:
+            nodes[c] = ""
         nodes[c] = nodes[c].fillna("")
     projects = load_projects(nodes)
     first = nodes.iloc[0] if len(nodes) else {}

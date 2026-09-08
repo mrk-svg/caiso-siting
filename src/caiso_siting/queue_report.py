@@ -28,7 +28,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from .common import clean_county, norm_poi, poi_base
+from .common import cap_storage_mw, clean_county, norm_poi, poi_base, tech_flags
 from .config import DATA, OUT, PUBLIC_QUEUE_URL, add_provenance, xlsx_run_date
 
 QUEUE_URL = PUBLIC_QUEUE_URL
@@ -122,22 +122,20 @@ def normalize(df: pd.DataFrame) -> pd.DataFrame:
             df[c] = pd.to_datetime(df[c], errors="coerce")
 
     for c in ("poi", "utility", "study_process", "deliverability",
-              "tpd_group", "pto_region", "status"):
+              "tpd_group", "pto_region", "status", "ia_status"):
         if c in df:
             df[c] = df[c].fillna("").str.strip().str.upper()
     df["county"] = clean_county(df["county"])
 
-    # Technology flags
+    # Technology flags (one definition, shared with cluster15.py and wdat.py)
     types = df[[c for c in ("type_1", "type_2", "type_3") if c in df]].fillna("")
     fuels = df[[c for c in ("fuel_1", "fuel_2", "fuel_3") if c in df]].fillna("")
     blob = (types.agg(" ".join, axis=1) + " " + fuels.agg(" ".join, axis=1)).str.upper()
-    df["has_storage"] = blob.str.contains("STORAGE|BATTERY")
-    df["has_solar"] = blob.str.contains("SOLAR|PHOTOVOLTAIC")
-    df["has_wind"] = blob.str.contains("WIND")
-    df["is_standalone_storage"] = df["has_storage"] & ~df["has_solar"] & ~df["has_wind"] \
-        & ~blob.str.contains("GAS|COMBUSTION|COMBINED|GEOTHERMAL|HYDRO|BIOMASS")
+    for c, v in tech_flags(blob).items():
+        df[c] = v
 
-    # Storage MW: MW-n where the matching Type-n/Fuel-n is storage
+    # Storage MW: MW-n where the matching Type-n/Fuel-n is storage, capped at net-to-grid.
+    # storage_component_mw keeps the raw nameplate sum; storage_mw is what any ratio may use.
     storage_mw = pd.Series(0.0, index=df.index)
     for n in (1, 2, 3):
         t, f, m = f"type_{n}", f"fuel_{n}", f"mw_{n}"
@@ -145,7 +143,8 @@ def normalize(df: pd.DataFrame) -> pd.DataFrame:
             is_stor = df.get(t, "").fillna("").str.upper().str.contains("STORAGE") | \
                       df.get(f, "").fillna("").str.upper().str.contains("BATTERY")
             storage_mw += df[m].fillna(0).where(is_stor, 0)
-    df["storage_mw"] = storage_mw
+    df["storage_component_mw"] = storage_mw
+    df["storage_mw"] = cap_storage_mw(storage_mw, df["net_mw"])
 
     # Cluster label from study process ("Cluster 14", "Cluster 15", "Serial LGIP", ...)
     df["cluster"] = df["study_process"].str.extract(r"(CLUSTER\s*\d+)", expand=False) \

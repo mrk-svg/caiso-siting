@@ -17,7 +17,8 @@ Time axis and events
   t      months since `queue_date`, rounded to the nearest whole month (days / 30.4375)
   event  withdrawal, at `withdrawn_date`
   censor ACTIVE rows at the Public Queue Report run date (`source_run_date`; Cluster 15 rows use
-         the same date because the C15 file carries no run date).
+         C15's own posting date, C15_CENSOR_DATE, because the C15 file carries no run date and
+         cannot observe a withdrawal after it was posted).
          COMPLETED rows are NOT events: completion is the success outcome. They are censored at
          `actual_cod` when present, else at the run date. This treats a completed project as
          "no longer at risk of withdrawal" from its commercial operation date on — a standard
@@ -45,6 +46,10 @@ import pandas as pd
 from .config import OUT
 
 CLUSTER_COHORTS = ["C10", "C11", "C12", "C13", "C14", "C15"]
+# The Cluster 15 report carries no run date and its last observable withdrawal is dated 2026-07-14;
+# censoring its ACTIVE rows at the public report's later run date would publish event-free months
+# that the file could not have observed. Censor C15 at its posting date instead.
+C15_CENSOR_DATE = "2026-07-16"
 TECH_CLUSTERS = ["C13", "C14", "C15"]
 TECH_COHORTS = ["C13-C15 standalone storage", "C13-C15 solar+storage", "C13-C15 other"]
 HORIZONS = (12, 24, 36, 48, 60)
@@ -92,9 +97,13 @@ def lifetimes(df: pd.DataFrame, run_date: pd.Timestamp) -> tuple[pd.DataFrame, d
     done = (status == "COMPLETED") & cod.notna() & (cod <= run_date)
     end = end.where(~done, cod)
 
+    # exclude on RAW days: months_between rounds, so a withdrawal dated a few days before the
+    # queue date would otherwise round to month 0 and enter as a legitimate event
+    bad = (pd.to_datetime(end) - pd.to_datetime(d["queue_date"])).dt.days < 0
+    excluded["excluded_end_before_queue"] = int(bad.sum())
+    d, end, is_wd = d[~bad], end[~bad], is_wd[~bad]
     t = months_between(d["queue_date"], end)
     bad = t < 0
-    excluded["excluded_end_before_queue"] = int(bad.sum())
     d, t, is_wd = d[~bad], t[~bad], is_wd[~bad]
 
     lt = pd.DataFrame({
@@ -183,7 +192,8 @@ def analyse(pq: pd.DataFrame, c15: pd.DataFrame, run_date, max_month: int = MAX_
     """(long survival table, one-row-per-cohort summary)."""
     long_parts, summary_rows = [], []
     for name, rows in build_cohorts(pq, c15).items():
-        lt, excluded = lifetimes(rows, run_date)
+        cohort_run = C15_CENSOR_DATE if name == "C15" else run_date
+        lt, excluded = lifetimes(rows, cohort_run)
         km = kaplan_meier(lt, max_month, min_at_risk)
         km.insert(0, "cohort", name)
         long_parts.append(km)
@@ -346,7 +356,8 @@ def summary_markdown(summary: pd.DataFrame) -> str:
 def write_markdown(summary: pd.DataFrame, run_date: str, text: str) -> str:
     return f"""# Queue-cohort survival — Kaplan–Meier by cluster
 
-Source: CAISO Public Queue Report (run date {run_date}) for C10–C14; CAISO Cluster 15 report for C15.
+Source: CAISO Public Queue Report (run date {run_date}) for C10–C14; CAISO Cluster 15 report for C15,
+censored at its posting date {C15_CENSOR_DATE} — that file cannot record a withdrawal after it was published.
 Event = withdrawal at `withdrawn_date`. ACTIVE rows are censored at the report run date; COMPLETED rows are
 censored at `actual_cod` (completion is success, not an event). Time = months since `queue_date`.
 `s12`…`s60` = Kaplan–Meier S(t) at 12…60 months; `_mw` = the same estimate with each project weighted by `net_mw`.

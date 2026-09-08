@@ -29,6 +29,7 @@ TPD25_ROWS = [
     ["PG&E", 1223, "B", 100, 0.6],
     ["SDG&E", "2179-WD", "A", 50, 1.0],               # "-WD" id: outside the generator queue
     ["SCE", 1001, "A", 300, 1.0],
+    ["SDG&E", 1048, "A", 90, None],                   # in the queue, but no percentage published
     ["SCE", "Unassigned#", "C", None, None],
 ]
 
@@ -144,8 +145,8 @@ def test_2025_pto_and_generator_queue_flag(t25):
 
 def test_load_all_concatenates_both_years(tpd_dir):
     t = tpd.load_all()
-    assert t.tpd_year.value_counts().to_dict() == {2025: 7, 2024: 6}
-    assert list(t.index) == list(range(13))
+    assert t.tpd_year.value_counts().to_dict() == {2025: 8, 2024: 6}
+    assert list(t.index) == list(range(14))
 
 
 def test_load_all_skips_missing_years(tpd_dir):
@@ -187,11 +188,49 @@ def test_per_node_rollup(tpd_dir):
     assert vd.tpd25_req_mw == 100 and vd.tpd25_alloc_mw == 60 and vd.tpd25_denied_mw == 0
     assert vd.tpd24_pcdsa_projects == 1
     o = pn.loc["OTAY MESA"]
-    assert o.tpd25_projects == 0 and o.tpd25_req_mw == 0 and o.tpd24_pcdsa_projects == 1
+    assert o.tpd25_projects == 1 and o.tpd25_req_mw == 90 and o.tpd24_pcdsa_projects == 1
     assert (pn.loc["NOWHERE"] == 0).all()         # blank 2024 status counts as nothing
     assert "FOOTER" not in pn.index               # NaN queue_position dropped
     assert pn.notna().all().all()
     assert (pn.tpd25_alloc_mw <= pn.tpd25_req_mw).all() and (pn.tpd25_denied_mw <= pn.tpd25_req_mw).all()
+
+
+def test_per_node_unallocated_is_refusals_plus_partial_remainder(tpd_dir):
+    """"Denied" alone understates what a developer did not get: a 60 % allocation leaves 40 % behind."""
+    pn = tpd.per_node(tpd.load_all(), PROJECTS)
+    vd = pn.loc["VACA DIXON"]                     # one 100 MW request allocated at 60 %
+    assert (vd.tpd25_req_mw, vd.tpd25_alloc_mw) == (100, 60)
+    assert vd.tpd25_denied_mw == 0                # nothing was refused outright
+    assert vd.tpd25_unalloc_mw == 40              # but 40 MW was not allocated
+    v = pn.loc["VINCENT"]                         # two requests, both at 0 %
+    assert v.tpd25_denied_mw == 330 and v.tpd25_unalloc_mw == 330
+    w = pn.loc["WHIRLWIND"]                       # everything allocated in full
+    assert w.tpd25_alloc_mw == 500 and w.tpd25_unalloc_mw == 0
+    # unalloc is exactly requested - allocated, everywhere
+    assert (pn.tpd25_unalloc_mw == (pn.tpd25_req_mw - pn.tpd25_alloc_mw).round(1)).all()
+    assert (pn.tpd25_denied_mw <= pn.tpd25_unalloc_mw + 1e-9).all()
+
+
+def test_per_node_missing_percentage_is_unknown_not_denied(tpd_dir):
+    """A NaN allocation percentage is missing data. Reporting it as a refusal would invent a
+    decision CAISO never published."""
+    pn = tpd.per_node(tpd.load_all(), PROJECTS)
+    o = pn.loc["OTAY MESA"]                       # queue 1048: 90 MW requested, percentage blank
+    assert o.tpd25_req_mw == 90
+    assert o.tpd25_unknown_mw == 90
+    assert o.tpd25_denied_mw == 0                 # NOT counted as a refusal
+    assert o.tpd25_alloc_mw == 0                  # NaN * MW contributes nothing
+    assert o.tpd25_unalloc_mw == 90               # still "did not get it"
+    # nodes with a published percentage carry no unknown MW
+    assert pn.loc["WHIRLWIND", "tpd25_unknown_mw"] == 0
+    assert pn.loc["VINCENT", "tpd25_unknown_mw"] == 0
+    assert (pn.tpd25_denied_mw + pn.tpd25_unknown_mw <= pn.tpd25_req_mw + 1e-9).all()
+
+
+def test_tpd_cols_lists_every_per_node_column(tpd_dir):
+    pn = tpd.per_node(tpd.load_all(), PROJECTS)
+    assert list(pn.columns) == nodes.TPD_COLS
+    assert "tpd25_unalloc_mw" in nodes.TPD_COLS and "tpd25_unknown_mw" in nodes.TPD_COLS
 
 
 def test_per_node_ignores_non_queue_ids(tpd_dir):
@@ -214,6 +253,7 @@ def test_join_tpd_adds_columns_and_fills_zero(tpd_dir, capsys):
     assert set(nodes.TPD_COLS) <= set(out.columns)
     by = out.set_index("node_key")
     assert by.loc["WHIRLWIND", "tpd25_alloc_mw"] == 500 and by.loc["VINCENT", "tpd25_denied_mw"] == 330
+    assert by.loc["VINCENT", "tpd25_unalloc_mw"] == 330
     assert (by.loc["ELSEWHERE", nodes.TPD_COLS] == 0).all()
     assert out.pipeline_mw.tolist() == [1.0, 2.0, 3.0]            # row order preserved
     assert "2 nodes with 2025 TPD requests" in capsys.readouterr().out
