@@ -1,15 +1,44 @@
 # caiso-siting
 
+[![ci](https://github.com/mrk-svg/caiso-siting/actions/workflows/ci.yml/badge.svg)](https://github.com/mrk-svg/caiso-siting/actions/workflows/ci.yml)
+[![weekly](https://github.com/mrk-svg/caiso-siting/actions/workflows/weekly.yml/badge.svg)](https://github.com/mrk-svg/caiso-siting/actions/workflows/weekly.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+**Live site: https://mrk-svg.github.io/caiso-siting/** — rebuilt every Monday from CAISO's own files:
+[map](https://mrk-svg.github.io/caiso-siting/map.html) ·
+[Node Watch](https://mrk-svg.github.io/caiso-siting/note.html) ·
+[survival curves](https://mrk-svg.github.io/caiso-siting/survival.html) ·
+[this week's diff](https://mrk-svg.github.io/caiso-siting/diff.html) ·
+[weekly diff issues](https://github.com/mrk-svg/caiso-siting/issues?q=label%3Aweekly-diff)
+
+<!-- screenshot: save the live map as docs/map.png and uncomment
+![Pipeline MW by CAISO point of interconnection](docs/map.png)
+-->
+
 Free-data pipeline for CAISO interconnection node intelligence. Target user: small/mid
 BESS developers and land brokers in the CAISO footprint who can't afford LandGate or Nira.
 
 Not a "Grid-Ready Score". Transparent, sourced layers — every number traceable to a CAISO row.
 
+## What it answers, per point of interconnection
+
+- how much is queued there now (Cluster 14 and earlier + Cluster 15), what is operating, what withdrew since 2022,
+  and whether the withdrawals were storage (`storage_churn`) or 2008-era wind and solar
+- what CAISO actually *allocated* in the 2024 and 2025 TPD cycles vs what was requested (`tpd25_alloc_mw`, `tpd25_unalloc_mw`)
+- whether the utility has published an official Cluster 16 POI availability statement for it
+- how fast each cluster's projects withdraw (Kaplan–Meier by cluster and technology)
+- distribution-level (WDAT) requests at the same substation
+- what changed in CAISO's files this week, row by row, as a GitHub issue
+
+Every row carries `source_file`, `source_run_date`, `pipeline_commit`. `DATA.md` is the data dictionary;
+`DATA_LICENSES.md` lists the sources and their terms.
+
 ## Install
 
-    pip install -e .[dev]          # Python 3.10+; pandas, openpyxl, requests, tabulate
+    python3 -m venv .venv && source .venv/bin/activate   # Homebrew/Debian Python refuse system-wide installs (PEP 668)
+    pip install -e ".[dev]"        # Python 3.10+; pandas, openpyxl, requests, tabulate
     caiso-siting --help
-    python -m pytest -q            # 137 tests, ~15 s
+    python -m pytest -q            # 308 tests, ~12 s
 
 ## Layout
 
