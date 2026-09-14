@@ -62,11 +62,11 @@ Transmission Interconnection Handbook will not reflect this "until updated, no E
 | TROUT CANYON SUBSTATION     | CLARK           | GLW       |                2 |            625 |                0 |                625 |               625 |                      1 |
 | RIO HONDO SUBSTATION        | LOS ANGELES     | SCE       |                2 |            600 |              600 |                  0 |                 0 |                      6 |
 | WHEELER RIDGE               | KERN            | PGAE      |                1 |            600 |                0 |                600 |               600 |                      0 |
-| RECTOR SUBSTATION           | TULARE          | SCE       |                2 |            550 |              350 |                200 |               200 |                      0 |
-| CONTRA COSTA SUBSTATION     | CONTRA COSTA    | PGAE      |                2 |            550 |              449 |                101 |                 0 |                      0 |
 | OTAY MESA SWITCHYARD        | SAN DIEGO       | SDGE      |                2 |            550 |                0 |                550 |               550 |                      0 |
+| CONTRA COSTA SUBSTATION     | CONTRA COSTA    | PGAE      |                2 |            550 |              449 |                101 |                 0 |                      0 |
+| RECTOR SUBSTATION           | TULARE          | SCE       |                2 |            550 |              350 |                200 |               200 |                      0 |
 | MOORPARK SUBSTATION         | VENTURA         | SCE       |                1 |            500 |              462 |                 38 |                 0 |                      1 |
-| VACA-DIXON                  | SOLANO          | PGAE      |                2 |            500 |              500 |                  0 |                 0 |                      0 |
+| BEATTY                      | NYE             | GLW       |                1 |            500 |                0 |                500 |               500 |                      0 |
 
 "Denied" is MW refused outright (0 %); "unalloc" is requested minus allocated, so it also carries the remainder left by
 partial allocations — quote that one for "what the developer did not get". These rows are joined through all three sheets
@@ -118,19 +118,19 @@ These developers had upgrade cost estimates in hand when they left. That is the 
 | LUGO-PISGAH                                  | SAN BERNARDINO | SCE       |             700 |                 0 |            150 |                  0 |                  |
 | CALCITE SUBSTATION                           | SAN BERNARDINO | SCE       |             638 |                 0 |            200 |                255 |                  |
 | MAGUNDEN-PASTORIA                            | KERN           | SCE       |             600 |                 0 |              0 |                  0 |                  |
-| NORTH GILA - HOODOO WASH (SDGE PORTION ONLY) | YUMA           | SDGE      |             500 |                 0 |              0 |                  0 |                  |
 | QUINTO SW STA                                | MERCED         | PGAE      |             500 |               500 |            100 |                150 |                  |
+| NORTH GILA - HOODOO WASH (SDGE PORTION ONLY) | YUMA           | SDGE      |             500 |                 0 |              0 |                  0 |                  |
 
 ## Cluster 15 survival by node (lowest first; >500 MW requested)
 
 | poi_base                       | county         | utility   |   c15_active_mw |   c15_withdrawn_mw |   c15_survival |
 |:-------------------------------|:---------------|:----------|----------------:|-------------------:|---------------:|
-| MIDWAY - VINCENT               | KERN           | SCE       |               0 |               1150 |           0    |
-| VIEJO                          | ORANGE         | SCE       |               0 |               1000 |           0    |
-| BEATTY                         | NYE            | GLW       |               0 |               1350 |           0    |
 | TROUT CANYON SUBSTATION        | CLARK          | GLW       |               0 |               1500 |           0    |
-| SLOAN CANYON SWITCHING STATION | CLARK          | GLW       |               0 |                550 |           0    |
 | MOHAVE SUBSTATION              | CLARK          | SCE       |               0 |               1050 |           0    |
+| SLOAN CANYON SWITCHING STATION | CLARK          | GLW       |               0 |                550 |           0    |
+| MIDWAY - VINCENT               | KERN           | SCE       |               0 |               1150 |           0    |
+| BEATTY                         | NYE            | GLW       |               0 |               1350 |           0    |
+| VIEJO                          | ORANGE         | SCE       |               0 |               1000 |           0    |
 | LOS BANOS                      | MERCED         | PGAE      |             400 |               1995 |           0.17 |
 | LUGO                           | SAN BERNARDINO | SCE       |            1798 |               4453 |           0.29 |
 
@@ -165,8 +165,8 @@ These developers had upgrade cost estimates in hand when they left. That is the 
 | DELANEY SUBSTATION                 | MARICOPA        |           850 | none            |        0.71 |
 | HASSAYAMPA                         | MARICOPA        |           700 | none            |        0.63 |
 | MIRA LOMA SUBSTATION               | SAN BERNARDINO  |           660 | ambiguous       |        0.5  |
-| WALNUT SUBSTATION                  | LOS ANGELES     |           600 | ambiguous       |        0.5  |
 | TEHACHAPI CONCEPTUAL SUBSTATION #1 | KERN            |           600 | county-centroid |        0.3  |
+| WALNUT SUBSTATION                  | LOS ANGELES     |           600 | ambiguous       |        0.5  |
 | OTAY MESA SWITCHYARD               | SAN DIEGO       |           550 | county-centroid |        0.3  |
 
 ## Caveats (say these out loud to any reader)
