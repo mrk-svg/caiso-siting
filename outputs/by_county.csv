@@ -1,5 +1,5 @@
 county,active_projects,active_mw,active_storage_mw,withdrawn_projects,withdrawn_mw,withdrawn_storage_mw,completed_projects,completed_mw,completed_storage_mw,withdrawal_rate_by_count,withdrawal_rate_by_mw
-KERN,42.0,11171.8,8097.5,285.0,48552.8,11584.8,47.0,5975.9,1547.0,0.8,0.7
+KERN,42.0,11171.8,8095.5,285.0,48552.8,11584.8,47.0,5975.9,1547.0,0.8,0.7
 LOS ANGELES,22.0,7436.0,6980.9,112.0,23204.0,9503.6,11.0,1466.0,0.0,0.8,0.7
 RIVERSIDE,17.0,6032.0,5972.0,106.0,33943.8,13505.4,19.0,7139.0,3251.0,0.7,0.7
 FRESNO,26.0,4883.3,4511.7,168.0,20355.7,9012.0,15.0,1579.0,209.0,0.8,0.8

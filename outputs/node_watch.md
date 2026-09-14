@@ -1,6 +1,6 @@
-# CAISO Node Watch — draft 2026-09-08
+# CAISO Node Watch — draft 2026-09-14
 
-Sources: CAISO Public Queue Report (run date 2026-09-07), CAISO Cluster 15 report (posted 2026-07-16),
+Sources: CAISO Public Queue Report (run date 2026-09-14), CAISO Cluster 15 report (posted 2026-07-16),
 CAISO notice "PG&E information on POI availability for Cluster 16" (2026-01-15), OpenStreetMap substations (ODbL).
 All MW are net-to-grid as filed. No figure below states a *cause*; the CAISO files carry none.
 
@@ -150,7 +150,6 @@ These developers had upgrade cost estimates in hand when they left. That is the 
 | poi_base                           | county          |   pipeline_mw | geo_method      |   geo_score |
 |:-----------------------------------|:----------------|--------------:|:----------------|------------:|
 | RED BLUFF SUBSTATION               | RIVERSIDE       |          3592 | ambiguous       |        0.5  |
-| DELANEY-COLORADO RIVER             | MARICOPA        |          3200 | line-one-end    |        0.7  |
 | TROUT CANYON SUBSTATION            | CLARK           |          3000 | county-centroid |        0.3  |
 | MANNING                            | FRESNO          |          2662 | county-centroid |        0.3  |
 | VALLEY SWITCH                      | NYE             |          2000 | county-centroid |        0.3  |
