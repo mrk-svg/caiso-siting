@@ -233,6 +233,37 @@ def test_tpd_cols_lists_every_per_node_column(tpd_dir):
     assert "tpd25_unalloc_mw" in nodes.TPD_COLS and "tpd25_unknown_mw" in nodes.TPD_COLS
 
 
+def test_per_node_splits_requests_and_refusals_by_allocation_group(tpd_dir):
+    """A 0 % on a group-A (executed PPA) request is a different fact from a 0 % on group D (no PPA)."""
+    pn = tpd.per_node(tpd.load_all(), PROJECTS)
+    v = pn.loc["VINCENT"]                         # 1402: two group-A requests, both at 0 %
+    assert v.tpd25_req_A_mw == 330 and v.tpd25_denied_A_mw == 330 and v.tpd25_denied_ppa_mw == 330
+    assert v.tpd25_req_B_mw == 0 and v.tpd25_denied_D_mw == 0
+    vd = pn.loc["VACA DIXON"]                     # 1223: group B, 60 % — not a refusal
+    assert vd.tpd25_req_B_mw == 100 and vd.tpd25_denied_B_mw == 0 and vd.tpd25_denied_ppa_mw == 0
+    w = pn.loc["WHIRLWIND"]                       # 297 + 1001: group A, fully allocated
+    assert w.tpd25_req_A_mw == 500 and w.tpd25_denied_A_mw == 0
+    for g in tpd.GROUP_ORDER:                     # group columns partition the totals
+        assert (pn[f"tpd25_denied_{g}_mw"] <= pn[f"tpd25_req_{g}_mw"]).all()
+    assert (pn[[f"tpd25_req_{g}_mw" for g in tpd.GROUP_ORDER]].sum(axis=1) == pn.tpd25_req_mw).all()
+    assert (pn[[f"tpd25_denied_{g}_mw" for g in tpd.GROUP_ORDER]].sum(axis=1) == pn.tpd25_denied_mw).all()
+    assert set(tpd.GROUPS) == {"A", "B", "C", "D"}
+
+
+def test_node_rows_one_row_per_request_with_group_and_name(tpd_dir):
+    projects = PROJECTS.assign(project_name=["P297", "P1001", "P1402", "P1223", "P1048", "P3001", "P999", "F", "P297"])
+    rows = tpd.node_rows(tpd.load_all(), projects)
+    v = rows[rows.node_key == "VINCENT"]
+    assert len(v) == 2 and set(v.allocation_group) == {"A"} and set(v.project_name) == {"P1402"}
+    assert (v.allocation_pct == 0).all() and v.mw_requested.sum() == 330
+    assert "2179-WD" not in set(rows.queue_id) and "WDT1532" not in set(rows.queue_id)
+    assert set(rows.columns) >= {"node_key", "tpd_year", "queue_id", "project_name", "allocation_group",
+                                 "mw_requested", "allocation_pct", "mw_allocated", "status"}
+    # tolerant of a projects frame without names (old snapshots)
+    assert (tpd.node_rows(tpd.load_all(), PROJECTS).project_name == "").all()
+    assert tpd.node_rows(tpd.load_all().iloc[0:0], PROJECTS).empty
+
+
 def test_per_node_ignores_non_queue_ids(tpd_dir):
     projects = pd.DataFrame({"queue_position": ["WDT1532", "2179-WD"], "node_key": ["X", "Y"]})
     pn = tpd.per_node(tpd.load_all(), projects)

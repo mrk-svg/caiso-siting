@@ -51,6 +51,33 @@ CLUSTER_COHORTS = ["C10", "C11", "C12", "C13", "C14", "C15"]
 # that the file could not have observed. Censor C15 at its posting date instead.
 C15_CENSOR_DATE = "2026-07-16"
 TECH_CLUSTERS = ["C13", "C14", "C15"]
+
+# The process each cohort entered under. Attrition compares regimes, not only nodes: a cluster that had to
+# prove site control and pay higher deposits to be in the queue at all will show a flatter curve for that
+# reason alone. Window = the queue_date the CAISO file carries (C15's is the post-scoring date, see below).
+# Sources: CAISO Cluster 15 intake scoring summary (2025-06-12); FERC order on CAISO's Cluster 14
+# procedures (2021-09-24) as reported at the time; queue dates from the files themselves.
+REGIMES = {
+    "C10": ("2017-05", "standard cluster study process"),
+    "C11": ("2018-04", "standard cluster study process"),
+    "C12": ("2019-04", "standard cluster study process"),
+    "C13": ("2020-04", "standard cluster study process"),
+    "C14": ("2021-04", "373 requests / ~150 GW — 2.4x the prior year. Special FERC-approved procedures (Sept 2021): "
+                       "Phase I cost estimates advisory only; full deposit refund on early withdrawal if Phase II costs "
+                       "exceeded Phase I by 25 % or more; Phase I results delayed to Sept 2022."),
+    "C15": ("2025-02", "First cluster scored under the 2023 IPE (commercial interest 30 %, viability 35 %, system "
+                       "need 35 %) and capped at 150 % of available capacity per constraint. 541 requests / 347 GW "
+                       "filed in the April 2023 window; 255 resubmitted Oct–Dec 2024; 145 / 68 GW proceeded to study "
+                       "(CAISO, June 2025). The queue_date in the file is 2025-02-12, so month 0 here is AFTER that cut: "
+                       "this cohort is already a filtered survivor set and its early months are not comparable to "
+                       "C10–C14's."),
+}
+REGIME_CAVEAT = ("Attrition compares regimes, not only nodes. C10–C13 entered under the standard cluster process; "
+                 "C14 entered in April 2021 at 2.4x the prior year's volume under special procedures that made Phase I "
+                 "cost estimates advisory and refunded deposits in full on early withdrawal when Phase II costs came in "
+                 "25 % or more above Phase I; C15 is the first cohort scored and capped by zone under the 2023 IPE, and "
+                 "its queue date (2025-02-12) is the post-scoring date, so the 541 → 170 intake cut happened before "
+                 "its month 0. A flatter C14 or C15 curve is partly the rule change, not only the projects or the nodes.")
 TECH_COHORTS = ["C13-C15 standalone storage", "C13-C15 solar+storage", "C13-C15 other"]
 HORIZONS = (12, 24, 36, 48, 60)
 MAX_MONTH = 120
@@ -218,7 +245,8 @@ def render_svg(long_df: pd.DataFrame, title: str = "Share of projects not yet wi
     prefix = "C13-C15 " if cohorts and all(c.startswith("C13-C15 ") for c in cohorts) else ""
     short = {c: c[len(prefix):] for c in cohorts}
     label_chars = max([len(v) for v in short.values()] + [3]) + len(" 0.00 @ 120m")
-    ml, mr, mt, mb = 48, min(270, 18 + int(7.0 * label_chars)), 48, 40
+    foot = 28 if "C15" in cohorts else 0          # two footnote lines under the axis label (regime caveat)
+    ml, mr, mt, mb = 48, min(270, 18 + int(7.0 * label_chars)), 48, 40 + foot
     pw, ph = width - ml - mr, height - mt - mb
     max_x = int(long_df.loc[long_df["survival"].notna(), "month"].max()) if long_df["survival"].notna().any() else MAX_MONTH
     max_x = max(12, math.ceil(max_x / 12) * 12)
@@ -249,7 +277,7 @@ def render_svg(long_df: pd.DataFrame, title: str = "Share of projects not yet wi
         out.append(f'<text x="{x(m):.1f}" y="{mt + ph + 16}" text-anchor="middle" fill-opacity="0.75">{m}</text>')
     out.append(f'<line x1="{ml}" x2="{ml + pw}" y1="{mt + ph}" y2="{mt + ph}" stroke="currentColor" stroke-opacity="0.6"/>')
     out.append(f'<line x1="{ml}" x2="{ml}" y1="{mt}" y2="{mt + ph}" stroke="currentColor" stroke-opacity="0.6"/>')
-    out.append(f'<text x="{ml + pw / 2:.1f}" y="{height - 8}" text-anchor="middle" fill-opacity="0.75">months since queue date</text>')
+    out.append(f'<text x="{ml + pw / 2:.1f}" y="{height - foot - 8}" text-anchor="middle" fill-opacity="0.75">months since queue date</text>')
     out.append(f'<text transform="translate(12,{mt + ph / 2:.1f}) rotate(-90)" text-anchor="middle" fill-opacity="0.75">S(t)</text>')
     # series
     label_slots: list[tuple[float, str, str]] = []
@@ -282,9 +310,15 @@ def render_svg(long_df: pd.DataFrame, title: str = "Share of projects not yet wi
     lx = ml
     for i, c in enumerate(cohorts):
         col = PALETTE[i % len(PALETTE)]
+        lbl = f"{c} ({REGIMES[c][0][:4]}{'*' if c == 'C15' else ''})" if c in REGIMES else c
         out.append(f'<rect x="{lx}" y="{mt - 18}" width="14" height="3" fill="{col}"/>')
-        out.append(f'<text x="{lx + 18}" y="{mt - 13}" font-size="11" fill-opacity="0.85">{c}</text>')
-        lx += 26 + 7 * len(c)
+        out.append(f'<text x="{lx + 18}" y="{mt - 13}" font-size="11" fill-opacity="0.85">{lbl}</text>')
+        lx += 26 + 6.5 * len(lbl)
+    if foot:
+        out.append(f'<text x="{ml}" y="{height - 18}" font-size="10" fill-opacity="0.7">* C15 month 0 is its '
+                   f'post-scoring queue date (2025-02); the 2023 intake cut (541 → 170 requests) precedes it.</text>')
+        out.append(f'<text x="{ml}" y="{height - 6}" font-size="10" fill-opacity="0.7">Curves compare process '
+                   f'regimes, not only nodes — see the regime table.</text>')
     out.append("</svg>")
     return "\n".join(out)
 
@@ -339,6 +373,7 @@ def findings(summary: pd.DataFrame) -> str:
                f"{int(clus['events'].sum())} withdrawals are events, {comp} rows are censored (active at the report run "
                f"date or completed at their on-line date — completion is success, not an event), and {excl} rows were "
                f"excluded for missing or inconsistent dates.")
+    out.append(REGIME_CAVEAT)
     return " ".join(out)
 
 
@@ -351,6 +386,11 @@ def summary_markdown(summary: pd.DataFrame) -> str:
     d["median_survival_months"] = d["median_survival_months"].map(lambda v: "not reached" if math.isnan(v) else f"{v:.0f}")
     d["mw_total"] = d["mw_total"].map(lambda v: f"{v:,.0f}")
     return d.to_markdown(index=False, colalign=("left",) + ("right",) * (len(cols) - 1), disable_numparse=True)
+
+
+def regimes_markdown() -> str:
+    rows = [{"cohort": c, "queue window": w, "process the cohort entered under": d} for c, (w, d) in REGIMES.items()]
+    return pd.DataFrame(rows).to_markdown(index=False)
 
 
 def write_markdown(summary: pd.DataFrame, run_date: str, text: str) -> str:
@@ -375,6 +415,10 @@ is the last month that holds). No figure states a cause; the CAISO files carry n
 ## Findings
 
 {text}
+
+## Process regime by cohort
+
+{regimes_markdown()}
 
 Full monthly table: `survival_by_cluster.csv`. Definitions: `DATA.md`.
 """

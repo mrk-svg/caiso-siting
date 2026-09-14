@@ -24,7 +24,10 @@ Not a "Grid-Ready Score". Transparent, sourced layers — every number traceable
 
 - how much is queued there now (Cluster 14 and earlier + Cluster 15), what is operating, what withdrew since 2022,
   and whether the withdrawals were storage (`storage_churn`) or 2008-era wind and solar
-- what CAISO actually *allocated* in the 2024 and 2025 TPD cycles vs what was requested (`tpd25_alloc_mw`, `tpd25_unalloc_mw`)
+- what CAISO actually *allocated* in the 2024 and 2025 TPD cycles vs what was requested, and whether a refusal hit a
+  contracted project (group A/B) or an uncontracted one (group D) (`tpd25_alloc_mw`, `tpd25_unalloc_mw`, `tpd25_denied_ppa_mw`)
+- whether the substation is inside a CAISO Local Capacity Area — the Resource Adequacy geography — or named as
+  outside one (`lcr_status`, from the Local Capacity Technical Report)
 - whether the utility has published an official Cluster 16 POI availability statement for it
 - how fast each cluster's projects withdraw (Kaplan–Meier by cluster and technology)
 - distribution-level (WDAT) requests at the same substation
@@ -38,7 +41,7 @@ Every row carries `source_file`, `source_run_date`, `pipeline_commit`. `DATA.md`
     python3 -m venv .venv && source .venv/bin/activate   # Homebrew/Debian Python refuse system-wide installs (PEP 668)
     pip install -e ".[dev]"        # Python 3.10+; pandas, openpyxl, requests, tabulate
     caiso-siting --help
-    python -m pytest -q            # 308 tests, ~12 s
+    python -m pytest -q            # 317 tests, ~12 s
 
 ## Layout
 

@@ -91,6 +91,9 @@ Same canonical names where the concept matches. Differences:
 | `tpd25_unalloc_mw` | MW | `tpd25_req_mw − tpd25_alloc_mw`: MW refused outright **plus** the remainder left by partial allocations | yes — **this is "what the developer did not get"**, and the number to quote over `tpd25_denied_mw` |
 | `tpd25_unknown_mw` | MW | MW requested by rows carrying no allocation percentage in the file; 0 today | yes, as a completeness check |
 | `tpd24_fcdsa_projects`, `tpd24_pcdsa_projects` | n | projects allocated Full / Partial Capacity in the 2024 cycle (that file carries no MW) | yes |
+| `tpd25_req_A_mw` … `tpd25_req_D_mw`, `tpd25_denied_A_mw` … `tpd25_denied_D_mw` | MW | the same request / refused MW split by CAISO allocation group: A = executed PPA (or LSE own load), B = shortlisted / negotiating a PPA, C = already operating, D = no PPA, Section 8.9.2.3 path (2025 TPD Allocation Report, 2026-04-13) | yes — say the group |
+| `tpd25_denied_ppa_mw` | MW | refused MW in groups A + B: contracted or shortlisted projects that did not get deliverability | yes — **the refusal that matters**; a 0 % in group D is the expected result for an uncontracted project |
+| `lcr_area`, `lcr_sub_area`, `lcr_status`, `lcr_note`, `lcr_source` | text | Local Capacity Area (Resource Adequacy geography) from `data/lcr_areas.csv`: `lcr_status` is `in <area>` or `outside <area>` as the LCT report's boundary lists state it; blank = **not encoded**, never "outside every area" | yes, citing the report; quote `lcr_note` where it carries a voltage split |
 | `wdat_active_projects`, `wdat_active_mw` | n / MW | ACTIVE requests in the wholesale distribution (WDAT) queue at the **same substation** — `data/wdat_pge.xlsx`, PG&E only today. A WDAT request connects below CAISO's transmission grid and carries **no CAISO deliverability** unless separately studied | yes, never as CAISO pipeline |
 | `wdat_active_storage_mw` | MW | storage MW attributed from `wdat_active_mw` — **an assumption**: the PG&E file publishes one MW figure per request, so storage-only requests count in full and solar+storage requests count at half. Today: 160 of 1,011 active requests carry storage, and 362 of their 479 MW is attributed as storage. The split is not published | only with the assumption stated |
 | `wdat_inservice_mw` | MW | WDAT MW already in service at that substation | yes |
@@ -178,6 +181,19 @@ Snapshot: the `TRACKED` columns of both reports keyed `PUBLIC:<queue_position>` 
 ## `data/poi_availability.csv` (hand-maintained)
 
 `poi, utility, status, note, source, date` — one row per POI per notice. Encode only what a source says by name. Latest `date` wins in the join.
+
+## `data/lcr_areas.csv` (hand-maintained) — substation → Local Capacity Area
+
+`substation, utility, lcr_area, lcr_sub_area, relation (in|out), note, source, source_date`. Encoded from the
+"substations that delineate the area" lists in CAISO's Local Capacity Technical Report (section 3.3.x.1 of each area).
+The report names boundary stations only. A station whose low-voltage bus is in and high-voltage yard is out (Gates
+70 kV in, 230 kV out) is encoded `out` with a note, because queue POIs sit on the high side. `utility` disambiguates
+same-name stations (Eagle Rock: PG&E vs SCE). Values must not contain `#`.
+
+## `outputs/tpd_node_rows.csv` — one row per TPD allocation request, joined to its node
+
+`node_key, tpd_year, queue_id, project_name, allocation_group, status, mw_requested, allocation_pct, mw_allocated`
+— the rows behind each node page's "TPD allocation requests at this node" table.
 
 ## `data/poi_pnodes.csv` (hand-maintained) — node → OASIS pricing node
 

@@ -27,6 +27,11 @@ Per-node columns added to nodes.csv:
   tpd25_unknown_mw      MW requested by rows with no allocation percentage in the file (0 today)
   tpd24_fcdsa_projects  projects allocated Full Capacity in the 2024 cycle
   tpd24_pcdsa_projects  projects allocated Partial Capacity in the 2024 cycle
+  tpd25_req_{A,B,C,D}_mw / tpd25_denied_{A,B,C,D}_mw
+                        the same request / refused MW split by CAISO allocation group (GROUPS below)
+  tpd25_denied_ppa_mw   refused MW in groups A + B — projects that had (or were shortlisted for) a PPA.
+                        A 0 % in group D is the expected outcome for a project without a PPA; a 0 % in
+                        group A is a refusal of a contracted project and is the number to quote.
 The 2024 file carries no MW, so 2024 is counts only.
 """
 from __future__ import annotations
@@ -40,6 +45,16 @@ import pandas as pd
 from .config import DATA, OUT, add_provenance
 
 FILES = {2024: "tpd_2024.xlsx", 2025: "tpd_2025.xlsx"}
+
+# CAISO allocation groups, ranked in allocation order. Wording from the 2025 Transmission Plan
+# Deliverability Allocation Report (CAISO, 2026-04-13); tariff Appendix DD section 8.9.2.
+GROUPS = {
+    "A": "executed power purchase agreement requiring FCDS, or an LSE serving its own load",
+    "B": "shortlisted for, or actively negotiating, a power purchase agreement",
+    "C": "already in commercial operation for the capacity seeking TP deliverability",
+    "D": "no PPA; electing the Section 8.9.2.3 (financial-security) path",
+}
+GROUP_ORDER = list(GROUPS)
 
 
 def _find_header(path: Path) -> int:
@@ -111,11 +126,40 @@ def per_node(tpd: pd.DataFrame, projects: pd.DataFrame) -> pd.DataFrame:
     # requested - allocated: the part that was refused outright PLUS the part a partial percentage
     # left behind. Publishing "denied" alone understates what a developer did not get.
     g25["tpd25_unalloc_mw"] = (g25.tpd25_req_mw - g25.tpd25_alloc_mw).round(1)
+    # by allocation group: a refusal means something different for a contracted project (A) than for
+    # one with no PPA (D). Groups outside A-D (none in the 2025 file) fall into the totals only.
+    grp = t25.allocation_group.str.strip().str.upper().str.replace("GROUP ", "", regex=False)
+    for g in GROUP_ORDER:
+        sub = t25[grp == g]
+        g25[f"tpd25_req_{g}_mw"] = sub.groupby("node_key").mw_requested.sum()
+    for g in GROUP_ORDER:
+        sub = t25[grp == g]
+        g25[f"tpd25_denied_{g}_mw"] = sub[sub.allocation_pct == 0].groupby("node_key").mw_requested.sum()
+    g25 = g25.fillna(0)
+    g25["tpd25_denied_ppa_mw"] = g25.tpd25_denied_A_mw + g25.tpd25_denied_B_mw
     g24 = t24.groupby("node_key").agg(
         tpd24_fcdsa_projects=("status", lambda s: (s == "FCDSA").sum()),
         tpd24_pcdsa_projects=("status", lambda s: (s == "PCDSA").sum()),
     )
     return g25.join(g24, how="outer").fillna(0).round(1)
+
+
+def node_rows(tpd: pd.DataFrame, projects: pd.DataFrame) -> pd.DataFrame:
+    """Every generator-queue TPD request joined to its node and project name — one row per request,
+    for the per-node pages (outputs/tpd_node_rows.csv)."""
+    cols = ["node_key", "tpd_year", "queue_id", "project_name", "allocation_group", "status",
+            "mw_requested", "allocation_pct", "mw_allocated"]
+    if tpd.empty:
+        return pd.DataFrame(columns=cols)
+    key = projects.copy()
+    if "project_name" not in key:
+        key["project_name"] = ""
+    key = key[["queue_position", "node_key", "project_name"]].dropna(subset=["queue_position", "node_key"]) \
+        .drop_duplicates("queue_position")
+    key["queue_position"] = key.queue_position.astype(str).str.strip()
+    t = tpd[tpd.in_generator_queue].merge(key, left_on="queue_id", right_on="queue_position", how="inner")
+    t["allocation_group"] = t.allocation_group.str.strip().str.upper().str.replace("GROUP ", "", regex=False)
+    return t[cols].sort_values(["node_key", "tpd_year", "allocation_group", "queue_id"]).reset_index(drop=True)
 
 
 def main() -> None:
@@ -131,6 +175,12 @@ def main() -> None:
         if s.mw_requested.notna().any():
             line += (f"; requested {s.mw_requested.sum():,.0f} MW, allocated {s.mw_allocated.sum():,.0f} MW, "
                      f"{(s.allocation_pct == 0).sum()} rows at 0 %")
+            gs = s.assign(_grp=s.allocation_group.str.replace("GROUP ", "", regex=False),
+                          _den=s.mw_requested.where(s.allocation_pct == 0, 0.0))
+            g = gs.groupby("_grp").agg(req=("mw_requested", "sum"), alloc=("mw_allocated", "sum"),
+                                       denied=("_den", "sum")).round(0)
+            line += "\n  by group: " + "; ".join(
+                f"{k} {r.req:,.0f} req / {r.alloc:,.0f} alloc / {r.denied:,.0f} denied" for k, r in g.iterrows())
         else:
             line += f"; {(s.status == 'FCDSA').sum()} FCDSA, {(s.status == 'PCDSA').sum()} PCDSA"
         print(line)

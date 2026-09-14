@@ -1,5 +1,32 @@
 # Changelog
 
+## 1.4.0 — 2026-09-14 — what a siting engineer asks in the first five minutes
+
+Four changes from a senior-engineer critique of the published site.
+
+- **Local Capacity Area per node** (`lcr.py`, `data/lcr_areas.csv`). For storage, location value is Resource
+  Adequacy first, and local RA needs a POI inside a Local Capacity Area. Encoded from the boundary-substation lists
+  in CAISO's Final 2027 Local Capacity Technical Report (118 stations, 10 areas): 38 queue nodes are inside an area
+  (Moss Landing, Tranquility, Rio Hondo, Imperial Valley, Devers, Mira Loma, Otay Mesa, Contra Costa, Pittsburg,
+  Lambie, Metcalf …) and 23 are named as outside one — Red Bluff, Vincent, Gates, Lugo, Tesla, Los Banos,
+  Antelope, Midway: the most-queued nodes in the state carry no local RA value from those areas. A station whose
+  low-voltage bus is in and high-voltage yard is out (Gates 70 vs 230 kV) is encoded out, with the note. Blank means
+  "not encoded", never "outside every area". On node pages, the index, the Node Watch note.
+- **TPD refusals by allocation group** (`tpd25_req_{A..D}_mw`, `tpd25_denied_{A..D}_mw`, `tpd25_denied_ppa_mw`,
+  `outputs/tpd_node_rows.csv`). A 0 % in group D (no PPA) is the expected outcome; a 0 % in group A or B (executed
+  or shortlisted PPA) is a contracted project refused deliverability. 2025 cycle: 8,097 of 15,007 denied MW were in
+  groups A+B. Node pages now list every TPD request at the node with its group; definitions from the 2025 TPD
+  Allocation Report (2026-04-13).
+- **Survival curves carry the process regime.** Legend shows each cohort's queue-window year; the chart footnote
+  and a regime table state that C14 entered under special FERC-approved procedures (Sept 2021; Phase I estimates
+  advisory, full refund on early withdrawal if Phase II costs ran 25 %+ over) and that C15's queue date (2025-02-12)
+  is the post-scoring date, so the 541 → 170 intake cut precedes its month 0. The findings text ends with the caveat:
+  attrition compares regimes, not only nodes.
+- **Customer names**: a critique point withdrawn on inspection — CAISO's public files carry project names only, no
+  interconnection-customer column, so there was nothing to restore. Node pages already list every project.
+
+317 tests. Data dictionary and licences updated.
+
 ## 1.3.3 — 2026-09-14 — first live run
 
 First end-to-end run on fresh downloads (CAISO run date 2026-09-14): 265 active / 74,687 MW; C15 86 active; TPD 2025

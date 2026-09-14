@@ -269,3 +269,21 @@ def test_real_cohorts_have_no_end_before_queue_rows_left(real_projects):
     s = summary.set_index("cohort")
     assert (s["excluded_end_before_queue"] >= 0).all()
     assert (s["n"] == s["events"] + s["censored"]).all()
+
+
+def test_regimes_cover_every_cluster_cohort_and_reach_chart_text_and_findings():
+    """Every cluster cohort has a regime row; the legend carries the window year; C15 carries the footnote;
+    the findings end with the regime caveat so the curves are never published without it."""
+    assert set(survival.REGIMES) == set(survival.CLUSTER_COHORTS)
+    for window, desc in survival.REGIMES.values():
+        assert window[:4].isdigit() and len(desc) > 20
+    assert survival.REGIMES["C15"][0] == "2025-02"                 # the file's queue date, not the 2023 window
+    md = survival.regimes_markdown()
+    assert "C14" in md and "2021-04" in md and "150 %" in md
+    long_df = pd.DataFrame({"cohort": ["C13"] * 3 + ["C15"] * 3, "month": [0, 1, 2] * 2,
+                            "survival": [1, .9, .8, 1, .95, .9], "at_risk": [10, 9, 8, 10, 9, 8]})
+    svg = survival.render_svg(long_df)
+    assert "C13 (2020)" in svg and "C15 (2025*)" in svg and "post-scoring queue date" in svg
+    svg13 = survival.render_svg(long_df[long_df.cohort == "C13"])
+    assert "post-scoring" not in svg13                              # footnote only when C15 is drawn
+    assert survival.REGIME_CAVEAT.startswith("Attrition compares regimes")

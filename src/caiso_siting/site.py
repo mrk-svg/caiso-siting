@@ -24,6 +24,7 @@ import pandas as pd
 
 from .config import OUT, RECENT_YEARS, SITE
 from .nodes import APPROX_METHODS
+from .tpd import GROUPS
 
 DISCLAIMER = ('No figure on this site states a cause. CAISO files carry no withdrawal reason beyond '
               '"IC Request".')
@@ -58,7 +59,20 @@ METRIC_DEFS = [
     ("tpd25_unalloc_mw", "requested minus allocated: MW refused outright PLUS the remainder left by partial "
                          "allocations — quote this for 'what the developer did not get'"),
     ("tpd25_unknown_mw", "MW requested by rows with no allocation percentage in the file; 0 today"),
+    ("tpd25_req_A_mw", "of tpd25_req_mw, requested in allocation group A: executed PPA (or LSE own load)"),
+    ("tpd25_req_B_mw", "of tpd25_req_mw, requested in allocation group B: shortlisted / negotiating a PPA"),
+    ("tpd25_req_C_mw", "of tpd25_req_mw, requested in allocation group C: already in commercial operation"),
+    ("tpd25_req_D_mw", "of tpd25_req_mw, requested in allocation group D: no PPA, Section 8.9.2.3 path"),
+    ("tpd25_denied_A_mw", "of tpd25_denied_mw, refused at 0 % in group A"),
+    ("tpd25_denied_B_mw", "of tpd25_denied_mw, refused at 0 % in group B"),
+    ("tpd25_denied_C_mw", "of tpd25_denied_mw, refused at 0 % in group C"),
+    ("tpd25_denied_D_mw", "of tpd25_denied_mw, refused at 0 % in group D"),
+    ("tpd25_denied_ppa_mw", "refused MW in groups A + B: contracted or shortlisted projects that did not get "
+                            "deliverability; the refusal that matters"),
     ("tpd24_fcdsa_projects", "projects at the node allocated Full Capacity in the 2024 cycle"),
+    ("lcr_status", "CAISO Local Capacity Area (Resource Adequacy geography): 'in <area>' or 'outside <area>' as the "
+                   "LCT report's boundary lists state it; blank = not encoded, never 'outside every area'"),
+    ("lcr_sub_area", "sub-area / load pocket within that area, when the LCT report delineates it"),
     ("wdat_active_projects", f"active WDAT requests at the same substation ({WDAT_NOTE})"),
     ("wdat_active_mw", "MW of active WDAT (distribution-level) requests at the same substation (PG&E file today)"),
     ("wdat_active_storage_mw", "storage MW attributed from wdat_active_mw — an assumption: the PG&E file "
@@ -70,7 +84,8 @@ METRIC_DEFS = [
 ]
 
 TOP_COLS = ["poi_base", "county", "utility", "legacy_active_mw", "c15_active_mw", "operating_mw",
-            "wd_recent_mw", "storage_churn", "c15_survival", "tpd25_denied_mw", "wdat_active_mw", "c16_poi_status"]
+            "wd_recent_mw", "storage_churn", "c15_survival", "tpd25_denied_mw", "wdat_active_mw", "lcr_status",
+            "c16_poi_status"]
 
 CSS = """
 :root{--fg:#1b1b1b;--muted:#5b5b5b;--bg:#fbfbf9;--line:#dcdcd6;--card:#fff;--accent:#1d4ed8;--warn:#9a3412;--warnbg:#fff4ec}
@@ -157,10 +172,14 @@ def fmt(col: str, v) -> str:
     """MW columns as integers with thousands separators, ratios to 2 dp, NaN as n/a."""
     if v is None or (isinstance(v, float) and pd.isna(v)) or v == "":
         return "n/a" if col in ("storage_churn", "churn_alltime", "c15_survival", "geo_score") else ""
-    if col.endswith("_mw") or col.endswith("_projects"):
+    if col.endswith("_mw") or col.endswith("_projects") or col in ("mw_requested", "mw_allocated"):
         return f"{float(v):,.0f}"
     if col in ("storage_churn", "churn_alltime", "c15_survival", "geo_score"):
         return f"{float(v):.2f}"
+    if col == "allocation_pct":
+        return f"{float(v):.0%}"
+    if col == "tpd_year":
+        return str(v).split(".")[0]
     if col in ("lat", "lon"):
         return f"{float(v):.5f}"
     return esc(v)
@@ -168,7 +187,7 @@ def fmt(col: str, v) -> str:
 
 def is_num(col: str) -> bool:
     return col.endswith(("_mw", "_projects")) or col in ("storage_churn", "churn_alltime", "c15_survival", "geo_score", "lat", "lon",
-                                          "queue_position")
+                                          "queue_position", "allocation_pct", "tpd_year", "queue_id", "mw_requested", "mw_allocated")
 
 
 def date_only(v) -> str:
@@ -378,6 +397,7 @@ def index_page(nodes: pd.DataFrame, projects: pd.DataFrame, slugs: dict[str, str
         .sort_values("tpd25_req_mw", ascending=False).head(15)
     wdat_top = nodes[nodes.get("wdat_active_mw", pd.Series(0, index=nodes.index)) > 0] \
         .sort_values("wdat_active_mw", ascending=False).head(10)
+    group_legend = "; ".join(f"{g} = {esc(d)}" for g, d in GROUPS.items())
     body = f"""<h1>CAISO interconnection nodes</h1>
 <p class="sub">Public Queue Report + Cluster 15 report, unified per point of interconnection, joined to official
 Cluster 16 POI statements. CAISO report run date {esc(prov['run_date'])}. Every number traces to a CAISO row.</p>
@@ -387,15 +407,21 @@ Cluster 16 POI statements. CAISO report run date {esc(prov['run_date'])}. Every 
 <a href="survival.html">Survival by cluster</a> · {n_pages} node pages.</p>
 <h2>Top 40 nodes by pipeline MW (legacy active + Cluster 15 active)</h2>
 <p class="sub">storage_churn = storage MW withdrawn in the last {RECENT_YEARS} years ÷ (active + operating storage MW).
-c15_survival = C15 active ÷ (C15 active + C15 withdrawn). Click a node for its projects and geocode provenance.</p>
+c15_survival = C15 active ÷ (C15 active + C15 withdrawn). lcr_status = CAISO Local Capacity Area (Resource Adequacy
+geography) as the 2027 Local Capacity Technical Report's boundary lists state it — "in" or "outside" a named area;
+blank means the report does not name the station, not "outside every area".
+Click a node for its projects and geocode provenance.</p>
 {table(top, TOP_COLS, links)}
 <h2>TPD allocation, 2025 cycle</h2>
 <p class="sub">Top 15 nodes by MW that sought Transmission Plan Deliverability in CAISO's 2025 allocation cycle.</p>
 {table(tpd, ['poi_base', 'county', 'utility', 'tpd25_req_mw', 'tpd25_alloc_mw', 'tpd25_unalloc_mw',
-             'tpd25_denied_mw', 'tpd24_fcdsa_projects'], links)}
+             'tpd25_denied_mw', 'tpd25_denied_ppa_mw', 'tpd25_denied_D_mw', 'tpd24_fcdsa_projects'], links)}
 <p>"Denied" is MW refused outright (0 %); "unalloc" is requested minus allocated, so it also carries the remainder
-left by partial allocations. These rows are joined through all three sheets of the public report, so a node's TPD
-history can include requests whose project has since withdrawn. The CAISO file states no reason.</p>
+left by partial allocations. A refusal is not one thing: CAISO allocates by group — {group_legend}. A 0 % in
+group D is the expected result for an uncontracted project; a 0 % in group A or B (<code>tpd25_denied_ppa_mw</code>)
+is a contracted or shortlisted project that did not get deliverability, and is the number to quote. These rows are
+joined through all three sheets of the public report, so a node's TPD history can include requests whose project has
+since withdrawn. The CAISO file states no reason.</p>
 <h2>Distribution-level (WDAT) activity at CAISO nodes</h2>
 <p class="sub">Top 10 CAISO nodes by active MW in the wholesale distribution (WDAT) queue at the same substation.</p>
 {table(wdat_top, ['poi_base', 'county', 'utility', 'wdat_active_projects', 'wdat_active_mw', 'wdat_inservice_mw'], links)}
@@ -410,12 +436,24 @@ The latest dated statement per POI wins.</p>
     return render("Home", body, "", prov)
 
 
-def node_page(r: pd.Series, projects: pd.DataFrame, prov: dict, wdat: pd.DataFrame | None = None) -> str:
+def node_page(r: pd.Series, projects: pd.DataFrame, prov: dict, wdat: pd.DataFrame | None = None,
+              tpd_rows: pd.DataFrame | None = None) -> str:
     title = r.poi_base or r.node_key
     status = str(r.get("c16_poi_status") or "")
     c16 = ""
     if status:
         c16 = (f'<p><b>Official Cluster 16 POI statement: {esc(status)}</b> — {esc(r.get("c16_poi_note", ""))}</p>')
+    lcr_status = str(r.get("lcr_status") or "")
+    lcr_line = ""
+    if lcr_status:
+        sub = str(r.get("lcr_sub_area") or "")
+        note = str(r.get("lcr_note") or "")
+        head = (f"Local Capacity Area: {esc(r.get('lcr_area'))}" if lcr_status.startswith("in ")
+                else f"{esc(lcr_status[0].upper() + lcr_status[1:])} local area boundary")
+        lcr_line = (f'<p><b>{head}</b>{(" · sub-area " + esc(sub)) if sub else ""}'
+                    f'{(" — " + esc(note)) if note else ""} '
+                    f'<span class="sub">({esc(r.get("lcr_source", ""))}; Resource Adequacy geography — the report '
+                    f'names only boundary substations, so an unlabelled node is "not encoded", not "outside")</span></p>')
     metrics = "".join(
         f'<tr><td><code>{m}</code></td><td class="num">{fmt(m, r.get(m))}</td><td class="wrap">{esc(d)}</td></tr>'
         for m, d in METRIC_DEFS)
@@ -452,6 +490,7 @@ def node_page(r: pd.Series, projects: pd.DataFrame, prov: dict, wdat: pd.DataFra
 <p class="sub">{esc(r.county) or 'county unknown'}{(' (' + esc(r.get('state')) + ')') if r.get('state') else ''} ·
 {esc(r.utility) or 'utility unknown'} · node key <code>{esc(r.node_key)}</code></p>
 {c16}
+{lcr_line}
 <h2>Metrics</h2>
 <div class="tbl"><table><thead><tr><th>metric</th><th class="num">value</th><th class="wrap">definition</th></tr>
 </thead>
@@ -460,12 +499,46 @@ def node_page(r: pd.Series, projects: pd.DataFrame, prov: dict, wdat: pd.DataFra
 <p class="sub">Both reports. cod = current on-line date (public report) or proposed on-line date (Cluster 15).
 ia_status exists only in the public report. Cluster 15 deliverability is requested, not allocated.</p>
 {table(projects, proj_cols, wrap=('project_name',))}
+{tpd_section(tpd_rows)}
 {wdat_section(wdat)}
 <h2>Geocode provenance</h2>
 {warn}
 {geo}
 """
     return render(title, body, "../", prov)
+
+
+TPD_ROW_COLS = ["tpd_year", "queue_id", "project_name", "allocation_group", "mw_requested", "allocation_pct",
+                "mw_allocated", "status"]
+
+
+def tpd_section(rows: pd.DataFrame | None) -> str:
+    """'TPD allocation requests at this node' — one row per request in CAISO's 2024/2025 results, with the
+    allocation group, so a reader can see whether a 0 % landed on a contracted (A/B) or uncontracted (D) project."""
+    if rows is None or rows.empty:
+        return ""
+    legend = "; ".join(f"{g} = {esc(d)}" for g, d in GROUPS.items())
+    return f"""<h2>TPD allocation requests at this node ({len(rows)})</h2>
+<p class="sub">CAISO Transmission Plan Deliverability allocation results, joined on queue position through all three
+sheets of the public report (a request whose project has since withdrawn still appears). 2024 rows carry no MW.
+Groups: {legend}.</p>
+{table(rows, TPD_ROW_COLS, wrap=('project_name',))}
+"""
+
+
+def load_tpd_rows() -> dict[str, pd.DataFrame]:
+    """outputs/tpd_node_rows.csv grouped by node_key (empty dict when the file is absent)."""
+    p = OUT / "tpd_node_rows.csv"
+    if not p.exists():
+        return {}
+    t = pd.read_csv(p, dtype=str, keep_default_na=False)
+    for c in TPD_ROW_COLS + ["node_key"]:
+        if c not in t:
+            t[c] = ""
+    for c in ("mw_requested", "mw_allocated", "allocation_pct"):
+        t[c] = pd.to_numeric(t[c], errors="coerce")
+    t = t.sort_values(["tpd_year", "allocation_group", "queue_id"], ascending=[False, True, True])
+    return {k: g for k, g in t.groupby("node_key")}
 
 
 def wdat_section(wdat: pd.DataFrame | None) -> str:
@@ -525,6 +598,10 @@ at least {survival.MIN_AT_RISK} projects remain at risk. Withdrawal is not failu
 {md_to_html(survival.summary_markdown(summary))}
 <h2>Findings</h2>
 <p>{esc(survival.findings(summary))}</p>
+<h2>Process regime by cohort</h2>
+<p class="sub">Read the curves against this table. A cohort that had to score, pay more, or prove site control to be in
+the queue at all will withdraw less for that reason alone.</p>
+{md_to_html(survival.regimes_markdown())}
 <p>Definitions: <code>DATA.md</code> (survival_by_cluster.csv, survival_summary.csv).</p>
 """
     return render("Survival", body, "", prov)
@@ -548,7 +625,8 @@ def main() -> None:
     nodes = pd.read_csv(nodes_path, dtype={"node_key": str, "poi_base": str, "county": str, "utility": str,
                                            "c16_poi_status": str, "c16_poi_note": str, "osm_name": str,
                                            "geo_method": str, "pipeline_commit": str, "source_run_date": str})
-    for c in ("county", "utility", "state", "c16_poi_status", "c16_poi_note", "osm_name", "geo_method", "poi_base"):
+    for c in ("county", "utility", "state", "c16_poi_status", "c16_poi_note", "osm_name", "geo_method", "poi_base",
+              "lcr_area", "lcr_sub_area", "lcr_status", "lcr_note", "lcr_source"):
         if c not in nodes:
             nodes[c] = ""
         nodes[c] = nodes[c].fillna("")
@@ -575,11 +653,13 @@ def main() -> None:
 
     by_node = {k: g for k, g in projects.groupby("node_key")} if len(projects) else {}
     wdat_by_node = load_wdat()
+    tpd_by_node = load_tpd_rows()
     empty = projects.iloc[0:0]
     for r in keep.itertuples(index=False):
         s = pd.Series(r._asdict())
         (SITE / "nodes" / f"{slugs[s.node_key]}.html").write_text(
-            node_page(s, by_node.get(s.node_key, empty), prov, wdat_by_node.get(s.node_key)), encoding="utf-8")
+            node_page(s, by_node.get(s.node_key, empty), prov, wdat_by_node.get(s.node_key),
+                      tpd_by_node.get(s.node_key)), encoding="utf-8")
         written += 1
 
     map_src = OUT / "nodes_map.html"

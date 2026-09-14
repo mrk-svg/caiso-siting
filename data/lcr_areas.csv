@@ -1,0 +1,130 @@
+# Local Capacity Area membership by substation, hand-encoded from the "substations that delineate the area" lists
+# in CAISO's Final 2027 Local Capacity Technical Report (dated 2026-04-29; section 3.3.x.1 "Area Definition" of each area).
+# The report names only the BOUNDARY substations of each area; interior substations are not listed and are therefore
+# not encoded here. relation = in (inside the area) | out (explicitly outside that area's boundary).
+# A station whose low-voltage bus is in and high-voltage yard is out (Gates 70 vs 230) is encoded OUT with a note,
+# because queue POIs sit on the high side. utility disambiguates same-name stations (Eagle Rock: PG&E vs SCE).
+# substation = spelling as the CAISO queue files use it where known (joined on the same node key as the queue).
+# No "#" inside a value: the reader treats it as the start of a comment.
+substation,utility,lcr_area,lcr_sub_area,relation,note,source,source_date
+Bridgeville,PGAE,Humboldt,,in,,Final 2027 LCT Report,2026-04-29
+Humboldt,PGAE,Humboldt,,in,,Final 2027 LCT Report,2026-04-29
+Kekawaka,PGAE,Humboldt,,in,,Final 2027 LCT Report,2026-04-29
+Garberville,PGAE,Humboldt,,in,,Final 2027 LCT Report,2026-04-29
+Maple Creek,PGAE,Humboldt,,in,,Final 2027 LCT Report,2026-04-29
+Low Gap,PGAE,Humboldt,,out,,Final 2027 LCT Report,2026-04-29
+Wildwood,PGAE,Humboldt,,out,,Final 2027 LCT Report,2026-04-29
+Cottonwood,PGAE,Humboldt,,out,,Final 2027 LCT Report,2026-04-29
+Trinity,PGAE,Humboldt,,out,,Final 2027 LCT Report,2026-04-29
+Ridge Cabin,PGAE,Humboldt,,out,,Final 2027 LCT Report,2026-04-29
+Mendocino,PGAE,North Coast/North Bay,,in,,Final 2027 LCT Report,2026-04-29
+Indian Valley,PGAE,North Coast/North Bay,,in,,Final 2027 LCT Report,2026-04-29
+Eagle Rock,PGAE,North Coast/North Bay,,in,,Final 2027 LCT Report,2026-04-29
+Highlands,PGAE,North Coast/North Bay,,in,,Final 2027 LCT Report,2026-04-29
+Homestake,PGAE,North Coast/North Bay,,in,,Final 2027 LCT Report,2026-04-29
+Willits,PGAE,North Coast/North Bay,,in,,Final 2027 LCT Report,2026-04-29
+Laytonville,PGAE,North Coast/North Bay,,in,,Final 2027 LCT Report,2026-04-29
+Lakeville,PGAE,North Coast/North Bay,,in,,Final 2027 LCT Report,2026-04-29
+Tulucay,PGAE,North Coast/North Bay,,in,,Final 2027 LCT Report,2026-04-29
+Ignacio,PGAE,North Coast/North Bay,,in,,Final 2027 LCT Report,2026-04-29
+Cortina,PGAE,North Coast/North Bay,,out,,Final 2027 LCT Report,2026-04-29
+Vaca Dixon,PGAE,North Coast/North Bay,,out,,Final 2027 LCT Report,2026-04-29
+Crockett,PGAE,North Coast/North Bay,,out,,Final 2027 LCT Report,2026-04-29
+Rio Oso,PGAE,Sierra,,in,,Final 2027 LCT Report,2026-04-29
+Palermo,PGAE,Sierra,,in,,Final 2027 LCT Report,2026-04-29
+Pease,PGAE,Sierra,,in,,Final 2027 LCT Report,2026-04-29
+Drum,PGAE,Sierra,,in,,Final 2027 LCT Report,2026-04-29
+Spaulding,PGAE,Sierra,,in,,Final 2027 LCT Report,2026-04-29
+Tamarack,PGAE,Sierra,,in,,Final 2027 LCT Report,2026-04-29
+Brighton,PGAE,Sierra,,in,,Final 2027 LCT Report,2026-04-29
+Gold Hill,PGAE,Sierra,,in,,Final 2027 LCT Report,2026-04-29
+Lodi,PGAE,Sierra,,in,Lodi 230 kV is in Sierra; the Lodi 60 kV bus is also in the Stockton Lockeford sub-area,Final 2027 LCT Report,2026-04-29
+Table Mountain,PGAE,Sierra,,out,,Final 2027 LCT Report,2026-04-29
+Caribou,PGAE,Sierra,,out,,Final 2027 LCT Report,2026-04-29
+Summit Metering Station,PGAE,Sierra,,out,,Final 2027 LCT Report,2026-04-29
+Eight Mile,PGAE,Sierra,,out,,Final 2027 LCT Report,2026-04-29
+Lake,PGAE,Sierra,,out,,Final 2027 LCT Report,2026-04-29
+Tracy,PGAE,Stockton,Tesla-Bellota,in,,Final 2027 LCT Report,2026-04-29
+Salado,PGAE,Stockton,Tesla-Bellota,in,,Final 2027 LCT Report,2026-04-29
+Manteca,PGAE,Stockton,Tesla-Bellota,in,,Final 2027 LCT Report,2026-04-29
+Schulte,PGAE,Stockton,Tesla-Bellota,in,,Final 2027 LCT Report,2026-04-29
+Bellota,PGAE,Stockton,Tesla-Bellota,out,Bellota 230 kV is out (of Stockton and of Sierra); only the Bellota 115 kV bus is inside the Tesla-Bellota sub-area,Final 2027 LCT Report,2026-04-29
+Industrial,PGAE,Stockton,Lockeford,in,,Final 2027 LCT Report,2026-04-29
+Lockeford,PGAE,Stockton,Lockeford,out,Lockeford is the source station of the Lockeford 60 kV sub-area and is listed as out; also out of Sierra,Final 2027 LCT Report,2026-04-29
+Sobrante,PGAE,Greater Bay Area,,in,also listed as out of North Coast/North Bay,Final 2027 LCT Report,2026-04-29
+Moraga,PGAE,Greater Bay Area,,in,,Final 2027 LCT Report,2026-04-29
+Lambie SW Sta,PGAE,Greater Bay Area,,in,,Final 2027 LCT Report,2026-04-29
+Lambie Switching Station,PGAE,Greater Bay Area,,in,,Final 2027 LCT Report,2026-04-29
+Contra Costa,PGAE,Greater Bay Area,,in,"Contra Costa P.P. in the report",Final 2027 LCT Report,2026-04-29
+Kelso,PGAE,Greater Bay Area,,in,,Final 2027 LCT Report,2026-04-29
+Delta Switching Yard,PGAE,Greater Bay Area,,in,,Final 2027 LCT Report,2026-04-29
+Pittsburg,PGAE,Greater Bay Area,,in,,Final 2027 LCT Report,2026-04-29
+Newark,PGAE,Greater Bay Area,,in,,Final 2027 LCT Report,2026-04-29
+Ravenswood,PGAE,Greater Bay Area,,in,,Final 2027 LCT Report,2026-04-29
+Metcalf,PGAE,Greater Bay Area,,in,,Final 2027 LCT Report,2026-04-29
+Moss Landing,PGAE,Greater Bay Area,South Bay-Moss Landing,in,,Final 2027 LCT Report,2026-04-29
+Parkway,PGAE,Greater Bay Area,,out,,Final 2027 LCT Report,2026-04-29
+Bahia,PGAE,Greater Bay Area,,out,,Final 2027 LCT Report,2026-04-29
+Peabody,PGAE,Greater Bay Area,,out,,Final 2027 LCT Report,2026-04-29
+Tesla,PGAE,Greater Bay Area,,out,Tesla is out of the Greater Bay Area and out of the Stockton (Tesla-Bellota) sub-area: a bulk station outside every local area named in the report,Final 2027 LCT Report,2026-04-29
+Coburn,PGAE,Greater Bay Area,,out,,Final 2027 LCT Report,2026-04-29
+Las Aguilas,PGAE,Greater Bay Area,,out,,Final 2027 LCT Report,2026-04-29
+Oakdale TID,PGAE,Greater Bay Area,,out,,Final 2027 LCT Report,2026-04-29
+Mustang,PGAE,Greater Fresno,,in,,Final 2027 LCT Report,2026-04-29
+Wilson,PGAE,Greater Fresno,Wilson,in,,Final 2027 LCT Report,2026-04-29
+North Merced,PGAE,Greater Fresno,,in,,Final 2027 LCT Report,2026-04-29
+Tranquility,PGAE,Greater Fresno,Panoche,in,Tranquility lines 1 and 2 (230 kV) are in; Panoche 230 kV is out,Final 2027 LCT Report,2026-04-29
+Corcoran,PGAE,Greater Fresno,,in,,Final 2027 LCT Report,2026-04-29
+Coalinga,PGAE,Greater Fresno,Coalinga,in,,Final 2027 LCT Report,2026-04-29
+Gates,PGAE,Greater Fresno,,out,Gates 230 kV (and the 500 kV yard) is out of Greater Fresno; only the Gates 70 kV bus is in,Final 2027 LCT Report,2026-04-29
+Mercy Springs,PGAE,Greater Fresno,,out,Mercy Springs 230 kV is out; only the 70 kV bus is in,Final 2027 LCT Report,2026-04-29
+Los Banos,PGAE,Greater Fresno,,out,Los Banos 230 kV (and 500 kV) is out of Greater Fresno and out of the Greater Bay Area; only the 70 kV bus is in Greater Fresno,Final 2027 LCT Report,2026-04-29
+Warnerville,PGAE,Greater Fresno,,out,,Final 2027 LCT Report,2026-04-29
+Melones,PGAE,Greater Fresno,,out,,Final 2027 LCT Report,2026-04-29
+Panoche,PGAE,Greater Fresno,,out,Panoche 230 kV is out; only the Panoche 115 kV bus is in,Final 2027 LCT Report,2026-04-29
+Smyrna,PGAE,Greater Fresno,,out,,Final 2027 LCT Report,2026-04-29
+San Miguel,PGAE,Greater Fresno,,out,,Final 2027 LCT Report,2026-04-29
+Bakersfield,PGAE,Kern,Kern PP,in,Bakersfield 230 kV,Final 2027 LCT Report,2026-04-29
+Kern PP,PGAE,Kern,Kern PP,in,,Final 2027 LCT Report,2026-04-29
+Kern Power Plant,PGAE,Kern,Kern PP,in,,Final 2027 LCT Report,2026-04-29
+Cawelo,PGAE,Kern,Kern PP,in,,Final 2027 LCT Report,2026-04-29
+Mc Farland,PGAE,Kern,Kern PP,in,,Final 2027 LCT Report,2026-04-29
+McFarland,PGAE,Kern,Kern PP,in,,Final 2027 LCT Report,2026-04-29
+Bakersfield Junction,PGAE,Kern,Kern PP,in,,Final 2027 LCT Report,2026-04-29
+South Kern Solar,PGAE,Kern,Kern PP,in,,Final 2027 LCT Report,2026-04-29
+San Emidio Junction,PGAE,Kern,Kern PP,in,,Final 2027 LCT Report,2026-04-29
+Midway,PGAE,Kern,,out,Midway 230 kV (and 500 kV) is out of the Kern area,Final 2027 LCT Report,2026-04-29
+Famoso,PGAE,Kern,,out,,Final 2027 LCT Report,2026-04-29
+Adobe Switching Station,PGAE,Kern,,out,,Final 2027 LCT Report,2026-04-29
+Wasco,PGAE,Kern,,out,,Final 2027 LCT Report,2026-04-29
+Magunden,SCE,Kern,,out,Magunden 70 kV is out of the (PG&E) Kern area,Final 2027 LCT Report,2026-04-29
+Copus,PGAE,Kern,,out,,Final 2027 LCT Report,2026-04-29
+Lakeview,PGAE,Kern,,out,,Final 2027 LCT Report,2026-04-29
+Pardee,SCE,Big Creek/Ventura,,in,,Final 2027 LCT Report,2026-04-29
+Santa Clara,SCE,Big Creek/Ventura,Santa Clara,in,,Final 2027 LCT Report,2026-04-29
+Antelope,SCE,Big Creek/Ventura,,out,Antelope 500 kV is out; only the Antelope 230 kV bus is inside Big Creek/Ventura,Final 2027 LCT Report,2026-04-29
+Sylmar,,Big Creek/Ventura,,out,also out of the LA Basin,Final 2027 LCT Report,2026-04-29
+Vincent,SCE,Big Creek/Ventura,,out,Vincent is out of Big Creek/Ventura and out of the LA Basin: a bulk station outside every local area named in the report,Final 2027 LCT Report,2026-04-29
+San Onofre,SCE,LA Basin,,in,also listed as out of San Diego-Imperial Valley,Final 2027 LCT Report,2026-04-29
+Mira Loma,SCE,LA Basin,,in,,Final 2027 LCT Report,2026-04-29
+Rancho Vista,SCE,LA Basin,,in,,Final 2027 LCT Report,2026-04-29
+Eagle Rock,SCE,LA Basin,,in,,Final 2027 LCT Report,2026-04-29
+Gould,SCE,LA Basin,,in,,Final 2027 LCT Report,2026-04-29
+Mesa,SCE,LA Basin,,in,,Final 2027 LCT Report,2026-04-29
+Rio Hondo,SCE,LA Basin,,in,,Final 2027 LCT Report,2026-04-29
+Devers,SCE,LA Basin,,in,,Final 2027 LCT Report,2026-04-29
+Mirage,SCE,LA Basin,,in,,Final 2027 LCT Report,2026-04-29
+Lugo,SCE,LA Basin,,out,Lugo is out of the LA Basin (Mira Loma and Rancho Vista are in): a bulk 500 kV station outside every local area named in the report,Final 2027 LCT Report,2026-04-29
+Red Bluff,SCE,LA Basin,,out,Red Bluff is out of the LA Basin (Devers is in),Final 2027 LCT Report,2026-04-29
+Coachella Valley,,LA Basin,,out,,Final 2027 LCT Report,2026-04-29
+Ramon,,LA Basin,,out,,Final 2027 LCT Report,2026-04-29
+Julian Hinds,,LA Basin,,out,,Final 2027 LCT Report,2026-04-29
+Imperial Valley,SDGE,San Diego-Imperial Valley,,in,,Final 2027 LCT Report,2026-04-29
+Otay Mesa,SDGE,San Diego-Imperial Valley,,in,,Final 2027 LCT Report,2026-04-29
+San Luis Rey,SDGE,San Diego-Imperial Valley,,in,also listed as out of the LA Basin,Final 2027 LCT Report,2026-04-29
+Talega,SDGE,San Diego-Imperial Valley,,in,also listed as out of the LA Basin,Final 2027 LCT Report,2026-04-29
+Capistrano,SDGE,San Diego-Imperial Valley,,in,also listed as out of the LA Basin,Final 2027 LCT Report,2026-04-29
+North Gila,,San Diego-Imperial Valley,,out,,Final 2027 LCT Report,2026-04-29
+Tijuana,,San Diego-Imperial Valley,,out,,Final 2027 LCT Report,2026-04-29
+El Centro,,San Diego-Imperial Valley,,out,,Final 2027 LCT Report,2026-04-29
+La Rosita,,San Diego-Imperial Valley,,out,,Final 2027 LCT Report,2026-04-29

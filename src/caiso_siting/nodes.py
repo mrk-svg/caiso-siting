@@ -10,6 +10,7 @@ Inputs (all free):
   data/osm_substations.csv      Overpass export (see README)
   data/poi_overrides.csv        hand-verified coordinates (win over OSM)
   data/poi_availability.csv     official per-POI availability statements (CAISO/PTO notices)
+  data/lcr_areas.csv            Local Capacity Area / sub-area per substation (CAISO LCT report), see lcr.py
 
 Outputs:
   outputs/nodes.csv, poi_geocode.csv, nodes_map.html, node_watch.md
@@ -34,6 +35,8 @@ Metric definitions (read before quoting any of them):
   tpd25_alloc_mw          MW allocated in that cycle (requested × allocation %)
   tpd25_denied_mw         MW requested by rows that received exactly 0 %
   tpd25_unalloc_mw        requested - allocated (refused + the remainder of partial allocations)
+  tpd25_req_{A..D}_mw / tpd25_denied_{A..D}_mw   the same, split by CAISO allocation group (tpd.GROUPS)
+  tpd25_denied_ppa_mw     refused MW in groups A+B (projects that had, or were shortlisted for, a PPA)
   tpd24_fcdsa_projects    projects at the node allocated Full Capacity in the 2024 cycle
   wdat_active_mw          MW of active WDAT (distribution-level) requests at the same substation (PG&E file today)
   wdat_inservice_mw       WDAT MW already in service at that substation
@@ -51,7 +54,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from . import cluster15, tpd, wdat
+from . import cluster15, lcr, tpd, wdat
 from . import queue_report as caiso_queue
 from .common import haversine_km, in_state, norm_poi, poi_endpoints
 from .config import DATA, OUT, RECENT_YEARS, add_provenance
@@ -236,8 +239,10 @@ def build_nodes(pq: pd.DataFrame, c15: pd.DataFrame) -> pd.DataFrame:
     return nodes.sort_values("pipeline_mw", ascending=False).reset_index(drop=True)
 
 
-TPD_COLS = ["tpd25_projects", "tpd25_req_mw", "tpd25_alloc_mw", "tpd25_denied_mw", "tpd25_unknown_mw",
-            "tpd25_unalloc_mw", "tpd24_fcdsa_projects", "tpd24_pcdsa_projects"]
+TPD_COLS = (["tpd25_projects", "tpd25_req_mw", "tpd25_alloc_mw", "tpd25_denied_mw", "tpd25_unknown_mw",
+             "tpd25_unalloc_mw"]
+            + [f"tpd25_req_{g}_mw" for g in tpd.GROUP_ORDER] + [f"tpd25_denied_{g}_mw" for g in tpd.GROUP_ORDER]
+            + ["tpd25_denied_ppa_mw", "tpd24_fcdsa_projects", "tpd24_pcdsa_projects"])
 
 
 def join_tpd(nodes: pd.DataFrame, pq: pd.DataFrame) -> pd.DataFrame:
@@ -256,7 +261,8 @@ def join_tpd(nodes: pd.DataFrame, pq: pd.DataFrame) -> pd.DataFrame:
         nodes[c] = nodes[c].fillna(0.0)
     hit = nodes.tpd25_projects > 0
     print(f"tpd: {hit.sum()} nodes with 2025 TPD requests; requested {nodes.tpd25_req_mw.sum():,.0f} MW, "
-          f"allocated {nodes.tpd25_alloc_mw.sum():,.0f} MW, denied {nodes.tpd25_denied_mw.sum():,.0f} MW")
+          f"allocated {nodes.tpd25_alloc_mw.sum():,.0f} MW, denied {nodes.tpd25_denied_mw.sum():,.0f} MW "
+          f"(of which {nodes.tpd25_denied_ppa_mw.sum():,.0f} MW in groups A+B, i.e. with a PPA or shortlist)")
     return nodes
 
 
@@ -472,10 +478,17 @@ def write_node_watch(nodes: pd.DataFrame, pq: pd.DataFrame, c15: pd.DataFrame) -
     survivors = nodes[nodes.c15_withdrawn_mw + nodes.c15_active_mw > 500].sort_values("c15_survival").head(8)
     avail = nodes[nodes.c16_poi_status != ""].sort_values("c16_poi_status")
     tpd_tbl = nodes[nodes.tpd25_req_mw > 0].sort_values("tpd25_req_mw", ascending=False).head(15)
+    lcr_in = nodes[(nodes.lcr_area != "") & ((nodes.pipeline_mw > 0) | (nodes.operating_mw > 0))] \
+        .sort_values("pipeline_mw", ascending=False).head(15)
+    lcr_out = nodes[nodes.lcr_status.str.startswith("outside") & (nodes.pipeline_mw >= 500)] \
+        .sort_values("pipeline_mw", ascending=False)
     approx = nodes[(nodes.pipeline_mw > 500) & nodes.geo_method.isin(APPROX_METHODS)] \
         .sort_values("pipeline_mw", ascending=False)
     wd_recent_all = pd.concat([pqw, w15]).pipe(lambda d: d[d.withdrawn_year.fillna(0) >= RECENT_FROM_YEAR])
     wd_tpd_req, wd_tpd_alloc = tpd_from_withdrawn(pq)
+    tpd_grp = "; ".join(
+        f"group {g}: {nodes[f'tpd25_req_{g}_mw'].sum():,.0f} MW requested, {nodes[f'tpd25_denied_{g}_mw'].sum():,.0f} denied"
+        for g in tpd.GROUP_ORDER if f"tpd25_req_{g}_mw" in nodes and nodes[f"tpd25_req_{g}_mw"].sum() > 0) or "no group data"
 
     whirl = nodes[nodes.node_key == "WHIRLWIND"].iloc[0] if (nodes.node_key == "WHIRLWIND").any() else None
     whirl_txt = ""
@@ -519,10 +532,14 @@ Transmission Interconnection Handbook will not reflect this "until updated, no E
 
 ## 2025 TPD allocation cycle by node — requested vs allocated vs denied (CAISO results xlsx, posted 2026-05-04)
 
-{tbl(tpd_tbl, ['poi_base','county','utility','tpd25_projects','tpd25_req_mw','tpd25_alloc_mw','tpd25_unalloc_mw','tpd25_denied_mw','tpd24_fcdsa_projects'])}
+{tbl(tpd_tbl, ['poi_base','county','utility','tpd25_projects','tpd25_req_mw','tpd25_alloc_mw','tpd25_unalloc_mw','tpd25_denied_mw','tpd25_denied_ppa_mw','tpd25_denied_D_mw','tpd24_fcdsa_projects'])}
 
 "Denied" is MW refused outright (0 %); "unalloc" is requested minus allocated, so it also carries the remainder left by
-partial allocations — quote that one for "what the developer did not get". These rows are joined through all three sheets
+partial allocations — quote that one for "what the developer did not get". A refusal is not one thing: CAISO allocates
+by group — A = executed PPA (or LSE own load), B = shortlisted / negotiating a PPA, C = already operating, D = no PPA,
+Section 8.9.2.3 path. A 0 % in group D is the expected result for an uncontracted project; a 0 % in group A or B
+(`tpd25_denied_ppa_mw`) is a contracted project that did not get deliverability, and is the number to quote. Across the
+2025 file: {tpd_grp}. These rows are joined through all three sheets
 of the public report, so a node's TPD history can include requests whose project has since withdrawn
 ({wd_tpd_req:,.0f} MW requested / {wd_tpd_alloc:,.0f} MW allocated in the 2025 cycle across all nodes).
 Allocation is CAISO's decision under Appendix DD; the file states no reason and neither does this table.
@@ -538,6 +555,18 @@ Allocation is CAISO's decision under Appendix DD; the file states no reason and 
 These developers had upgrade cost estimates in hand when they left. That is the closest thing to a cost signal in the file — it is still not a cause.
 
 {tbl(post2, ['poi_base','county','utility','wd_post_phase2_mw','pipeline_mw','operating_mw'])}
+
+## Local Capacity Areas — the Resource Adequacy geography (CAISO Final 2027 Local Capacity Technical Report)
+
+For storage, location value is RA first and energy second, and local RA needs a POI inside a Local Capacity Area.
+The report names only the substations that *delineate* each area ("X is out, Y is in"), so a node not listed here is
+"not encoded", never "outside every area". Nodes the report places INSIDE an area, by pipeline MW:
+
+{tbl(lcr_in, ['poi_base','county','utility','lcr_area','lcr_sub_area','legacy_active_mw','c15_active_mw','operating_mw','lcr_note'])}
+
+Heavily queued nodes the report names as OUTSIDE an area boundary — bulk stations with no local RA value from that area:
+
+{tbl(lcr_out, ['poi_base','county','utility','lcr_status','pipeline_mw','operating_mw','lcr_note'])}
 
 ## Cluster 15 nodes with little recent wreckage (<300 MW withdrawn since {RECENT_FROM_YEAR})
 
@@ -571,6 +600,9 @@ def main() -> None:
     pq, c15 = load_projects()
     nodes = build_nodes(pq, c15)
     nodes = join_tpd(nodes, pq)
+    # per-request rows for the node pages (written here, not in join_tpd, so tests never touch outputs/)
+    tpd.node_rows(tpd.load_all(), pq).to_csv(OUT / "tpd_node_rows.csv", index=False)
+    nodes = lcr.join(nodes)
     nodes = join_wdat(nodes)
     nodes = join_lmp(nodes)
     nodes = join_availability(nodes)
