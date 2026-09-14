@@ -47,23 +47,33 @@ jobs:
         run: caiso-siting weekly
 
       - name: Commit snapshot, outputs and site
+        id: commit
         env:
           RUN_DATE: ${{ steps.stamp.outputs.date }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Every run re-stamps pipeline_run in 300+ files, so "did anything change" cannot be answered by
+          # git diff. The snapshot directory is named by CAISO's report run date: if that directory is already
+          # tracked, CAISO has not published a new file since the last run and there is nothing to record.
+          latest=$(ls -d data/snapshots/*/ | sort | tail -1)
+          if git ls-files --error-unmatch "${latest}projects.csv" >/dev/null 2>&1; then
+            echo "CAISO run date $(basename "${latest}") already snapshotted; no new data, skipping commit"
+            echo "new_snapshot=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "new_snapshot=true" >> "$GITHUB_OUTPUT"
           # quoted pathspecs: git expands them and silently skips .gitignore'd files
           # (raw xlsx snapshots, outputs/projects_all.csv, outputs/cluster15_projects.csv)
           git add -- 'data/snapshots/*/projects.csv' 'outputs/*.csv' 'outputs/*.md' 'outputs/nodes_map.html' site
-          if git diff --cached --quiet; then
-            echo "nothing changed; skipping commit"
-          else
-            git commit -m "weekly: ${RUN_DATE} snapshot + site"
-            git pull --rebase origin "${GITHUB_REF_NAME}"
-            git push origin "HEAD:${GITHUB_REF_NAME}"
-          fi
+          git commit -m "weekly: ${RUN_DATE} snapshot (CAISO run date $(basename "${latest}")) + site"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
 
+      # Only when CAISO published something new: otherwise diff_latest.md still describes last week's changes
+      # and this step would open a fresh issue with a new date and stale content every Monday.
       - name: Open or update the weekly diff issue
+        if: steps.commit.outputs.new_snapshot == 'true'
         uses: actions/github-script@v9
         env:
           RUN_DATE: ${{ steps.stamp.outputs.date }}
