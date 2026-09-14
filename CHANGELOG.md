@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.3.3 — 2026-09-14 — first live run
+
+First end-to-end run on fresh downloads (CAISO run date 2026-09-14): 265 active / 74,687 MW; C15 86 active; TPD 2025
+24,109 MW requested / 8,450 allocated at 71 nodes; 501/949 nodes located; 156 documents baselined by `watch`.
+Two things it surfaced: the weekly diff's "Active storage MW" total moved -2 MW with no row explaining it (two
+Whirlwind projects went 24 -> 23 MW storage on an unchanged net) — new `STORAGE_CHANGE` class; and a real-data test
+pinned the report run date to 2026-09-07 and would have failed every week from now on — it now checks shape and
+monotonicity. Workflows moved to `.github/`. 308 tests.
+
 ## 1.3.2 — 2026-09-08 — security review
 
 Tool-driven review of the three attack surfaces (downloaded files, published site, unattended CI); see `SECURITY.md`.

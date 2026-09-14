@@ -1,0 +1,8 @@
+node_key,lat,lon,method,score,tline_name,kv,owner,placement,source
+DELANEY COLORADO RIVER,33.658275,-113.943197,cec-line,0.9,Ten West Link Delaney - Colorado River,,,length-midpoint,https://services3.arcgis.com/bWPjFyq029ChCGur/arcgis/rest/services/Transmission_Line/FeatureServer/2
+PIT PIT,41.223529,-121.858053,cec-line,0.9,Capitan Jack-Olinda(Vic Fazio),500,TANC,length-midpoint,https://services3.arcgis.com/bWPjFyq029ChCGur/arcgis/rest/services/Transmission_Line/FeatureServer/2
+WILSON LE GRAND115KV,37.274579,-120.403399,cec-line,0.9,Wilson - Le Grand,,,nearest-to-county,https://services3.arcgis.com/bWPjFyq029ChCGur/arcgis/rest/services/Transmission_Line/FeatureServer/2
+CORCORAN KINGSBURG,36.109659,-119.556789,cec-line,0.9,Kingsburg-Corcoran,115,PG&E,nearest-to-county,https://services3.arcgis.com/bWPjFyq029ChCGur/arcgis/rest/services/Transmission_Line/FeatureServer/2
+COLORADO RIVER DELANEY,33.658275,-113.943197,cec-line,0.9,Ten West Link Delaney - Colorado River,,,length-midpoint,https://services3.arcgis.com/bWPjFyq029ChCGur/arcgis/rest/services/Transmission_Line/FeatureServer/2
+HUMBOLDT BAY HUMBOLDT,40.752161,-124.154298,cec-line,0.9,Humboldt-Humboldt Bay,69,PG&E,length-midpoint,https://services3.arcgis.com/bWPjFyq029ChCGur/arcgis/rest/services/Transmission_Line/FeatureServer/2
+HUMBOLDT BRIDGEVILLE,40.627815,-123.87234,cec-line,0.9,Humboldt-Bridgeville,115,PG&E,length-midpoint,https://services3.arcgis.com/bWPjFyq029ChCGur/arcgis/rest/services/Transmission_Line/FeatureServer/2

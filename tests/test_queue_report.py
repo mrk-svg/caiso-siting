@@ -277,7 +277,9 @@ def test_by_cluster_withdrawals_and_deliverability_pivots(pq):
 def test_real_file_has_required_columns_and_active_rows(real_pq):
     assert_required_columns(real_pq)
     assert (real_pq.sheet_status == "ACTIVE").sum() > 200
-    assert real_pq.source_run_date.iloc[0] == "2026-09-07"
+    # the file is re-downloaded weekly: check the shape and that it is not older than the one this suite was built on
+    assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(real_pq.source_run_date.iloc[0]))
+    assert real_pq.source_run_date.iloc[0] >= "2026-09-07"
     assert real_pq.net_mw.notna().mean() > 0.95
     assert (real_pq.node_key == "WHIRLWIND").any()
 

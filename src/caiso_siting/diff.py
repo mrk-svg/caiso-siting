@@ -11,6 +11,8 @@ Change classes reported (per project, keyed on queue_position + report):
   WITHDRAWN      moved from Active to Withdrawn
   COMPLETED      moved from Active to Completed
   MW_CHANGE      net_mw changed (downsizing is a common pre-withdrawal signal)
+  STORAGE_CHANGE storage component changed while net_mw did not (the "Active storage MW" total moves
+                 without an MW_CHANGE row otherwise)
   COD_SLIP       current on-line date moved later (days)
   IA_STATUS      interconnection agreement status changed
   DELIV_CHANGE   deliverability status / TPD group changed
@@ -98,6 +100,9 @@ def diff(a: pd.DataFrame, b: pd.DataFrame, a_name: str, b_name: str) -> tuple[pd
                          "detail": f"{x.sheet_status} -> {y.sheet_status}"})
         if pd.notna(x.net_mw) and pd.notna(y.net_mw) and abs(x.net_mw - y.net_mw) > 0.5:
             rows.append({**base, "change": "MW_CHANGE", "detail": f"{x.net_mw:,.0f} -> {y.net_mw:,.0f} MW"})
+        elif pd.notna(x.storage_mw) and pd.notna(y.storage_mw) and abs(x.storage_mw - y.storage_mw) > 0.5:
+            rows.append({**base, "change": "STORAGE_CHANGE",
+                         "detail": f"storage {x.storage_mw:,.0f} -> {y.storage_mw:,.0f} MW (net unchanged)"})
         if pd.notna(x.current_cod) and pd.notna(y.current_cod) and y.current_cod != x.current_cod:
             days = (y.current_cod - x.current_cod).days
             rows.append({**base, "change": "COD_SLIP" if days > 0 else "COD_PULLED_IN",
@@ -119,7 +124,7 @@ def diff(a: pd.DataFrame, b: pd.DataFrame, a_name: str, b_name: str) -> tuple[pd
 
 def write_report(changes: pd.DataFrame, tots: dict, a_name: str, b_name: str) -> None:
     ta, tb = tots[a_name], tots[b_name]
-    by_node = (changes[changes.change.isin(["WITHDRAWN", "MW_CHANGE", "COD_SLIP", "NEW"])]
+    by_node = (changes[changes.change.isin(["WITHDRAWN", "MW_CHANGE", "STORAGE_CHANGE", "COD_SLIP", "NEW"])]
                .groupby(["poi", "change"]).mw.agg(["count", "sum"]).round(0)
                .sort_values("sum", ascending=False).head(15))
     md = [f"# CAISO queue diff — {a_name} → {b_name}", "",

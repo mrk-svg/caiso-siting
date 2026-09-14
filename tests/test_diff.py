@@ -163,6 +163,20 @@ def test_multiple_changes_on_one_project_each_get_a_row(tmp_path):
     assert changes.change.tolist() == ["WITHDRAWN", "MW_CHANGE", "IA_STATUS"]
 
 
+def test_storage_component_change_with_net_unchanged_is_reported(tmp_path):
+    # 2026-09-14: SOLAR STAR 3/4 at WHIRLWIND went 24 -> 23 MW storage on an unchanged 24 MW net; the
+    # header total moved by -2 MW with no row explaining it.
+    a = diff.load_snapshot(write_snapshot(tmp_path / "a", [row("PUBLIC:1", net_mw=24.0, storage_mw=24.0)]))
+    b = diff.load_snapshot(write_snapshot(tmp_path / "b", [row("PUBLIC:1", net_mw=24.0, storage_mw=23.0)]))
+    changes, _ = diff.diff(a, b, "a", "b")
+    assert changes.change.tolist() == ["STORAGE_CHANGE"]
+    assert changes.detail.iloc[0] == "storage 24 -> 23 MW (net unchanged)"
+    # a net change already carries the row; storage is not double-reported
+    c = diff.load_snapshot(write_snapshot(tmp_path / "c", [row("PUBLIC:1", net_mw=20.0, storage_mw=20.0)]))
+    changes, _ = diff.diff(a, c, "a", "c")
+    assert changes.change.tolist() == ["MW_CHANGE"]
+
+
 def test_status_change_outside_known_classes_is_labelled_status(tmp_path):
     a = diff.load_snapshot(write_snapshot(tmp_path / "a", [row("PUBLIC:1", sheet_status="WITHDRAWN")]))
     b = diff.load_snapshot(write_snapshot(tmp_path / "b", [row("PUBLIC:1", sheet_status="ACTIVE")]))
