@@ -110,3 +110,4 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+# touched after first push so GitHub registers the workflow_dispatch trigger
