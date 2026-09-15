@@ -50,6 +50,16 @@ CLUSTER_COHORTS = ["C10", "C11", "C12", "C13", "C14", "C15"]
 # censoring its ACTIVE rows at the public report's later run date would publish event-free months
 # that the file could not have observed. Censor C15 at its posting date instead.
 C15_CENSOR_DATE = "2026-07-16"
+
+
+def c15_censor_date(c15: pd.DataFrame) -> str:
+    """The posting date, or the latest withdrawal in the file if CAISO has re-posted since — an ACTIVE row can
+    never be censored before an event the same file records."""
+    if "withdrawn_date" in c15 and len(c15):
+        latest = pd.to_datetime(c15["withdrawn_date"], errors="coerce", format="mixed").max()
+        if pd.notna(latest) and latest.strftime("%Y-%m-%d") > C15_CENSOR_DATE:
+            return latest.strftime("%Y-%m-%d")
+    return C15_CENSOR_DATE
 TECH_CLUSTERS = ["C13", "C14", "C15"]
 
 # The process each cohort entered under. Attrition compares regimes, not only nodes: a cluster that had to
@@ -70,7 +80,9 @@ REGIMES = {
                        "filed in the April 2023 window; 255 resubmitted Oct–Dec 2024; 145 / 68 GW proceeded to study "
                        "(CAISO, June 2025). The queue_date in the file is 2025-02-12, so month 0 here is AFTER that cut: "
                        "this cohort is already a filtered survivor set and its early months are not comparable to "
-                       "C10–C14's."),
+                       "C10–C14's. (The file holds 170 requests; CAISO's June 2025 summary counted 145 proceeding to "
+                       "study — the difference is requests that withdrew during validation and are in the file as "
+                       "withdrawn.)"),
 }
 REGIME_CAVEAT = ("Attrition compares regimes, not only nodes. C10–C13 entered under the standard cluster process; "
                  "C14 entered in April 2021 at 2.4x the prior year's volume under special procedures that made Phase I "
@@ -218,8 +230,9 @@ def analyse(pq: pd.DataFrame, c15: pd.DataFrame, run_date, max_month: int = MAX_
             min_at_risk: int = MIN_AT_RISK) -> tuple[pd.DataFrame, pd.DataFrame]:
     """(long survival table, one-row-per-cohort summary)."""
     long_parts, summary_rows = [], []
+    c15_censor = c15_censor_date(c15)
     for name, rows in build_cohorts(pq, c15).items():
-        cohort_run = C15_CENSOR_DATE if name == "C15" else run_date
+        cohort_run = c15_censor if name == "C15" else run_date
         lt, excluded = lifetimes(rows, cohort_run)
         km = kaplan_meier(lt, max_month, min_at_risk)
         km.insert(0, "cohort", name)
@@ -393,11 +406,12 @@ def regimes_markdown() -> str:
     return pd.DataFrame(rows).to_markdown(index=False)
 
 
-def write_markdown(summary: pd.DataFrame, run_date: str, text: str) -> str:
+def write_markdown(summary: pd.DataFrame, run_date: str, text: str, c15_censor: str = C15_CENSOR_DATE) -> str:
     return f"""# Queue-cohort survival — Kaplan–Meier by cluster
 
 Source: CAISO Public Queue Report (run date {run_date}) for C10–C14; CAISO Cluster 15 report for C15,
-censored at its posting date {C15_CENSOR_DATE} — that file cannot record a withdrawal after it was published.
+censored at {c15_censor} (its posting date, or the latest withdrawal the file records if CAISO has re-posted since) —
+that file cannot record a withdrawal after it was published.
 Event = withdrawal at `withdrawn_date`. ACTIVE rows are censored at the report run date; COMPLETED rows are
 censored at `actual_cod` (completion is success, not an event). Time = months since `queue_date`.
 `s12`…`s60` = Kaplan–Meier S(t) at 12…60 months; `_mw` = the same estimate with each project weighted by `net_mw`.
@@ -442,7 +456,7 @@ def main() -> None:
         render_svg(long_df[long_df["cohort"].isin(TECH_COHORTS)],
                    title="C13–C15 by technology: share not yet withdrawn"), encoding="utf-8")
     text = findings(summary)
-    (OUT / "survival.md").write_text(write_markdown(summary, run_date, text), encoding="utf-8")
+    (OUT / "survival.md").write_text(write_markdown(summary, run_date, text, c15_censor_date(c15)), encoding="utf-8")
     pd.set_option("display.width", 200, "display.max_columns", 30)
     print(summary[["cohort", "n", "events", "censored", "follow_up_months", "median_survival_months",
                    "s12", "s24", "s36", "s60", "s24_mw"]].to_string(index=False))

@@ -5,6 +5,7 @@
   nodes      unify, geocode, TPD, availability, map  -> outputs/nodes.csv, nodes_map.html, node_watch.md
   tpd        parse TPD allocation results            -> outputs/tpd_allocations.csv
   wdat       parse utility WDAT queues (PG&E)         -> outputs/wdat_projects.csv  (`wdat inspect FILE` prints headers)
+  eia860     EIA-860 plants/owners/storage/LMP nodes near each node -> outputs/eia860_*.csv (data/eia860.zip)
   oasis      pnodes | suggest | fetch: OASIS day-ahead LMP TB4 -> outputs/lmp_tb4*.csv (needs internet; not in weekly)
   survival   Kaplan–Meier withdrawal survival by cluster -> outputs/survival_*.csv, survival.svg, survival.md
   snapshot   store this week's rows                   -> data/snapshots/YYYY-MM-DD/
@@ -20,7 +21,7 @@ from __future__ import annotations
 
 import sys
 
-from . import cluster15, diff, layers, nodes, oasis, parcels, queue_report, survival, tpd, watch, wdat
+from . import cluster15, diff, eia860, layers, nodes, oasis, parcels, queue_report, survival, tpd, watch, wdat
 from .config import CLUSTER15_URL, DATA
 
 
@@ -43,6 +44,8 @@ EXTRA_DOWNLOADS = {
     "tpd_2025.xlsx": (CAISO_DOCS + "2025-transmission-plan-deliverability-allocation-cycle-results.xlsx", False),
     "tpd_2024.xlsx": (CAISO_DOCS + "2024-transmission-plan-deliverability-allocation-cycle-results.xlsx", False),
     "wdat_pge.xlsx": (PGE_DOCS + "PublicQueueInterconnection.xlsx", False),
+    # EIA-860 bulk zip (annual, ~24 MB, public domain, no key): operating plants, owners, storage MWh, LMP nodes
+    "eia860.zip": ("https://www.eia.gov/electricity/data/eia860/xls/eia8602025.zip", False),
 }
 
 
@@ -53,7 +56,14 @@ def download(argv) -> None:
         try:
             r = requests.get(url, timeout=120, headers={"User-Agent": "Mozilla/5.0 (caiso-siting)"})
             r.raise_for_status()
-            (DATA / name).write_bytes(r.content)
+            part = DATA / (name + ".part")
+            part.write_bytes(r.content)
+            # a 200 with an HTML error page, or a truncated body, must never replace a good file
+            if name.endswith(".zip"):
+                eia860.verify(part)
+            elif name.endswith(".xlsx") and not r.content.startswith(b"PK"):
+                raise ValueError("not an xlsx (no zip signature)")
+            part.replace(DATA / name)
             print(f"downloaded {len(r.content):,} bytes -> {DATA / name}")
         except Exception as e:  # noqa: BLE001
             print(f"{name} download failed ({e}){' — required' if required else ' — optional, keeping existing file'}",
@@ -92,6 +102,7 @@ COMMANDS = {
     "nodes": lambda a: _run(nodes, a),
     "tpd": lambda a: _run(tpd, a),
     "wdat": lambda a: _run(wdat, a),
+    "eia860": lambda a: _run(eia860, a),
     "watch": lambda a: _run(watch, a),
     "oasis": lambda a: _run(oasis, a),
     "survival": lambda a: _run(survival, a),

@@ -81,3 +81,18 @@ def test_methodology_page_lists_every_metric_and_the_not_public_list():
         assert what in html
     assert "Attrition compares regimes" in html and "No composite score" in html
     assert str(site.MIN_N) in html and f"{site.MIN_DENOM_MW:,}" in html
+
+
+def test_ratio_distinguishes_undefined_from_small_n():
+    assert site.ratio(float("nan"), 10, 5000.0) == ("n/a", False, True)
+    assert site.ratio(0.5, 2, 5000.0) == ("0.50", True, False)
+    assert site.ratio(0.5, 10, 100.0) == ("0.50", True, False)
+    assert site.ratio(0.5, 10, 5000.0) == ("0.50", False, False)
+    html = site.node_page(node(storage_churn=float("nan"), churn_n=8), PROJECTS, PROV)
+    assert 'class="fact undefined"' in html
+
+
+def test_fact_escapes_its_value_and_markdown_links_cannot_inject_attributes():
+    assert "<b>" not in site.fact("x", "<b>1</b>")
+    out = site.md_to_html('[x](https://a/"onmouseover="alert(1))')
+    assert 'onmouseover="alert' not in out and "onmouseover=&quot;" in out or "<a" not in out

@@ -264,6 +264,15 @@ def test_node_rows_one_row_per_request_with_group_and_name(tpd_dir):
     assert tpd.node_rows(tpd.load_all().iloc[0:0], PROJECTS).empty
 
 
+def test_2024_counts_are_projects_not_requests(tpd_dir):
+    """The 2024 file is per request; one project with three FCDSA rows is one FCDSA project."""
+    t = tpd.load_all()
+    extra = t[(t.tpd_year == 2024) & (t.queue_id == "297")]
+    t = pd.concat([t, extra, extra], ignore_index=True)          # 297 now has 3 identical FCDSA rows
+    pn = tpd.per_node(t, PROJECTS)
+    assert pn.loc["WHIRLWIND", "tpd24_fcdsa_projects"] == 2      # 297 + 3001, still
+
+
 def test_per_node_ignores_non_queue_ids(tpd_dir):
     projects = pd.DataFrame({"queue_position": ["WDT1532", "2179-WD"], "node_key": ["X", "Y"]})
     pn = tpd.per_node(tpd.load_all(), projects)

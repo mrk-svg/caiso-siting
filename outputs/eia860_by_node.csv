@@ -1,0 +1,122 @@
+node_key,eia_plants,eia_nameplate_mw,eia_storage_mw,eia_storage_mwh,eia_tech,eia_operators,eia_owners,eia_pnodes,eia_first_year,eia_proposed_mw
+ANTELOPE,35.0,817.9,227.0,908.0,Solar Photovoltaic 591; Batteries 227,"AES Distributed Energy; Altus Power America Management, LLC; CD US Solar MT 2 LLC; Central Antelope Dry Ranch B, LLC; Onward Energy; Portal Ridge Solar, LLC …",Bayshore Solar A LLC; Bayshore Solar B LLC; Bayshore Solar C LLC; CD US Solar PO 2 LLC; Central Antelope Dry Ranch C LLC; Elevation Solar C …,TOT427A_7_N001,2013.0,0.0
+AVOCADO,2.0,45.9,40.0,40.0,Batteries 40; Conventional Hydroelectric 6,Metropolitan Water District of S CA; San Diego Gas & Electric Co,,,1985.0,0.0
+BAY BOULEVARD,1.0,1.3,0.0,0.0,Solar Photovoltaic 1,MN8 Energy LLC,,,2018.0,0.0
+BELLOTA,1.0,132.0,132.0,528.0,Batteries 132,"North Central Valley Energy Storage, LLC",,,2023.0,0.0
+BIRDS LANDING,5.0,508.2,0.0,0.0,Onshore Wind Turbine 508,"Avangrid Power LLC; EDF Renewable Asset Holdings, Inc.; FPLE High Winds, LLC; NextEra Energy Montezuma Wind II, LLC","EDF Renewable Windfarm V, Inc; Florida Power & Light Co",,1990.0,0.0
+BITTERWATER,2.0,262.0,92.0,368.0,Solar Photovoltaic 170; Batteries 92,Onward Energy; RWE Clean Energy,,NORORC_2_NOSBX2,2015.0,0.0
+BLYTHE,3.0,946.6,112.0,448.0,Natural Gas Fired Combined Cycle 591; Solar Photovoltaic 244; Batteries 112,"AltaGas Blythe Operations Inc; Intersect USA, LLC; NRG Solar Blythe II LLC","NRG Energy, Inc",Buck BL_2_PL1X3-APND; CENTPD_2_BMSSX2-APND; CENTPD_2_BMSX2-APND,2003.0,1000.0
+CAMDEN,2.0,2.4,2.4,9.7,Batteries 2,"Hybrid-Electric Building Technologies West Los Angeles 1, LLC; Southern California Edison Co",SUSI Partners AG; Sk Holdings Co. Ltd.,,2017.0,0.0
+CARBERRY,3.0,54.0,0.0,0.0,Wood/Wood Waste Biomass 51; Conventional Hydroelectric 3,"Burney Forest Products, A Joint Venture; Sierra Pacific Industries; Snow Mountain Hydro LLC",Olympus Power,BioRAM; SPI-BURN_7_N003,1986.0,0.0
+CAYETANO,2.0,6.7,0.0,0.0,Landfill Gas 4; Solar Photovoltaic 2,"Ameresco Vasco Road, LLC; Chabot Las Positas Community College District",,,2014.0,200.0
+CHINO,2.0,32.3,0.0,0.0,Natural Gas Fired Combined Cycle 31; Solar Photovoltaic 2,CamChino Leasing LLC; SS San Antonio West LLC,,CIMGEN_7_B1,1987.0,0.0
+CHRISTIE,1.0,30.2,0.0,0.0,Solar Photovoltaic 30,P66 Rodeo Solar,,,2023.0,0.0
+COLORADO RIVER,1.0,350.0,350.0,1400.0,Batteries 350,RE Crimson LLC,Axium Infrastructure US Inc.; RE Crimson LLC,,2022.0,0.0
+CONTRA COSTA,4.0,1496.2,0.0,0.0,Natural Gas Fired Combustion Turbine 875; Natural Gas Fired Combined Cycle 620; Solar Photovoltaic 2,Gilroy Energy Center for Riverview; Marsh Landing LLC; Oakley Solar Project LLC; Pacific Gas & Electric Co.,"Clearway Energy, Inc",GATWAY_2_PL1X3-APND; NP15,2003.0,0.0
+CONTROL,3.0,14.3,0.0,0.0,Conventional Hydroelectric 14,Southern California Edison Co,,,1905.0,0.0
+COOLEY LANDING,1.0,6.0,0.0,0.0,Natural Gas Fired Combustion Turbine 6,IPT SRI Cogeneration Inc,SRI International,,1987.0,0.0
+CORCORAN,2.0,6.1,0.0,0.0,Solar Photovoltaic 6,"SunE Corcoran SP Owner, LLC; 1 individual owner not named",,,2013.0,0.0
+COTTONWOOD,1.0,54.9,0.0,0.0,Wood/Wood Waste Biomass 55,"Shasta Sustainable Resource Management, Inc.",,,1987.0,0.0
+CREELMAN,3.0,11.3,0.0,0.0,Solar Photovoltaic 11,MN8 Energy LLC; San Diego Gas & Electric Co,Sol Orchard San Diego 20 LLC; Sol Orchard San Diego 21 LLC,,2013.0,0.0
+DELEVAN,1.0,712.4,0.0,0.0,Natural Gas Fired Combined Cycle 712,Pacific Gas & Electric Co.,,COLUSA_2_PL1X3-APND,2010.0,0.0
+DEVERS,20.0,1816.5,400.0,1600.0,Natural Gas Fired Combustion Turbine 950; Onshore Wind Turbine 458; Batteries 400; Solar Photovoltaic 9,"AES Distributed Energy; Altus Power America Management, LLC; Avangrid Power LLC; Desert Peak Energy Storage I, LLC; Desert Peak Energy Storage II, LLC; Diamond Generating Corporation …","BayWa r.e. USA, LLC; Diamond Generating Corporation; Dutch Energy Corporation; Meridian Clean Energy; Mountain View Power Prtnrs, LLC; North Palm Springs Investments, LLC …",GARNET_2_WIND2; SANWD_1_QF; TOT032G1_7_N001; TOT032G2_7_N001; TOT032G3_7_N001; TOT032G4_7_N001 …,1983.0,0.0
+DIABLO CANYON,1.0,2323.0,0.0,0.0,"Nuclear 2,323",Pacific Gas & Electric Co.,,DIABLO1_7_B1; DIABLO2_7_B1,1985.0,0.0
+DRY LAKE,1.0,5.0,0.0,0.0,Solar Photovoltaic 5,"Wonderful Renewable Energy, LLC.","DG Harvest Solar, LLC",,2021.0,678.5
+EAGLE MOUNTAIN,1.0,230.0,230.0,920.0,Batteries 230,"Sunlight Storage, LLC",,,2022.0,0.0
+EASTGATE,8.0,180.7,30.0,120.0,Natural Gas Fired Combustion Turbine 111; Natural Gas Fired Combined Cycle 33; Batteries 30; Other Natural Gas 4; Landfill Gas 2; Solar Photovoltaic 1,Bloom Energy; City of San Diego - (CA); Qualcomm Incorporated; San Diego Gas & Electric Co; University of California San Diego,Illumina,MIRAMREF_7_B1; MRGT_6_NODE1,2001.0,0.0
+EASTSHORE,4.0,660.5,0.0,0.0,Natural Gas Fired Combined Cycle 655; Other Waste Biomass 3; Solar Photovoltaic 2; Other Natural Gas 1,Bloom Energy; City of Hayward (CA); Russell City Energy Company LLC; Union Sanitary District,,,2010.0,0.0
+EL CAJON,5.0,117.7,0.0,0.0,Natural Gas Fired Combustion Turbine 114; Solar Photovoltaic 4,"Forefront Power, LLC; MN8 Energy LLC; San Diego Gas & Electric Co; Sharp Grossmont Hospital; Wellhead Services, Inc",SunTrust Equipment Finance & Leasing Corp,CPELCAJN_7_B1,2002.0,100.0
+ELLIS,4.0,33.6,7.0,36.6,Other Waste Biomass 22; Batteries 7; Solar Photovoltaic 3; All Other 1,"Hybrid-Electric Building Technologies West Los Angeles 1, LLC; Orange County Sanitation Dist - (CA); Solar Star Coastal Pirate, LLC",SUSI Partners AG; Sk Holdings Co. Ltd.,,1993.0,0.0
+ESCONDIDO,5.0,753.3,30.0,120.0,Natural Gas Fired Combined Cycle 610; Natural Gas Fired Combustion Turbine 113; Batteries 30,"CalPeak Power, LLC; Goal Line LP; San Diego Gas & Electric Co; Wellhead Services, Inc",CalPeak Power - Enterprise LLC; MMC Escondido LLC,ESCNDO_6_UNITB1; GOALLINE_6_N001; PALOMR_2_PL1X3-APND,1994.0,54.1
+EVERGREEN,2.0,3.9,0.0,0.0,Solar Photovoltaic 4,County of Santa Clara - (CA),,,2017.0,0.0
+FINK,1.0,352.0,162.0,648.0,Solar Photovoltaic 190; Batteries 162,"Proxima Solar, LLC",,,2024.0,0.0
+FMC,8.0,121.2,0.0,0.0,Petroleum Liquids 108; Natural Gas Fired Combustion Turbine 6; Solar Photovoltaic 4; Other Natural Gas 4,"2016 ESA Project Company, LLC; Bloom Energy; CoreSite Real Estate 55 S. Market Street, LLC; San Jose State University Fclts Dev &Ops; SkyHigh 2 Solar; Verizon Communications …",Kellogg's - San Jose,,1984.0,0.0
+FRIARS,2.0,12.3,0.0,0.0,Petroleum Liquids 6; Natural Gas Fired Combustion Turbine 5; Other Natural Gas 1,Bloom Energy 2009 PPA; DTE San Diego COGEN Inc.,,,2000.0,0.0
+FULTON,3.0,7.0,0.0,0.0,Other Natural Gas 4; Solar Photovoltaic 2,Bloom Energy; Sonoma County Junior College District; Sutter Santa Rosa Solar LLC,,,2018.0,0.0
+GATES,4.0,335.0,137.0,137.0,Solar Photovoltaic 198; Batteries 137,Boralex US Operations LLC; Pacific Gas & Electric Co.; RWE Clean Energy,Boralex WSF Holdings LLC; CRE WSF Holdings II LLC; GSPPR LLC; 1 individual owner not named,FIFTHS_2_FSSR1; GATESBK4_7_N002; GATESBK4_7_N003; Q633C1_7_N001,2013.0,300.0
+GOLETA,2.0,118.0,60.0,160.0,Batteries 60; Natural Gas Fired Combustion Turbine 58,"Ellwood Power, LLC; Goleta Energy Storage, LLC",,GOLETA_6_ELLWOD,1974.0,0.0
+GREENLEAF,1.0,69.8,0.0,0.0,Natural Gas Fired Combustion Turbine 70,"Calpine Greenleaf Holding, Inc.",California Dept. of Water Resources,,2022.0,0.0
+HALF MOON BAY,1.0,11.4,0.0,0.0,Landfill Gas 11,AMERESCO Ox Mountain Energy LLC,,,2008.0,3.0
+HANFORD,1.0,3.0,0.0,0.0,Solar Photovoltaic 3,"Arevon Energy, Inc.",,,2014.0,0.0
+HARBORGEN,6.0,621.1,201.5,808.6,Natural Gas Fired Combustion Turbine 309; Batteries 202; Natural Gas Fired Combined Cycle 107; Other Waste Biomass 3,"Harbor Cogeneration Co.; Hybrid-Electric Building Technologies West Los Angeles 1, LLC; Long Beach Generation LLC; Long Beach Trigen, LLC; Southern California Edison Co; THUMS Long Beach Company","Generation Bridge Acquisition; Long Beach Generation LLC; NRG Energy, Inc; SUSI Partners AG; Sk Holdings Co. Ltd.; Vistra Corp",HARBGN_7_UNITS,1976.0,72.3
+HARLAN,1.0,2.1,0.0,0.0,Solar Photovoltaic 2,"Renewable Solar, Inc",1 individual owner not named,,2024.0,0.0
+HENRIETTA,11.0,1145.6,324.7,775.4,Solar Photovoltaic 723; Batteries 325; Natural Gas Fired Combustion Turbine 98,Convergent Energy and Power LP; Dimension Energy LLC; Henrietta BESS LLC; MN8 Energy LLC; MRP San Joaquin Energy LLC.; Onward Energy …,"American Kings Solar, LLC; Henrietta D Energy Storage, LLC; Idemitsu Renewables; RE Mustang LLC; RE Slate 1 LLC",GWFGT1_7_B1; GWFGT2_7_B1; HENRTA_6_HDEBT1,2002.0,0.0
+HINSON,7.0,433.6,0.2,0.4,Natural Gas Fired Combined Cycle 405; Other Gases 18; All Other 5; Solar Photovoltaic 3; Natural Gas Steam Turbine 2; Natural Gas Internal Combustion Engine 1; Batteries 0,"ARCO Products Co-Watson; ClearGen LLC; Eco Services Corp.; Prologis Logistics Services Incorporated; Signal Hill Petroleum, Inc; Tesoro Carson Refinery",Tesoro SoCal Cogen LLC,POD_ARCOGN_2_UNITS,1976.0,6.4
+HOLLISTER,3.0,4.0,0.0,0.0,Solar Photovoltaic 4,"CleanCapital Holdings; Ecos Energy LLC; SunStrong Management, LLC",PNC Energy Capital LLC,,2011.0,0.0
+HONEY LAKE,2.0,43.8,0.0,0.0,Wood/Wood Waste Biomass 36; Solar Photovoltaic 8,HL Power Company; Madison Energy Investments LLC,Greenleaf Power LLC,,1989.0,0.0
+HUMBOLDT BAY HUMBOLDT,1.0,167.0,0.0,0.0,Natural Gas Internal Combustion Engine 167,Pacific Gas & Electric Co.,,HMBUNIT1_7_GN010; HMBUNIT2_7_GN010; HMBUNIT3_7_GN010,2010.0,0.0
+IMPERIAL VALLEY,3.0,478.4,331.0,724.0,Batteries 331; Solar Photovoltaic 147,"Big Rock ESS Assets, LLC; RWE Clean Energy; Southern Power Co","Campo Verde Solar, LLC",,2013.0,299.0
+INYOKERN,2.0,31.8,0.0,0.0,Solar Photovoltaic 32,Dimension Energy LLC,,,2024.0,0.0
+IVANPAH,3.0,392.8,0.0,0.0,Solar Thermal without Energy Storage 393,NRG Energy Services,Solar Partners I LLC; Solar Partners II LLC; Solar Partners VIII LLC,,2013.0,0.0
+JOHANNA,7.0,123.0,122.0,502.5,Batteries 122; Other Natural Gas 1,"Bloom Energy; Convergent Energy and Power LP; Electrodes; Hecate Energy Johanna Facility LLC; Hybrid-Electric Building Technologies West Los Angeles 1, LLC; Johanna Energy Center, LLC","KeyBank; Macquarie Capital; Orange County Energy Storage 2, LLC; Orange County Energy Storage 3, LLC; SUSI Partners AG; Sk Holdings Co. Ltd.",JOHANNA_6_N06; JOHANNA_6_N07; NODE,2017.0,0.0
+KASSON,1.0,1.5,0.0,0.0,Solar Photovoltaic 2,Prologis Logistics Services Incorporated,,,2025.0,1.5
+KEARNY,6.0,36.9,31.4,92.0,Batteries 31; Natural Gas Internal Combustion Engine 4; Solar Photovoltaic 2,"Kearny Mesa Storage LLC; Kyocera International, Inc; San Diego Gas & Electric Co; Solar Star California LXXVIII, LLC",53 SP Solar Trust,,2012.0,1.6
+KELSO,3.0,263.6,0.0,0.0,Natural Gas Fired Combustion Turbine 200; Onshore Wind Turbine 64,"Diamond Generating Corporation; Golden Hills Interconnection Wind, LLC; Sequitur Renewables, LLC",,,2004.0,97.0
+KRAMER,2.0,253.0,115.0,600.0,Solar Photovoltaic 138; Batteries 115,Resurgence Solar; Resurgence Solar II,,,2023.0,325.0
+LA CIENEGA,2.0,11.1,0.0,0.0,Conventional Hydroelectric 10; Other Natural Gas 1,Bloom Energy; Metropolitan Water District of S CA,,,1982.0,0.0
+LAGUNA BELL,1.0,1.8,0.2,0.4,Solar Photovoltaic 2; Batteries 0,ClearGen LLC,,,2023.0,3.7
+LAKEVILLE,1.0,4.0,0.0,0.0,Solar Photovoltaic 4,"Ellis Creek Solar, LLC",,,2025.0,0.0
+LAMBIE,3.0,143.0,0.0,0.0,Natural Gas Fired Combustion Turbine 143,Creed Energy Center LLC; Gilroy Energy Center LLC; Goose Haven Energy Center,,NP-15; NP15,2003.0,0.0
+LAS POSITAS,2.0,5.7,1.2,2.1,Solar Photovoltaic 4; Batteries 1,EDPRNA DG CA Livermore LLC; Whitethorn Solar LLC,,,2016.0,0.0
+LERDO,4.0,13.1,0.0,0.0,Solar Photovoltaic 13,County of Kern - (CA); JKB Energy; Madison Energy Investments LLC,Sun Pacific Shippers LP,,2020.0,5.9
+LLAGAS,3.0,275.9,0.5,0.5,Natural Gas Fired Combustion Turbine 144; Natural Gas Fired Combined Cycle 130; Solar Photovoltaic 1; Batteries 0,Calpine Gilroy Cogen LP; Gavilan District College Solar Project,"Gilroy Energy Center LLC; SolarStorage Fund C, LLC",,1987.0,0.0
+LOCKEFORD,2.0,2.5,0.0,0.0,Solar Photovoltaic 2,Ecos Energy LLC,,,2014.0,0.0
+LOS ESTEROS,6.0,356.1,0.0,0.0,Natural Gas Fired Combined Cycle 338; Natural Gas Internal Combustion Engine 14; Other Natural Gas 2; Other Waste Biomass 2,Bloom Energy; Los Esteros Critical Energy Facility LLC; OLS Energy-Agnews Inc.; San Jose/Santa Clara Water P C; Zero Waste Energy Development Company LLC,KeyBank; Maxim,np15,1990.0,0.0
+MANDALAY,2.0,52.3,0.0,0.0,Natural Gas Fired Combustion Turbine 50; Solar Photovoltaic 2,"Forefront Power, LLC; Southern California Edison Co",,,2012.0,0.0
+MARTIN,1.0,2.1,0.0,0.0,Other Waste Biomass 2,City & County of San Francisco - (CA),,DLAP_PGAE-APND,2002.0,0.0
+MCCALL,1.0,2.9,0.0,0.0,Solar Photovoltaic 3,National Raisin,,,2015.0,0.0
+MERCED CIRCUIT,1.0,6.8,0.0,0.0,Landfill Gas 7,MM West Covina Energy LLC,,,1993.0,0.0
+MERCHANT,5.0,842.9,0.0,0.0,Natural Gas Fired Combined Cycle 537; Solar Photovoltaic 306,Desert Star Energy Center SDG&E; RWE Clean Energy,,COPPERMT_6_GN001; LSCM92_7_N005; LSQ855_7_N001; MRCHNT13_7_N001; MRCHNT13_7_N002; MRCHNT2_7_N001,2000.0,0.0
+MESA HEIGHTS,3.0,18.3,10.0,10.0,Batteries 10; Landfill Gas 7; Other Natural Gas 1,Bloom Energy; MM San Diego Energy-Miramar; San Diego Gas & Electric Co,,,1997.0,3.0
+METCALF,2.0,638.1,0.0,0.0,Natural Gas Fired Combined Cycle 635; Solar Photovoltaic 3,Calpine Corp - Metcalf Energy Center; County of Santa Clara - (CA),,,2005.0,0.0
+MIGUEL,1.0,2.0,2.0,8.0,Batteries 2,SDGE Batteries,San Diego Gas & Electric Co,,2017.0,0.0
+MILLBRAE,2.0,5.7,2.6,5.3,Solar Photovoltaic 3; Batteries 3,"Google, Inc.; Vista Solar, Inc.","SCP 7, LLP",,2020.0,0.0
+MILPITAS,4.0,12.6,0.0,0.0,Other Natural Gas 8; Petroleum Liquids 5,"2016 ESA Project Company, LLC; Bloom Energy; CoreSite Real Estate 1656 McCarthy, L.P.",KeyBank,,2000.0,0.0
+MOORPARK,0.0,0.0,0.0,0.0,,,,,,135.0
+MOSS LANDING,2.0,2030.5,632.5,2530.0,"Natural Gas Fired Combined Cycle 1,398; Batteries 632",Dynegy -Moss Landing LLC; Pacific Gas & Electric Co.,,,2002.0,0.0
+MUSTANG,2.0,6.7,0.0,0.0,Solar Photovoltaic 7,"Forefront Power, LLC; Stenner Creek Solar LLC",,,2018.0,0.0
+NEWARK,3.0,2.6,0.0,0.0,Other Natural Gas 1; Solar Photovoltaic 1,Bloom Energy; Delta Electronics (Americas) Ltd; Tesla Inc.,,,2016.0,3.8
+OAKLAND C,5.0,216.1,0.0,0.0,Petroleum Liquids 149; Natural Gas Fired Combustion Turbine 55; Other Waste Biomass 11; Other Natural Gas 1,"Bloom Energy; Dynegy Oakland, LLC; East Bay Municipal Util Dist - (CA); Northern California Power Agny",Pixar Animation Studio,OAK C_1_EBMUD; OAK L_1_GTG1,1978.0,43.3
+OTAY,2.0,43.2,6.0,12.0,Natural Gas Fired Combustion Turbine 37; Batteries 6,"EnerSmart Chula Vista Sub Station; Wellhead Services, Inc",,,2001.0,50.0
+PANOCHE,4.0,689.0,0.0,0.0,Natural Gas Fired Combustion Turbine 689,"CalPeak Power, LLC; Panoche Energy Center, LLC; Wellhead Services, Inc","CalPeak Power - Panoche LLC; Fresno Power Investors LP; Midway Peaking  LLC; Wellhead Services, Inc.",PNCHPP_1_CTG1; PNCHPP_1_CTG2; PNOCHE_1_UNITA1,1973.0,188.5
+PASTORIA,1.0,779.0,0.0,0.0,Natural Gas Fired Combined Cycle 779,Calpine Corp - Pastoria Energy Center,,SP-15,2005.0,185.2
+PEASE,4.0,151.7,5.0,5.0,Natural Gas Fired Combustion Turbine 147; Batteries 5,"Calpine Corp-Yuba City; Greenleaf Energy LLC; VESI 10 LLC; Wellhead Services, Inc",,,1989.0,0.0
+PITTSBURG,4.0,901.3,200.0,800.0,Natural Gas Fired Combined Cycle 678; Batteries 200; Solar Photovoltaic 19; Landfill Gas 4,"AMERESCO Keller Canyon LLC; Columbia Solar Energy LLC; Diablo Energy Storage, LLC; Los Medanos Energy Center LLC",,POD_LMEC_1_PL1X3-APND,2001.0,0.0
+PLEASANT GROVE,2.0,32.7,0.0,0.0,Wood/Wood Waste Biomass 28; Landfill Gas 5,Energy 2001 Inc; 1 individual owner not named,,,1989.0,2.3
+POINT LOMA,3.0,6.8,2.0,4.0,Solar Photovoltaic 5; Batteries 2,"Critical Loop, Inc.; Lindberg Field Solar 2, LLC; Lindberg Field Solar I LLC",,,2015.0,0.0
+PRIMM,2.0,460.1,200.0,800.0,Solar Photovoltaic 260; Batteries 200,"Silver State Solar Power South, LLC; Silver State South Storage, LLC",,,2015.0,0.0
+QUINTO,2.0,133.2,0.0,0.0,Solar Photovoltaic 108; Hydroelectric Pumped Storage 25,"Arevon Energy, Inc.; U S Bureau of Reclamation",,,1967.0,0.0
+RANCHO VISTA,9.0,235.3,122.5,460.0,Batteries 122; Natural Gas Fired Combustion Turbine 83; Conventional Hydroelectric 24; Solar Photovoltaic 5; Onshore Wind Turbine 1,"Altus Power America Management, LLC; California PV Energy LLC; Foundation HA Energy Generation, LLC; Metropolitan Water District of S CA; New-Indy Ontario LLC; Southern California Edison Co …",,,1994.0,7.2
+RECTOR,1.0,3.0,0.0,0.0,Solar Photovoltaic 3,Dimension Energy LLC,,,2024.0,0.0
+RIO HONDO,1.0,10.9,0.0,0.0,Natural Gas Fired Combustion Turbine 10; Other Waste Biomass 0,"Irwindale Brew Yard, LLC",,,2002.0,400.0
+RIPON,1.0,49.5,0.0,0.0,Natural Gas Fired Combustion Turbine 50,AltaGas Ripon Energy Inc.,,POD_SMPRIP_1_SMPSOM-APND,1988.0,101.6
+ROUND MOUNTAIN,1.0,2.6,0.0,0.0,Conventional Hydroelectric 3,"Central Rivers Power US, LLC",,,1987.0,0.0
+SALADO,1.0,20.0,0.0,0.0,Solar Photovoltaic 20,Boralex US Operations LLC,Boralex Frontier Solar California LLC; GSPPR LLC,,2016.0,0.0
+SAN BERNARDINO,8.0,1063.5,0.0,0.0,"Natural Gas Fired Combined Cycle 1,037; Solar Photovoltaic 12; Natural Gas Fired Combustion Turbine 10; Petroleum Liquids 3; Other Waste Biomass 1","Altus Power America Management, LLC; Loma Linda University; MN8 Energy LLC; San Bernardino Fuel Cell, LLC; Southern California Edison Co; SunE WF3 KHL A Holdings, LLC",GRE Fund 4 LGB4; GRE Fund 4 SNA7 LLC; SunTrust Equipment Finance & Leasing Corp,,1986.0,5.0
+SAN LUIS REY,4.0,12.3,3.2,6.1,Solar Photovoltaic 7; Batteries 3; Other Natural Gas 2,"2016 ESA Project Company, LLC; Gilead Sciences Inc.; Hero Drive Solar Project 2023, LLC; Tesla Inc.",,,2016.0,0.0
+SANTA TERESA,4.0,12.0,0.0,0.0,Other Natural Gas 12,"2016 ESA Project Company, LLC; Bloom Energy",Equinix,,2015.0,75.0
+SCHULTE,3.0,339.1,0.0,0.0,Natural Gas Fired Combined Cycle 336; Onshore Wind Turbine 2; Solar Photovoltaic 1,"Foundation HA Energy Generation, LLC; MRP San Joaquin Energy LLC.; Powerflex",Medline Industries Inc.,SCHLTE_1_PL1X3-APND,2003.0,253.6
+SCRIPPS,1.0,1.0,0.0,0.0,Solar Photovoltaic 1,CleanCapital Holdings,"GLC-(CA) SDCCD, LLC",,2011.0,4.3
+SEMITROPIC,3.0,6.1,0.0,0.0,Solar Photovoltaic 6,"Forefront Power, LLC; SunE Wasco SP Owner, LLC; Wonderful Renewable Energy, LLC.",Wonderful Nurseries LLC,,2013.0,0.0
+SHADOWRIDGE,2.0,3.1,0.0,0.0,Natural Gas Internal Combustion Engine 2; Other Natural Gas 1,Bloom Energy; Watkins Manufacturing Corporation,Life Technologies Corporation,,2001.0,0.0
+SHINGLE SPRINGS,1.0,1.3,0.0,0.0,Solar Photovoltaic 1,"Altus Power America Management, LLC",,,2021.0,0.0
+SLOAN CANYON,1.0,279.0,279.0,1116.0,Batteries 279,"Silver Peak Solar, LLC",,,2025.0,126.5
+SOLEDAD,2.0,6.6,0.0,0.0,Onshore Wind Turbine 7,"Foundation CA Fund X Manager LLC; Foundation HA Energy Generation, LLC",,,2014.0,0.0
+SPRING VALLEY,1.0,1.2,0.0,0.0,Solar Photovoltaic 1,"Altus Power America Management, LLC",,,2018.0,0.0
+SPRINGVILLE,0.0,0.0,0.0,0.0,,,,,,225.0
+SYCAMORE CANYON,1.0,100.0,100.0,400.0,Batteries 100,MN8 Energy LLC,Pome BESS LLC,,2025.0,300.0
+TABLE MOUNTAIN,1.0,115.1,0.0,0.0,Hydroelectric Pumped Storage 82; Conventional Hydroelectric 33,California Dept. of Water Resources,,,1968.0,0.0
+TEMPLETON,2.0,3.1,0.0,0.0,Solar Photovoltaic 3,Ecos Energy LLC; SkyHigh 2 Solar,,,2014.0,0.0
+TESLA,4.0,408.0,400.0,1800.0,Batteries 400; Solar Photovoltaic 5; Other Natural Gas 3,"Costco Wholesale; Kola Energy Storage, LLC; Powerflex; Prologis Logistics Services Incorporated","ESCA-PLD-TRACY4, LLC; Prologis, L.P.",,2018.0,81.7
+TRIMBLE,11.0,352.4,0.0,0.0,Natural Gas Fired Combined Cycle 154; Petroleum Liquids 120; Natural Gas Fired Combustion Turbine 65; Other Natural Gas 14,"2016 ESA Project Company, LLC; Bloom Energy; City of Santa Clara - (CA); CoreSite Real Estate 2901 Coronado, L.P.; CoreSite Real Estate 2972 Stender, L.P.; CoreSite Real Estate 3032 Coronado, L.P. …",Intel; Key Equipment Finance,CSCGNRA1_7_N101; CSCGNRA2_7_N101; POD_DUANE_1_PL1X3-APND,1986.0,50.0
+TULUCAY,2.0,6.8,0.0,0.0,Other Natural Gas 5; Solar Photovoltaic 2,"2016 ESA Project Company, LLC; Soscol Ferry Solar","RP Napa Solar 2, LLC",,2017.0,24.5
+VACA DIXON,6.0,72.1,0.0,0.0,Natural Gas Fired Combustion Turbine 60; Solar Photovoltaic 12,"700Eubanks LLC; CalPeak Power, LLC; KP Vacaville Solar, LLC; Pacific Gas & Electric Co.; SunE U6 Holdings LLC; Tesla Inc.","CalPeak Power - Vaca Dixon LLC; Citicorp North America Inc.; Forsyth Street Renewables I, LLC",VACADIX_1_GN001; VACADX_1_UNITA1,2002.0,59.5
+VESTAL,8.0,764.8,320.0,1280.0,Solar Photovoltaic 445; Batteries 320,"AES Clean Energy; Arevon Energy, Inc.; RWE Clean Energy; Tulare Solar Center, LLC; VESI 12 LLC",,,2016.0,0.0
+VICTORVILLE,4.0,8.7,0.0,0.0,Solar Photovoltaic 6; Onshore Wind Turbine 3,AES Distributed Energy; Foundation CA Fund VI Manager LLC,"Foundation CA Fund VI Owner, LLC",,2012.0,0.0
+VIEJO,2.0,2.2,2.2,13.2,Batteries 2,"Electrodes; Hybrid-Electric Building Technologies West Los Angeles 1, LLC",SUSI Partners AG; Sk Holdings Co. Ltd.,,2019.0,0.0
+VIERRA,0.0,0.0,0.0,0.0,,,,,,3.4
+VILLA PARK,1.0,2.2,0.0,0.0,Other Natural Gas 2,"2016 ESA Project Company, LLC",,,2017.0,0.0
+WAUKENA,8.0,101.0,0.0,0.0,Solar Photovoltaic 101,"Canal Energy S23, LLC; Madison Energy Investments LLC; Onward Energy; RWE Clean Energy; Solar Powered Ag, LLC","CRE Fund 2, LLC",,2013.0,0.0
+WHEELER RIDGE,2.0,22.2,0.0,0.0,Solar Photovoltaic 22,"Anthony Vineyards, Inc.; Southern Power Co",Adobe Solar LLC,,2014.0,0.0
+WHIRLWIND,6.0,705.7,147.0,147.0,Solar Photovoltaic 407; Onshore Wind Turbine 152; Batteries 147,"Arevon Energy, Inc.; EDF Renewable Asset Holdings, Inc.; Golden Fields Solar III, LLC; RE Astoria 2 LLC; RE Astoria LLC",8point3 Operating Company LLC; State Street Bank and Trust Company,POD_ASTORA_2_SOLAR1-APND; POD_ASTORA_2_SOLAR2-APND,2012.0,186.0
+WINDHUB,24.0,1976.0,256.0,793.0,"Onshore Wind Turbine 1,680; Batteries 256; Solar Photovoltaic 40","AES Distributed Energy; Alta Wind II, LLC; Alta Wind III, LLC; Alta Wind IV, LLC; Alta Wind V, LLC; Coram California Development, L.P. …","Brookfield Renewable Energy Group; CTV Marketing Group; Coram Energy, LLC; Excelsior Energy Capital; NRG Renew; TPC Windfarm LLC",POD_RTREE_2_WIND3-APND; SUNSPTA_7_N002,1982.0,26.4

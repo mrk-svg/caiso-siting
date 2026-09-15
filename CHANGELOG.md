@@ -17,9 +17,30 @@ agreement; 60,302 of 74,687 MW). Every ratio now carries its project count (`chu
 on the page when built on fewer than 3 projects or a denominator under 500 MW — Viejo's storage churn of 3.33 is
 one withdrawal over one survivor and now reads that way.
 
+EIA-860 connector (`eia860.py`, `caiso-siting eia860`, in `download` and `nodes`): the federal generator census joined
+to nodes by distance (5 km, positioned nodes only). Answers what CAISO's files cannot — who operates and owns what
+already runs near a node, its technology and vintage, battery MWh, MW in the Proposed sheet, and the CAISO pricing
+node those generators report (the confirmed-PNode input `oasis.py` was waiting for). 2025 final data: 2,004 plants in
+the footprint, 94 GW operable, 54 GWh of storage; 180 nodes get EIA columns. The join is by position, not POI, and
+every rendering says so. Zip verified for members and executable content before parsing; public domain.
+
+Review fixes (two adversarial passes over everything since 1.3.3): EIA-860 plants now join only to nodes whose
+position is the substation itself (exact / override / cec-line) — line ends share the substation's coordinates and
+were winning ties by row order (San Bernardino's 1,064 MW sat on a line node; Russell City on a line midpoint);
+`eia_plants` counts plants with an operable unit; a corrupt or partial zip can no longer fail `nodes`, and
+`download` verifies every zip and xlsx before it replaces a good file; zip members are size-guarded; the
+person-name classifier now catches particles and suffixes (van/der/de, Jr) and withholds anything that could be a
+person; the blank-BA rule is gone (CISO only). LCR: Antelope, Mercy Springs and Bellota are encoded IN — every queue
+POI at those nodes is on the low-voltage bus the report puts inside — with the high-side exception in the note;
+Magunden's utility corrected; same-name collisions (Mesa, Eagle Rock) are reported instead of silently skipped.
+TPD 2024 counts are projects, not requests (Rio Hondo 6 → 3). C15 is censored at the latest withdrawal in the file
+when CAISO has re-posted since the posting date. Markdown links escape quotes (attribute injection via a hostile
+project name); `fact()` escapes its value; a ratio with no denominator reads "no denominator", not "too few
+projects"; `line-midpoint` is an approximate position on node pages; "nan kV" no longer appears in CEC line names.
+
 New `methodology.html`: sources, node definition, windows and censoring, the regime caveat, the small-number rule,
 every metric definition, the not-public list, and what the site never does. Dark mode follows the system.
-323 tests.
+337 tests.
 
 ## 1.4.0 — 2026-09-14 — what a siting engineer asks in the first five minutes
 

@@ -287,3 +287,10 @@ def test_regimes_cover_every_cluster_cohort_and_reach_chart_text_and_findings():
     svg13 = survival.render_svg(long_df[long_df.cohort == "C13"])
     assert "post-scoring" not in svg13                              # footnote only when C15 is drawn
     assert survival.REGIME_CAVEAT.startswith("Attrition compares regimes")
+
+
+def test_c15_censor_date_never_precedes_an_observed_withdrawal():
+    c15 = pd.DataFrame({"withdrawn_date": ["2026-07-14", "", "2026-10-01"]})
+    assert survival.c15_censor_date(c15) == "2026-10-01"
+    assert survival.c15_censor_date(pd.DataFrame({"withdrawn_date": ["2026-07-14", ""]})) == survival.C15_CENSOR_DATE
+    assert survival.c15_censor_date(pd.DataFrame()) == survival.C15_CENSOR_DATE

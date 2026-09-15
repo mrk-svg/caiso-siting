@@ -22,6 +22,9 @@ caiso-siting = "caiso_siting.cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+caiso_siting = ["vendor/*"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
@@ -46,4 +49,6 @@ ignore = ["E731"]
 "tests/test_watch.py" = ["E501", "E731"]
 "src/caiso_siting/survival.py" = ["E501"]
 "src/caiso_siting/oasis.py" = ["E501"]
+"src/caiso_siting/eia860.py" = ["E501"]
 "tests/test_oasis.py" = ["E501"]
+"tests/test_eia860.py" = ["E501"]

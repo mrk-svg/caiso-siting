@@ -11,6 +11,7 @@ Inputs (all free):
   data/poi_overrides.csv        hand-verified coordinates (win over OSM)
   data/poi_availability.csv     official per-POI availability statements (CAISO/PTO notices)
   data/lcr_areas.csv            Local Capacity Area / sub-area per substation (CAISO LCT report), see lcr.py
+  data/eia860.zip               EIA-860 bulk zip: operating plants, owners, storage MWh, LMP nodes near each node, see eia860.py
 
 Outputs:
   outputs/nodes.csv, poi_geocode.csv, nodes_map.html, node_watch.md
@@ -59,7 +60,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from . import cluster15, lcr, tpd, wdat
+from . import cluster15, eia860, lcr, tpd, wdat
 from . import queue_report as caiso_queue
 from .common import haversine_km, in_state, norm_poi, poi_endpoints
 from .config import DATA, OUT, RECENT_YEARS, add_provenance
@@ -68,7 +69,8 @@ RECENT_FROM_YEAR = pd.Timestamp.today().year - RECENT_YEARS + 1  # inclusive fir
 
 THIS_YEAR = pd.Timestamp.today().year
 AMBIGUOUS_KM = 50   # OSM features sharing a name further apart than this make the position untrustworthy
-APPROX_METHODS = ["line-one-end", "fuzzy", "override-approx", "county-centroid", "ambiguous", "state-mismatch", "none"]
+APPROX_METHODS = ["line-one-end", "line-midpoint", "fuzzy", "override-approx", "county-centroid", "ambiguous",
+                  "state-mismatch", "none"]
 
 
 # ------------------------------------------------------------------ geocoding
@@ -385,7 +387,8 @@ def apply_line_cache(nodes: pd.DataFrame) -> pd.DataFrame:
     nodes.loc[hit, "lon"] = nodes.loc[hit, "node_key"].map(cache.lon).values
     nodes.loc[hit, "geo_method"] = "cec-line"
     nodes.loc[hit, "geo_score"] = 0.9
-    nodes.loc[hit, "osm_name"] = ("CEC line: " + cache.tline_name.astype(str) + " " + cache.kv.astype(str) + " kV")\
+    kv = cache.kv.map(lambda v: "" if pd.isna(v) or str(v).strip().lower() in ("", "nan", "none") else f" {v} kV")
+    nodes.loc[hit, "osm_name"] = ("CEC line: " + cache.tline_name.astype(str) + kv)\
         .reindex(nodes.loc[hit, "node_key"]).values
     print(f"cec-line cache: {hit.sum()} line POIs placed on transmission-line geometry")
     return nodes
@@ -629,6 +632,7 @@ def main() -> None:
     nodes = join_lmp(nodes)
     nodes = join_availability(nodes)
     nodes = geocode_nodes(nodes)
+    nodes = eia860.join(nodes)          # needs positions, so after geocoding
     nodes = add_provenance(nodes, "publicqueuereport.xlsx+cluster15.xlsx",
                            str(pq["source_run_date"].iloc[0]) if "source_run_date" in pq else None)
     nodes.to_csv(OUT / "nodes.csv", index=False)

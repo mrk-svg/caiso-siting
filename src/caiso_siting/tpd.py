@@ -137,7 +137,9 @@ def per_node(tpd: pd.DataFrame, projects: pd.DataFrame) -> pd.DataFrame:
         g25[f"tpd25_denied_{g}_mw"] = sub[sub.allocation_pct == 0].groupby("node_key").mw_requested.sum()
     g25 = g25.fillna(0)
     g25["tpd25_denied_ppa_mw"] = g25.tpd25_denied_A_mw + g25.tpd25_denied_B_mw
-    g24 = t24.groupby("node_key").agg(
+    # the 2024 file is per REQUEST (one project can carry several rows): count projects, not rows
+    t24u = t24.drop_duplicates(["node_key", "queue_id", "status"])
+    g24 = t24u.groupby("node_key").agg(
         tpd24_fcdsa_projects=("status", lambda s: (s == "FCDSA").sum()),
         tpd24_pcdsa_projects=("status", lambda s: (s == "PCDSA").sum()),
     )

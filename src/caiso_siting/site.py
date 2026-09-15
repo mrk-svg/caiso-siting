@@ -23,6 +23,7 @@ from string import Template
 import pandas as pd
 
 from .config import OUT, RECENT_YEARS, SITE
+from .eia860 import EIA_JOIN_KM
 from .nodes import APPROX_METHODS, RECENT_FROM_YEAR
 from .tpd import GROUPS
 
@@ -54,6 +55,10 @@ METRIC_DEFS = [
     ("churn_n", "projects behind storage_churn (withdrawn recent + queued + operating)"),
     ("c15_n", "projects behind c15_survival"),
     ("p2_n", "projects behind p2_attrition"),
+    ("eia_plants", "operable EIA-860 plants within 5 km of the node's mapped position (positioned nodes only)"),
+    ("eia_nameplate_mw", "their nameplate MW, all technologies (EIA-860 Generator file, Operable sheet)"),
+    ("eia_storage_mwh", "battery energy capacity among them (EIA-860 Energy Storage file)"),
+    ("eia_proposed_mw", "nameplate MW in EIA-860's Proposed sheet within the same radius (planned / under construction)"),
     ("wd_alltime_mw", "every withdrawn MW since 2006 (includes dead wind/solar-era projects)"),
     ("storage_churn", "wd_recent_storage_mw / (active + operating storage MW) — the one to quote"),
     ("churn_alltime", "wd_alltime_mw / (pipeline + operating MW) — historical color only"),
@@ -142,6 +147,8 @@ dl.kv dt{font-weight:600}dl.kv dd{margin:0}
 .fact .n{color:var(--muted);font-size:.8rem;font-weight:400}
 .fact.dim .v{color:var(--dim);font-weight:500}
 .fact.dim .k::after{content:" — too few projects to read as a rate"}
+.fact.undefined .v{color:var(--dim);font-weight:500}
+.fact.undefined .k::after{content:" — no denominator at this node"}
 .np{background:var(--npbg);color:var(--np);border-left:3px solid var(--np);padding:6px 10px;margin:8px 0;font-size:.9rem;border-radius:0 6px 6px 0}
 .np b{font-weight:700}
 .np.soft{background:transparent;border-left-color:var(--line);color:var(--muted)}
@@ -198,14 +205,15 @@ def fmt(col: str, v) -> str:
     """MW columns as integers with thousands separators, ratios to 2 dp, NaN as n/a."""
     if v is None or (isinstance(v, float) and pd.isna(v)) or v == "":
         return "n/a" if col in ("storage_churn", "churn_alltime", "c15_survival", "geo_score", "p2_attrition") else ""
-    if col.endswith("_mw") or col.endswith("_projects") or col in ("mw_requested", "mw_allocated"):
+    if (col.endswith(("_mw", "_mwh", "_projects", "_plants", "_n")) or col in ("mw_requested", "mw_allocated")
+            or col == "eia_first_year"):
         return f"{float(v):,.0f}"
     if col in ("storage_churn", "churn_alltime", "c15_survival", "geo_score", "p2_attrition"):
         return f"{float(v):.2f}"
     if col == "allocation_pct":
         return f"{float(v):.0%}"
     if col == "tpd_year":
-        return str(v).split(".")[0]
+        return esc(str(v).split(".")[0])
     if col in ("lat", "lon"):
         return f"{float(v):.5f}"
     return esc(v)
@@ -266,12 +274,12 @@ _INLINE = [
     (re.compile(r"\*\*(.+?)\*\*"), r"<b>\1</b>"),
     (re.compile(r"(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?!\w)"), r"<i>\1</i>"),
     (re.compile(r"(?<![\w_])_(?!\s)(.+?)(?<!\s)_(?!\w)"), r"<i>\1</i>"),
-    (re.compile(r"\[([^\]]+)\]\((https?://[^)\s]+)\)"), r'<a href="\2">\1</a>'),
+    (re.compile(r"\[([^\]]+)\]\((https?://[^)\s\"'<>]+)\)"), r'<a href="\2">\1</a>'),
 ]
 
 
 def _inline(s: str) -> str:
-    s = html.escape(s, quote=False)
+    s = html.escape(s, quote=True)
     for rx, rep in _INLINE:
         s = rx.sub(rep, s)
     return s
@@ -466,9 +474,13 @@ MIN_N = 3          # ratios built on fewer projects than this are shown dimmed
 MIN_DENOM_MW = 500  # ... or on a denominator smaller than this
 
 
-def fact(label: str, value: str, n: int | None = None, dim: bool = False, note: str = "") -> str:
+def fact(label: str, value: str, n: int | None = None, dim: bool = False, note: str = "",
+         undefined: bool = False) -> str:
+    """One figure with its label; `dim` = too few projects behind a ratio; `undefined` = a ratio with no
+    denominator (shown as n/a, no small-n reason attached)."""
     nn = f' <span class="n">(n={n})</span>' if n is not None else ""
-    return (f'<div class="fact{" dim" if dim else ""}"><div class="v">{value}{nn}</div>'
+    cls = " undefined" if undefined else (" dim" if dim else "")
+    return (f'<div class="fact{cls}"><div class="v">{esc(value)}{nn}</div>'
             f'<div class="k">{esc(label)}{(" · " + esc(note)) if note else ""}</div></div>')
 
 
@@ -479,10 +491,11 @@ def mw(v) -> str:
         return "0 MW"
 
 
-def ratio(v, n: int, denom_mw: float) -> tuple[str, bool]:
+def ratio(v, n: int, denom_mw: float) -> tuple[str, bool, bool]:
+    """(text, dim, undefined): undefined when there is no denominator; dim when too few projects support it."""
     if v is None or (isinstance(v, float) and pd.isna(v)):
-        return "n/a", True
-    return f"{float(v):.2f}", (n < MIN_N or denom_mw < MIN_DENOM_MW)
+        return "n/a", False, True
+    return f"{float(v):.2f}", (n < MIN_N or denom_mw < MIN_DENOM_MW), False
 
 
 def not_public(what: str, where: str) -> str:
@@ -525,16 +538,39 @@ def node_page(r: pd.Series, projects: pd.DataFrame, prov: dict, wdat: pd.DataFra
         fact("operating at this node", mw(g("operating_mw")), int(g("operating_projects"))),
         fact("Cluster 15 requests seeking full capacity", mw(g("c15_fcds_req_mw"))),
     ]) + "</div>"
-    q2 += not_public("who the interconnection customers are",
-                     "CAISO's public files carry project names only; the projects table below is the full public record.")
+    eia_n = int(g("eia_plants"))
+    if eia_n:
+        yr = g("eia_first_year", float("nan"))
+        parts = [f"{eia_n} plant{'s' if eia_n != 1 else ''}", f"{mw(g('eia_nameplate_mw'))} nameplate"]
+        smwh = float(g("eia_storage_mwh"))
+        if smwh > 0:
+            parts.append(f"{mw(g('eia_storage_mw'))} / {smwh:,.0f} MWh storage")
+        if isinstance(yr, (int, float)) and not pd.isna(yr):
+            parts.append(f"oldest unit {int(yr)}")
+        prop = float(g("eia_proposed_mw"))
+        if prop > 0:
+            parts.append(f"{prop:,.0f} MW proposed")
+        extra = ""
+        for label, key, code in (("Technology", "eia_tech", False), ("Operators", "eia_operators", False),
+                                 ("Owners", "eia_owners", False), ("LMP nodes reported by these generators", "eia_pnodes", True)):
+            val = str(g(key, "") or "")
+            if val:
+                extra += f" {label}: " + (f"<code>{esc(val)}</code>" if code else esc(val)) + "."
+        q2 += (f'<div class="ok"><b>Already operating within {int(EIA_JOIN_KM)} km (EIA-860):</b> {"; ".join(parts)}.'
+               f'{extra} <span class="sub">Joined by distance to this node\'s mapped position, not by point of '
+               f'interconnection: a plant on a long gen-tie lands on the nearest substation. Corporate names from a '
+               f'federal filing.</span></div>')
+    q2 += not_public("who the interconnection customers are (the queue)",
+                     "CAISO's public files carry project names only; the projects table below is the full public record. "
+                     "EIA-860 names the owners of what already operates nearby, not of what is queued.")
 
     # --- 3. do they leave after seeing costs
     p2n, p2r = int(g("p2_n")), float(g("p2_reached_mw"))
-    p2v, p2dim = ratio(g("p2_attrition", float("nan")), p2n, p2r)
+    p2v, p2dim, p2und = ratio(g("p2_attrition", float("nan")), p2n, p2r)
     q3 = '<div class="facts">' + "".join([
         fact("received Phase II / Facilities Study results here", mw(p2r), p2n, note="any sheet, public report"),
         fact("of that, withdrew with results in hand", mw(g("p2_withdrawn_mw")), int(g("p2_withdrawn_projects"))),
-        fact("Phase II attrition (MW share)", p2v, p2n, dim=p2dim),
+        fact("Phase II attrition (MW share)", p2v, p2n, dim=p2dim, undefined=p2und),
     ]) + "</div>"
     q3 += not_public("the network upgrade cost allocated to a project here",
                      "Phase I / Phase II study reports, served through RIMS. Ask the incumbent developer or request "
@@ -590,16 +626,17 @@ def node_page(r: pd.Series, projects: pd.DataFrame, prov: dict, wdat: pd.DataFra
 
     # --- 7. how long
     cn, sc = int(g("churn_n")), g("storage_churn", float("nan"))
-    scv, scdim = ratio(sc, cn, float(g("pipeline_storage_mw")) + float(g("operating_storage_mw")))
+    scv, scdim, scund = ratio(sc, cn, float(g("pipeline_storage_mw")) + float(g("operating_storage_mw")))
     c15n = int(g("c15_n"))
-    sv, svdim = ratio(g("c15_survival", float("nan")), c15n, float(g("c15_active_mw")) + float(g("c15_withdrawn_mw")))
+    sv, svdim, svund = ratio(g("c15_survival", float("nan")), c15n,
+                             float(g("c15_active_mw")) + float(g("c15_withdrawn_mw")))
     cods = sorted(c for c in active.cod.tolist() if c) if len(active) else []
     cod_txt = (cods[0] if cods[0] == cods[-1] else f"{cods[0]} to {cods[-1]}") if cods else "none active"
     q7 = '<div class="facts">' + "".join([
         fact(f"withdrawn since {RECENT_FROM_YEAR} (both reports)", mw(g("wd_recent_mw")), int(g("wd_recent_projects"))),
         fact("of that, storage", mw(g("wd_recent_storage_mw"))),
-        fact("storage churn", scv, cn, dim=scdim, note="withdrawn storage ÷ queued + operating storage"),
-        fact("Cluster 15 survival", sv, c15n, dim=svdim, note="active ÷ (active + withdrawn)"),
+        fact("storage churn", scv, cn, dim=scdim, undefined=scund, note="withdrawn storage ÷ queued + operating storage"),
+        fact("Cluster 15 survival", sv, c15n, dim=svdim, undefined=svund, note="active ÷ (active + withdrawn)"),
         fact("all-time withdrawn since 2006", mw(g("wd_alltime_mw")), int(g("wd_alltime_projects")),
              note="mostly wind/solar-era; colour, not signal"),
         fact("current on-line dates of active projects", cod_txt),
@@ -615,6 +652,7 @@ def node_page(r: pd.Series, projects: pd.DataFrame, prov: dict, wdat: pd.DataFra
         why = {
             "county-centroid": "position unknown; placed at the median of located nodes in the county",
             "line-one-end": "marker sits at one end of a transmission line, not at the tap point",
+            "line-midpoint": "marker sits at the midpoint between the line's two named ends, which is not a place",
             "fuzzy": "name matched an OpenStreetMap substation only approximately",
             "ambiguous": "several OSM features share this name more than 50 km apart — the position may be the wrong one",
             "state-mismatch": "the matched position was provably outside the filed state and was rejected; this node "
@@ -804,7 +842,7 @@ same-name station in two utilities can collide (utility is used to separate them
 {RECENT_FROM_YEAR}. Storage MW per project is the sum of its storage components capped at its net-to-grid figure.
 Survival curves: event = withdrawal at <code>withdrawn_date</code>; active projects censored at the public report run
 date; completed projects censored at their on-line date (completion is success, not an event); Cluster 15 censored at
-{C15_CENSOR_DATE}; a cohort's S(t) is reported only while at least {MIN_AT_RISK} projects remain at risk; rows with a
+its posting date {C15_CENSOR_DATE}, or at the latest withdrawal the file records if CAISO has re-posted it since; a cohort's S(t) is reported only while at least {MIN_AT_RISK} projects remain at risk; rows with a
 withdrawal before their queue date, or no queue date, are excluded and counted.</p>
 <p>{esc(REGIME_CAVEAT)}</p>
 
@@ -824,12 +862,12 @@ or accept as unknown — knowing which is which is most of the diligence.</p>
 
 <h2>What this site never does</h2>
 <p>No composite score. No cause attributed to a withdrawal. No dollar figure that is not in a source. No per-project
-prediction. No owner names from parcel data. No figure generated by a language model: the pipeline is deterministic
+prediction. No names of private individuals: parcel owners are never read, and an EIA-860 owner or operator that reads as a person is counted, not named. No figure generated by a language model: the pipeline is deterministic
 Python, the code is public, and every output row carries the source file, the source run date and the pipeline commit.</p>
 
 <h2>Update cadence</h2>
 <p>A GitHub Actions job runs every Monday: it downloads CAISO's current files, rebuilds everything, and commits a dated
-snapshot, redeploys the site and opens a row-level diff issue only when CAISO's report run date is new.</p>
+snapshot, opens a row-level diff issue only when CAISO's report run date is new; the site itself is redeployed on every run.</p>
 """
     return render("Methodology", body, "", prov)
 
@@ -853,7 +891,8 @@ def main() -> None:
                                            "c16_poi_status": str, "c16_poi_note": str, "osm_name": str,
                                            "geo_method": str, "pipeline_commit": str, "source_run_date": str})
     for c in ("county", "utility", "state", "c16_poi_status", "c16_poi_note", "osm_name", "geo_method", "poi_base",
-              "lcr_area", "lcr_sub_area", "lcr_status", "lcr_note", "lcr_source"):
+              "lcr_area", "lcr_sub_area", "lcr_status", "lcr_note", "lcr_source",
+              "eia_tech", "eia_operators", "eia_owners", "eia_pnodes"):
         if c not in nodes:
             nodes[c] = ""
         nodes[c] = nodes[c].fillna("")
@@ -892,7 +931,22 @@ def main() -> None:
 
     map_src = OUT / "nodes_map.html"
     if map_src.exists():
-        shutil.copyfile(map_src, SITE / "map.html")
+        # the site serves its own Leaflet (BSD-2, src/caiso_siting/vendor) so the map never depends on a CDN;
+        # outputs/nodes_map.html keeps the CDN+SRI tags so it still works as a standalone file
+        vendor = Path(__file__).parent / "vendor"
+        (SITE / "vendor").mkdir(exist_ok=True)
+        for f in ("leaflet.js", "leaflet.css", "LICENSE-leaflet.txt"):
+            if (vendor / f).exists():
+                shutil.copyfile(vendor / f, SITE / "vendor" / f)
+        map_html = map_src.read_text(encoding="utf-8")
+        if (vendor / "leaflet.js").exists() and (vendor / "leaflet.css").exists():
+            map_html = re.sub(r'<link rel="stylesheet" href="https://unpkg\.com/leaflet@[^"]+/leaflet\.css"[^>]*>',
+                              '<link rel="stylesheet" href="vendor/leaflet.css">', map_html)
+            map_html = re.sub(r'<script src="https://unpkg\.com/leaflet@[^"]+/leaflet\.js"[^>]*></script>',
+                              '<script src="vendor/leaflet.js"></script>', map_html)
+        else:
+            print(f"warning: {vendor} has no leaflet.js/leaflet.css — map.html keeps the CDN tags", file=sys.stderr)
+        (SITE / "map.html").write_text(map_html, encoding="utf-8")
     else:
         (SITE / "map.html").write_text(render("Map", "<h1>Map</h1><p>outputs/nodes_map.html not found; run "
                                               "<code>caiso-siting nodes</code>.</p>", "", prov), encoding="utf-8")

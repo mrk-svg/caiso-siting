@@ -96,6 +96,7 @@ Same canonical names where the concept matches. Differences:
 | `p2_attrition` | ratio | `p2_withdrawn_mw / p2_reached_mw` | yes, with `p2_n`; dimmed on the site when `p2_n` < 3 or `p2_reached_mw` < 500 |
 | `committed_projects`, `committed_mw` | n, MW | ACTIVE projects holding an executed interconnection agreement (public report; C15 has none yet) | yes — the only public commitment signal; financial security amounts are not public |
 | `churn_n`, `c15_n`, `p2_n` | n | project counts behind `storage_churn`, `c15_survival`, `p2_attrition` | always quote with the ratio |
+| `eia_plants`, `eia_nameplate_mw`, `eia_storage_mw`, `eia_storage_mwh`, `eia_tech`, `eia_operators`, `eia_owners`, `eia_pnodes`, `eia_first_year`, `eia_proposed_mw` | n, MW, MWh, text | EIA-860 operable plants within 5 km of the node's mapped position (positioned nodes only, never centroids): nameplate by technology, battery energy, operator and owner names (organisations only — a name that reads as a private individual is counted as "N individual owners not named"), the "RTO/ISO LMP Node Designation" their generators report, oldest operating year, and MW in the Proposed sheet | yes — always as "within 5 km of the mapped position"; a plant on a long gen-tie lands on the nearest substation, not necessarily its POI |
 | `tpd25_req_A_mw` … `tpd25_req_D_mw`, `tpd25_denied_A_mw` … `tpd25_denied_D_mw` | MW | the same request / refused MW split by CAISO allocation group: A = executed PPA (or LSE own load), B = shortlisted / negotiating a PPA, C = already operating, D = no PPA, Section 8.9.2.3 path (2025 TPD Allocation Report, 2026-04-13) | yes — say the group |
 | `tpd25_denied_ppa_mw` | MW | refused MW in groups A + B: contracted or shortlisted projects that did not get deliverability | yes — **the refusal that matters**; a 0 % in group D is the expected result for an uncontracted project |
 | `lcr_area`, `lcr_sub_area`, `lcr_status`, `lcr_note`, `lcr_source` | text | Local Capacity Area (Resource Adequacy geography) from `data/lcr_areas.csv`: `lcr_status` is `in <area>` or `outside <area>` as the LCT report's boundary lists state it; blank = **not encoded**, never "outside every area" | yes, citing the report; quote `lcr_note` where it carries a voltage split |
@@ -194,6 +195,12 @@ Snapshot: the `TRACKED` columns of both reports keyed `PUBLIC:<queue_position>` 
 The report names boundary stations only. A station whose low-voltage bus is in and high-voltage yard is out (Gates
 70 kV in, 230 kV out) is encoded `out` with a note, because queue POIs sit on the high side. `utility` disambiguates
 same-name stations (Eagle Rock: PG&E vs SCE). Values must not contain `#`.
+
+## `outputs/eia860_plants.csv` — EIA-860 plants in the CAISO footprint, with the node they landed on
+
+`plant_code, plant_name, utility_name, state, county, lat, lon, ba, td_owner, node_key` (+ provenance). `node_key` is
+the nearest positioned node within 5 km, blank when none. `outputs/eia860_by_node.csv` is the per-node roll-up
+(the `eia_*` columns). `eia_pnodes` is the candidate list for confirming `data/poi_pnodes.csv`.
 
 ## `outputs/tpd_node_rows.csv` — one row per TPD allocation request, joined to its node
 

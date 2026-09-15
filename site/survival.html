@@ -52,6 +52,8 @@ dl.kv dt{font-weight:600}dl.kv dd{margin:0}
 .fact .n{color:var(--muted);font-size:.8rem;font-weight:400}
 .fact.dim .v{color:var(--dim);font-weight:500}
 .fact.dim .k::after{content:" — too few projects to read as a rate"}
+.fact.undefined .v{color:var(--dim);font-weight:500}
+.fact.undefined .k::after{content:" — no denominator at this node"}
 .np{background:var(--npbg);color:var(--np);border-left:3px solid var(--np);padding:6px 10px;margin:8px 0;font-size:.9rem;border-radius:0 6px 6px 0}
 .np b{font-weight:700}
 .np.soft{background:transparent;border-left-color:var(--line);color:var(--muted)}
@@ -209,7 +211,7 @@ at least 5 projects remain at risk. Withdrawal is not failure and the files carr
 <h2>Process regime by cohort</h2>
 <p class="sub">Read the curves against this table. A cohort that had to score, pay more, or prove site control to be in
 the queue at all will withdraw less for that reason alone.</p>
-<div class="md"><div class="tbl"><table><thead><tr><th class="">cohort</th><th class="">queue window</th><th class="">process the cohort entered under</th></tr></thead><tbody><tr><td class="">C10</td><td class="">2017-05</td><td class="">standard cluster study process</td></tr><tr><td class="">C11</td><td class="">2018-04</td><td class="">standard cluster study process</td></tr><tr><td class="">C12</td><td class="">2019-04</td><td class="">standard cluster study process</td></tr><tr><td class="">C13</td><td class="">2020-04</td><td class="">standard cluster study process</td></tr><tr><td class="">C14</td><td class="">2021-04</td><td class="">373 requests / ~150 GW — 2.4x the prior year. Special FERC-approved procedures (Sept 2021): Phase I cost estimates advisory only; full deposit refund on early withdrawal if Phase II costs exceeded Phase I by 25 % or more; Phase I results delayed to Sept 2022.</td></tr><tr><td class="">C15</td><td class="">2025-02</td><td class="">First cluster scored under the 2023 IPE (commercial interest 30 %, viability 35 %, system need 35 %) and capped at 150 % of available capacity per constraint. 541 requests / 347 GW filed in the April 2023 window; 255 resubmitted Oct–Dec 2024; 145 / 68 GW proceeded to study (CAISO, June 2025). The queue_date in the file is 2025-02-12, so month 0 here is AFTER that cut: this cohort is already a filtered survivor set and its early months are not comparable to C10–C14's.</td></tr></tbody></table></div></div>
+<div class="md"><div class="tbl"><table><thead><tr><th class="">cohort</th><th class="">queue window</th><th class="">process the cohort entered under</th></tr></thead><tbody><tr><td class="">C10</td><td class="">2017-05</td><td class="">standard cluster study process</td></tr><tr><td class="">C11</td><td class="">2018-04</td><td class="">standard cluster study process</td></tr><tr><td class="">C12</td><td class="">2019-04</td><td class="">standard cluster study process</td></tr><tr><td class="">C13</td><td class="">2020-04</td><td class="">standard cluster study process</td></tr><tr><td class="">C14</td><td class="">2021-04</td><td class="">373 requests / ~150 GW — 2.4x the prior year. Special FERC-approved procedures (Sept 2021): Phase I cost estimates advisory only; full deposit refund on early withdrawal if Phase II costs exceeded Phase I by 25 % or more; Phase I results delayed to Sept 2022.</td></tr><tr><td class="">C15</td><td class="">2025-02</td><td class="">First cluster scored under the 2023 IPE (commercial interest 30 %, viability 35 %, system need 35 %) and capped at 150 % of available capacity per constraint. 541 requests / 347 GW filed in the April 2023 window; 255 resubmitted Oct–Dec 2024; 145 / 68 GW proceeded to study (CAISO, June 2025). The queue_date in the file is 2025-02-12, so month 0 here is AFTER that cut: this cohort is already a filtered survivor set and its early months are not comparable to C10–C14&#x27;s. (The file holds 170 requests; CAISO&#x27;s June 2025 summary counted 145 proceeding to study — the difference is requests that withdrew during validation and are in the file as withdrawn.)</td></tr></tbody></table></div></div>
 <p>Definitions: <code>DATA.md</code> (survival_by_cluster.csv, survival_summary.csv).</p>
 
 <p class="disclaimer">No figure on this site states a cause. CAISO files carry no withdrawal reason beyond &quot;IC Request&quot;.</p>
@@ -221,7 +223,7 @@ CAISO / PTO notices on Cluster 16 POI availability; substation positions &copy; 
 PG&amp;E Wholesale Distribution Queue (WDAT); parcel and zoning layers from Kings County and Kern County GIS.</p>
 <p>All MW are net-to-grid as filed. Cluster 15 deliverability is requested, not allocated.
 Nothing here is load-side.</p>
-<p>Pipeline commit <code>1f77183</code> · pipeline run <code>2026-09-15T00:16:50Z</code> · site built <code>2026-09-15T00:17:08Z</code></p>
+<p>Pipeline commit <code>5988a32</code> · pipeline run <code>2026-09-15T19:25:24Z</code> · site built <code>2026-09-15T19:25:44Z</code></p>
 </footer>
 </body>
 </html>

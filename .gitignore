@@ -16,3 +16,5 @@ data/snapshots/*/*.xlsx
 .venv/
 *.egg-info/
 .preview/
+data/eia860.zip
+data/lct_2027.pdf

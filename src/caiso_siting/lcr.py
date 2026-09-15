@@ -80,12 +80,22 @@ def join(nodes: pd.DataFrame, path=None) -> pd.DataFrame:
         print("lcr: data/lcr_areas.csv has no rows — LCR columns are empty")
         return nodes
     util = nodes["utility"].fillna("").str.upper() if "utility" in nodes else pd.Series("", index=nodes.index)
+    unmatched = []
     for _, r in lcr.iterrows():
         mask = nodes.node_key == r.node_key
         if r.utility:
             mask &= util == r.utility
+        if not mask.any():
+            # only worth a line when the station IS a queue node under another utility (a same-name collision)
+            if r.utility and (nodes.node_key == r.node_key).any():
+                unmatched.append(f"{r.node_key} ({r.utility} row; node is "
+                                 f"{util[nodes.node_key == r.node_key].iloc[0] or 'blank'})")
+            continue
         for c in LCR_COLS:
             nodes.loc[mask, c] = r[c]
+    if unmatched:
+        print(f"lcr: {len(unmatched)} encoded rows name a station whose queue node carries another utility "
+              f"(same-name collision, left unlabelled): {'; '.join(unmatched)}")
     inside = nodes.lcr_area != ""
     outside = nodes.lcr_status.str.startswith("outside")
     print(f"lcr: {inside.sum()} nodes inside an encoded Local Capacity Area "
