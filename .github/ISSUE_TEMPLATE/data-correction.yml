@@ -1,0 +1,61 @@
+name: Data correction
+description: A number on a node page or in an output file is wrong.
+title: "data: "
+labels: ["data-correction"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is the most useful issue you can open here. Thank you.
+
+        Please do not include information that is not in a public filing. If you know something
+        because of your job and it has not been published, it cannot be used in this project and
+        posting it may cause you a problem.
+  - type: input
+    id: where
+    attributes:
+      label: Where is the wrong figure
+      description: Node page URL, or the output file and column.
+      placeholder: "nodes/whirlwind-substation.html — 'TPD 2025 refused, group B'"
+    validations:
+      required: true
+  - type: input
+    id: shows
+    attributes:
+      label: What it currently says
+      placeholder: "412 MW refused"
+    validations:
+      required: true
+  - type: input
+    id: should
+    attributes:
+      label: What it should say
+      placeholder: "0 MW refused — no group B request was made at this POI"
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Public source that shows it
+      description: >-
+        A document anyone can open — a CAISO report and its posting date, a PTO market notice,
+        a tariff section, an EIA form. Name the file, the page or row, and the date.
+    validations:
+      required: true
+  - type: dropdown
+    id: confidence
+    attributes:
+      label: How confident are you
+      options:
+        - "Certain — the filing says so plainly"
+        - "Fairly confident — the filing supports it but needs interpretation"
+        - "Uncertain — the underlying facts are ambiguous"
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else worth knowing
+      description: Ambiguity in the source, a naming collision, a date convention, a rule change.
+    validations:
+      required: false

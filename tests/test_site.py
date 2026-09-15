@@ -96,3 +96,22 @@ def test_fact_escapes_its_value_and_markdown_links_cannot_inject_attributes():
     assert "<b>" not in site.fact("x", "<b>1</b>")
     out = site.md_to_html('[x](https://a/"onmouseover="alert(1))')
     assert 'onmouseover="alert' not in out and "onmouseover=&quot;" in out or "<a" not in out
+
+
+def test_reliance_disclaimer_on_every_page():
+    """The reliance line is the boundary between a screening tool and a study. It is not optional
+    decoration on one page; it must survive on all of them."""
+    pages = [site.node_page(node(), PROJECTS, PROV), site.methodology_page(PROV)]
+    for html in pages:
+        assert "Screening tool, not engineering advice" in html
+        assert "not a licensed PE" in html
+        assert "Verify every figure against the source filing" in html
+        assert "No warranty of any kind" in html
+        assert "Not affiliated with CAISO" in html
+
+
+def test_reliance_disclaimer_is_escaped():
+    assert "&amp;" not in site.RELIANCE  # constant itself is plain text
+    html = site.node_page(node(), PROJECTS, PROV)
+    assert "<script" not in site.RELIANCE
+    assert html.count('class="disclaimer reliance"') == 1

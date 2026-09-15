@@ -18,16 +18,23 @@ All downloads use HTTPS (OASIS included, as of 1.3.2). Nothing downloaded is eve
 `site/` is generated from those files. Every value that comes from a source file passes through
 `html.escape` before it lands in HTML (`site.py:esc`), and the map (`nodes_map.html`) escapes values in the
 browser before inserting them into popups and serialises its data with `</` neutralised so a hostile string
-cannot break out of the `<script>` block. Leaflet is loaded from a CDN **with subresource-integrity hashes**, so a
-tampered CDN file will not run. Output CSVs are checked in tests for cells that Excel would treat as formulas
+cannot break out of the `<script>` block. Leaflet is **vendored into the repository** (`src/caiso_siting/vendor/`,
+BSD-2, hashes verified against the upstream SRI digests at the time of vendoring) and copied into `site/` at build
+time, so the published site loads no third-party script at all: no CDN to be tampered with, and no request from a
+reader's browser to anyone but GitHub Pages and the map tile server. Output CSVs are checked in tests for cells that Excel would treat as formulas
 (`=`, `+`, `-`, `@` prefixes); none exist today. No owner names, no credentials, no secrets anywhere in the tree.
 
 ## 3. How it runs unattended
 
 `weekly.yml` uses only first-party `actions/*` steps and the repository `GITHUB_TOKEN`; no third-party actions,
-no secrets. Permissions are declared explicitly (`contents`, `pages`, `id-token`, `issues`). The diff issue body
-is passed to `github-script` as data, not interpolated into a shell. Dependabot watches both pip and the
-actions themselves. To harden further, pin each `uses:` to a commit SHA rather than a tag.
+no secrets. Permissions are declared explicitly (`contents`, `pages`, `id-token`, `issues`), and CI itself runs with
+`contents: read` only. Every `uses:` is **pinned to a commit SHA**, not a tag, so a compromised or re-pointed tag in
+an upstream action cannot execute inside a job that holds a write token; the human-readable version follows in a
+trailing comment and Dependabot still proposes bumps. There is no `pull_request_target` or `workflow_run` trigger
+anywhere in this repository — those are the usual route by which a fork's pull request gets hold of a write token,
+and adding one should be treated as a security change, not a convenience. The diff issue body is passed to
+`github-script` as data, not interpolated into a shell. Dependabot watches both pip and the actions, and `ci.yml`
+runs `pip-audit --strict` on every push so a new advisory fails the build rather than waiting for a Dependabot PR.
 
 ## Known residual risks
 
@@ -39,4 +46,11 @@ actions themselves. To harden further, pin each `uses:` to a commit SHA rather t
 - `data/documents_seen.csv` and `outputs/new_documents.md` contain URLs scraped from watched pages; treat
   links there as untrusted until you have opened the source page yourself.
 
-Report a problem by opening an issue titled `security:`.
+## Reporting
+
+Report privately through GitHub's security advisory form:
+<https://github.com/mrk-svg/caiso-siting/security/advisories/new>
+
+Please do not open a public issue for a security problem. There is no bounty and no SLA — this is a
+one-person project — but reports are read and acknowledged, and the repository has no users to put at
+risk by fixing something slowly and openly.

@@ -2,7 +2,8 @@
 
 [![ci](https://github.com/mrk-svg/caiso-siting/actions/workflows/ci.yml/badge.svg)](https://github.com/mrk-svg/caiso-siting/actions/workflows/ci.yml)
 [![weekly](https://github.com/mrk-svg/caiso-siting/actions/workflows/weekly.yml/badge.svg)](https://github.com/mrk-svg/caiso-siting/actions/workflows/weekly.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![code: MIT](https://img.shields.io/badge/code-MIT-blue.svg)](LICENSE)
+[![data: ODbL 1.0](https://img.shields.io/badge/data-ODbL%201.0-blue.svg)](LICENSE-DATA.md)
 
 **Live site: https://mrk-svg.github.io/caiso-siting/** — rebuilt every Monday from CAISO's own files:
 [map](https://mrk-svg.github.io/caiso-siting/map.html) ·
@@ -19,6 +20,23 @@ Free-data pipeline for CAISO interconnection node intelligence. Target user: sma
 BESS developers and land brokers in the CAISO footprint who can't afford LandGate or Nira.
 
 Not a "Grid-Ready Score". Transparent, sourced layers — every number traceable to a CAISO row.
+
+> **Screening tool, not engineering advice.** Built from public filings by an energy engineer who is
+> not a licensed PE. Verify every figure against the source filing named in its row before relying on
+> it for any decision. No warranty of any kind. Not affiliated with CAISO, the EIA, or any utility.
+> Full terms in [DISCLAIMER.md](DISCLAIMER.md).
+
+## Found a wrong number?
+
+That is the contribution this project wants most. Some of the judgment calls in here — which
+substations sit inside a local capacity area, which queue positions share a point of
+interconnection — were made by reading PDFs, and the people who know which ones are wrong are the
+people who work at those substations.
+
+[Open a data correction](https://github.com/mrk-svg/caiso-siting/issues/new?template=data-correction.yml).
+It asks for the figure, what it should say, and a public filing that shows it. You do not need to
+write code. Please do not post anything that is not in a public filing — see
+[CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## What it answers, per point of interconnection
 
@@ -219,3 +237,17 @@ Rule: only encode a POI a source names. Add a row every time a new notice appear
    (terminal-only, rate-limited) computes the day-ahead TB4 spread at PNodes you confirm by hand in `data/poi_pnodes.csv`;
    see `DATA.md` (`lmp_tb4*.csv`). A first-pass storage revenue screen, not a revenue forecast.
 4. Only then: a UI.
+
+## Licensing
+
+The code is MIT (`LICENSE`). **The outputs are not.** Substation positions come from
+OpenStreetMap under ODbL 1.0, which is share-alike for databases, so everything under `outputs/`
+and `site/` is offered under ODbL 1.0 — see [LICENSE-DATA.md](LICENSE-DATA.md) for why, and
+[DATA_LICENSES.md](DATA_LICENSES.md) for the per-source terms and the attribution each one
+requires. If you reuse the outputs, carry the attribution line and keep derived databases ODbL.
+
+## Security
+
+Every `uses:` in the workflows is SHA-pinned, CI runs `pip-audit --strict`, and the published site
+loads no third-party script. Report a security problem privately via the advisory form linked in
+[SECURITY.md](SECURITY.md) — not a public issue.

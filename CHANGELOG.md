@@ -1,5 +1,42 @@
 # Changelog
 
+## 1.5.1 — 2026-09-15 — open-source readiness: licence boundary, reliance disclaimer, supply chain
+
+Nothing in the pipeline changed. Everything that decides whether this repository can safely be
+public did.
+
+**Licence boundary.** The code is MIT; the outputs are not, and saying otherwise would have been a
+licence violation. Substation positions come from OpenStreetMap under ODbL 1.0, which is
+share-alike for databases, and `outputs/nodes.csv` carries `lat`, `lon`, `osm_name` and
+`geo_method` — a derivative database, not merely a produced work. `LICENSE-DATA.md` now states the
+split, the attribution line reusers must carry, and the two limits CAISO's published terms impose:
+credit CAISO and keep proprietary notices intact for website reports, and never commit OASIS API
+responses, whose terms are narrower. `DATA_LICENSES.md` rule 1 claimed no raw download is ever
+committed while two TPD workbooks were tracked; the rule now documents that exception honestly
+rather than being quietly false.
+
+**Reliance disclaimer.** The site already said no figure states a cause. It did not say what the
+site *is*. `RELIANCE` now renders on every page through the same template path as the causation
+line — screening tool, not engineering advice; built by an engineer who is not a licensed PE;
+verify every figure against the source filing; no warranty; no affiliation. Two tests assert it
+survives on every page, because a disclaimer that can be dropped by a refactor is decoration.
+`DISCLAIMER.md` carries the long form.
+
+**Supply chain.** Every `uses:` in both workflows is pinned to a commit SHA with the version in a
+trailing comment, so a re-pointed upstream tag cannot execute inside a job holding a write token.
+`ci.yml` gained a `pip-audit --strict` job, so a new advisory fails the build instead of waiting
+for a Dependabot pull request. The pytest exit-code-5 escape hatch is gone: with 339 tests, "no
+tests collected" no longer means "not written yet", it means collection broke and CI went green
+anyway. `SECURITY.md` is corrected — Leaflet is vendored, not loaded from a CDN with SRI — and
+now routes reports to a private advisory rather than a public issue.
+
+**Contribution path.** `CONTRIBUTING.md` leads with the ask that matters: send a number that is
+wrong, with the public filing that shows it, and no code required. A `data-correction` issue
+template asks for the figure, the correction, the source and a confidence level, and both the
+guide and the template tell contributors not to post anything that is not in a public filing.
+`CITATION.cff` added for researchers. README gained the disclaimer, the correction ask above the
+fold, and the licence split.
+
 ## 1.5.0 — 2026-09-15 — the node page a person reads before filing
 
 The node page is rebuilt around the seven questions a developer, lender or counsel asks before filing at a POI —

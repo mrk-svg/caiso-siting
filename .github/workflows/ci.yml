@@ -11,9 +11,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: "3.11"
           cache: pip
@@ -24,12 +24,27 @@ jobs:
       - name: Lint
         run: ruff check src tests
 
-      # pytest exit code 5 = "no tests collected"; tests/ is still being written, so that is not a failure.
+      # No exit-code-5 escape hatch. An empty collection used to mean "tests not written yet";
+      # with a real suite it would mean "collection broke and CI went green anyway".
       - name: Test
+        run: python -m pytest -q
+
+  audit:
+    name: dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.11"
+
+      - name: Install
         run: |
-          set +e
-          python -m pytest -q
-          rc=$?
-          set -e
-          if [ "$rc" -eq 5 ]; then echo "no tests collected yet; passing"; exit 0; fi
-          exit "$rc"
+          pip install -e .
+          pip install pip-audit
+
+      # Fails the build on a known advisory in anything we actually install. Dependabot tells us
+      # weeks later in a pull request; this tells us on the next push.
+      - name: Audit installed dependencies
+        run: pip-audit --strict --progress-spinner off

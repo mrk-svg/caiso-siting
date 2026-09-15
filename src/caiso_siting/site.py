@@ -30,6 +30,14 @@ from .tpd import GROUPS
 DISCLAIMER = ('No figure on this site states a cause. CAISO files carry no withdrawal reason beyond '
               '"IC Request".')
 
+# The causation disclaimer above says what the numbers do not mean. This one says what the site is
+# not. It is load-bearing: it appears on every page, above the fold of the footer, and it is the
+# reason a reader can tell a screening tool from a study. See DISCLAIMER.md for the long form.
+RELIANCE = ('Screening tool, not engineering advice. Built from public filings by an engineer who is '
+            'not a licensed PE. Verify every figure against the source filing named in its row before '
+            'you rely on it for any decision. No warranty of any kind. Not affiliated with CAISO, EIA, '
+            'or any utility.')
+
 WDAT_NOTE = "WDAT = distribution-level queue at the same substation, PG&E file today; not CAISO deliverability"
 WDAT_COLS = ["queue_position", "status_raw", "process", "gen_type", "net_mw", "request_received", "current_cod",
              "ia_status"]
@@ -119,6 +127,7 @@ h2{font-size:1.2rem;margin:1.5em 0 .5em;border-bottom:1px solid var(--line);padd
 h3{font-size:1.02rem;margin:1em 0 .3em}
 .sub{color:var(--muted);margin:0 0 .8em}
 .disclaimer{background:var(--warnbg);border-left:4px solid var(--warn);padding:8px 12px;margin:12px 0;font-size:.92rem}
+.disclaimer.reliance{font-weight:600}
 .warn{color:var(--warn);font-weight:600}
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:14px 0}
 .tile{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
@@ -178,6 +187,7 @@ PAGE = Template("""<!doctype html>
 <main>
 $body
 <p class="disclaimer">$disclaimer</p>
+<p class="disclaimer reliance">$reliance</p>
 </main>
 <footer>
 <p>Sources: CAISO Public Queue Report and Cluster 15 Interconnection Requests report (CAISO report run date $run_date);
@@ -416,7 +426,8 @@ def headline(projects: pd.DataFrame) -> list[tuple[str, str]]:
 # ------------------------------------------------------------------ pages
 
 def render(title: str, body: str, root: str, prov: dict) -> str:
-    return PAGE.substitute(title=esc(title), css=CSS, body=body, root=root, disclaimer=esc(DISCLAIMER), **prov)
+    return PAGE.substitute(title=esc(title), css=CSS, body=body, root=root, disclaimer=esc(DISCLAIMER),
+                           reliance=esc(RELIANCE), **prov)
 
 
 def index_page(nodes: pd.DataFrame, projects: pd.DataFrame, slugs: dict[str, str], prov: dict) -> str:

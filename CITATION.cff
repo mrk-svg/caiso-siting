@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+title: "caiso-siting: node-level intelligence from CAISO interconnection filings"
+message: "If you use this software or its outputs in research or publication, please cite it and cite the upstream data sources separately."
+type: software
+authors:
+  - family-names: Karimov
+    given-names: Robert
+repository-code: "https://github.com/mrk-svg/caiso-siting"
+abstract: >-
+  An open-source pipeline that reads the California ISO public interconnection
+  queue reports, Transmission Plan Deliverability allocation results, Local
+  Capacity Technical Reports, PG&E's wholesale distribution queue and EIA-860,
+  and publishes one page per interconnection node: what has been filed there,
+  what share of filings survived each process gate, what deliverability was
+  requested and refused by allocation group, and what is already built. It
+  states no causes, produces no composite scores and estimates no dollar
+  figures; every figure carries the source file and run date it came from.
+keywords:
+  - interconnection queue
+  - CAISO
+  - energy storage
+  - transmission plan deliverability
+  - local capacity requirement
+  - open data
+license: MIT

@@ -21,11 +21,11 @@ jobs:
     outputs:
       run_date: ${{ steps.stamp.outputs.date }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: "3.11"
           cache: pip
@@ -74,7 +74,7 @@ jobs:
       # and this step would open a fresh issue with a new date and stale content every Monday.
       - name: Open or update the weekly diff issue
         if: steps.commit.outputs.new_snapshot == 'true'
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         env:
           RUN_DATE: ${{ steps.stamp.outputs.date }}
         with:
@@ -105,9 +105,9 @@ jobs:
               core.info(`opened issue #${r.data.number}`);
             }
 
-      - uses: actions/configure-pages@v6
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
 
-      - uses: actions/upload-pages-artifact@v5
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
         with:
           path: site
 
@@ -119,5 +119,5 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v5
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5
 # touched after first push so GitHub registers the workflow_dispatch trigger

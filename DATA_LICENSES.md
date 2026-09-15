@@ -1,7 +1,8 @@
 # Data sources and their licences
 
-The code is MIT. The data it processes is not ours; each source carries its own terms and this
-project redistributes only derived aggregates, never the raw files (they are gitignored).
+The code is MIT. The data it processes is not ours; each source carries its own terms. What licence
+covers the *outputs* is a separate question with a separate answer — see `LICENSE-DATA.md`, which
+explains why everything under `outputs/` and `site/` is ODbL 1.0 rather than MIT.
 
 | Source | What we use | Terms | Attribution required in outputs |
 |---|---|---|---|
@@ -19,7 +20,12 @@ project redistributes only derived aggregates, never the raw files (they are git
 | CEC GIS open data (transmission lines, exclusion layers) | geometry for line POIs, siting screens | CEC open data, provided "as is" | "Source: California Energy Commission GIS" |
 
 Rules we follow:
-1. Raw downloads are never committed. Snapshots keep only the parsed `projects.csv` (derived).
+1. Raw downloads are not committed, with one documented exception: the two CAISO TPD allocation
+   workbooks (`data/tpd_2024.xlsx`, `data/tpd_2025.xlsx`) are kept so the pipeline is reproducible
+   offline. They are redistributed unmodified and with credit, under CAISO's published terms of use.
+   Everything else — queue reports, EIA-860, OASIS responses, the LCT PDF — is gitignored, and
+   snapshots keep only the parsed `projects.csv` (derived). OASIS responses are never committed
+   under any circumstances: CAISO's API terms are narrower than its website terms.
 2. Every output row carries `source_file`, `source_run_date`, `pipeline_commit`, `pipeline_run`.
 3. OSM-derived coordinates are marked by `geo_method` and the ODbL notice appears on the map and site.
 4. No owner names, ever, even where a county layer leaks them.
