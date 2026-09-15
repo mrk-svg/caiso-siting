@@ -5,30 +5,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Node Watch · CAISO node intelligence</title>
 <style>
-:root{--fg:#1b1b1b;--muted:#5b5b5b;--bg:#fbfbf9;--line:#dcdcd6;--card:#fff;--accent:#1d4ed8;--warn:#9a3412;--warnbg:#fff4ec}
+:root{--fg:#1b1b1b;--muted:#5b5b5b;--bg:#f6f6f2;--line:#dcdcd6;--card:#fff;--accent:#1d4ed8;--warn:#9a3412;--warnbg:#fff4ec;
+  --ok:#0f6b3f;--okbg:#eaf6ef;--dim:#8a8a84;--th:#f1f1ec;--code:#eeeee8;--np:#6b5d00;--npbg:#fdf6d8}
+@media (prefers-color-scheme:dark){:root{--fg:#e8e8e3;--muted:#a7a7a0;--bg:#121311;--line:#2e2f2b;--card:#1b1c19;
+  --accent:#8ab4f8;--warn:#f0a070;--warnbg:#2a1d14;--ok:#7fd3a5;--okbg:#14261c;--dim:#6f6f69;--th:#22231f;--code:#26271f;
+  --np:#e6cf6a;--npbg:#2a2510}}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 header{border-bottom:1px solid var(--line);background:var(--card)}
-header .in{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;gap:6px 18px;
-  align-items:baseline}
+header .in{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline}
 header .brand{font-weight:700;margin-right:auto}
 header nav a{white-space:nowrap}
 main{max-width:1180px;margin:0 auto;padding:16px}
-h1{font-size:1.6rem;margin:.2em 0 .3em}
-h2{font-size:1.2rem;margin:1.4em 0 .4em;border-bottom:1px solid var(--line);padding-bottom:.2em}
-h3{font-size:1.05rem;margin:1.2em 0 .3em}
+h1{font-size:1.7rem;margin:.2em 0 .25em;letter-spacing:-.01em}
+h2{font-size:1.2rem;margin:1.5em 0 .5em;border-bottom:1px solid var(--line);padding-bottom:.25em}
+h3{font-size:1.02rem;margin:1em 0 .3em}
 .sub{color:var(--muted);margin:0 0 .8em}
 .disclaimer{background:var(--warnbg);border-left:4px solid var(--warn);padding:8px 12px;margin:12px 0;font-size:.92rem}
 .warn{color:var(--warn);font-weight:600}
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:14px 0}
-.tile{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
 .tile .n{font-size:1.5rem;font-weight:700;line-height:1.15}.tile .l{color:var(--muted);font-size:.85rem}
-.tbl{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:8px;margin:8px 0 16px}
+.tbl{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:10px;margin:8px 0 16px}
 table{border-collapse:collapse;width:100%;font-size:.9rem;font-variant-numeric:tabular-nums}
 th,td{padding:6px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;white-space:nowrap}
-th{background:#f1f1ec;position:sticky;top:0}
+th{background:var(--th);position:sticky;top:0}
 td.num,th.num{text-align:right}
 tr:last-child td{border-bottom:0}
 td.wrap,th.wrap{white-space:normal;min-width:16em}
@@ -36,12 +39,28 @@ dl.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:8px
 dl.kv dt{font-weight:600}dl.kv dd{margin:0}
 .md table{width:auto}
 .chart{max-width:760px;margin:12px 0}.chart svg{width:100%;height:auto;display:block}
-.md pre,.md code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em}
-.md code{background:#eeeee8;padding:1px 4px;border-radius:3px}
-footer{max-width:1180px;margin:24px auto 40px;padding:12px 16px;border-top:1px solid var(--line);color:var(--muted);
-  font-size:.85rem}
+.md pre,.md code,code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em}
+.md code,code{background:var(--code);padding:1px 4px;border-radius:3px}
+/* node page: seven questions */
+.qs{counter-reset:q}
+.q{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px 10px;margin:14px 0}
+.q h2{border:0;margin:0 0 .4em;padding:0;font-size:1.15rem}
+.q h2::before{counter-increment:q;content:counter(q) ". ";color:var(--muted)}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px 14px;margin:6px 0 10px}
+.fact{padding:6px 0}
+.fact .v{font-size:1.25rem;font-weight:700;line-height:1.2}.fact .k{color:var(--muted);font-size:.82rem}
+.fact .n{color:var(--muted);font-size:.8rem;font-weight:400}
+.fact.dim .v{color:var(--dim);font-weight:500}
+.fact.dim .k::after{content:" — too few projects to read as a rate"}
+.np{background:var(--npbg);color:var(--np);border-left:3px solid var(--np);padding:6px 10px;margin:8px 0;font-size:.9rem;border-radius:0 6px 6px 0}
+.np b{font-weight:700}
+.np.soft{background:transparent;border-left-color:var(--line);color:var(--muted)}
+.ok{background:var(--okbg);color:var(--ok);border-left:3px solid var(--ok);padding:6px 10px;margin:8px 0;font-size:.92rem;border-radius:0 6px 6px 0}
+.q p.sub{margin:.2em 0 .6em}
+.badge{display:inline-block;font-size:.78rem;padding:1px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted);margin-left:6px;vertical-align:middle}
+footer{max-width:1180px;margin:24px auto 40px;padding:12px 16px;border-top:1px solid var(--line);color:var(--muted);font-size:.85rem}
 footer p{margin:.3em 0}
-@media (max-width:600px){body{font-size:14px}main{padding:10px}th,td{padding:5px 7px}}
+@media (max-width:600px){body{font-size:14px}main{padding:10px}th,td{padding:5px 7px}.q{padding:12px 12px 8px}}
 </style>
 </head>
 <body>
@@ -49,7 +68,7 @@ footer p{margin:.3em 0}
 <span class="brand"><a href="index.html">CAISO node intelligence</a></span>
 <nav><a href="index.html">Home</a> · <a href="map.html">Map</a> ·
 <a href="note.html">Node Watch</a> · <a href="survival.html">Survival</a> ·
-<a href="diff.html">Weekly diff</a></nav>
+<a href="diff.html">Weekly diff</a> · <a href="methodology.html">Methodology</a></nav>
 </div></header>
 <main>
 <div class="md"><h1>CAISO Node Watch — draft 2026-09-14</h1>
@@ -94,7 +113,7 @@ CAISO / PTO notices on Cluster 16 POI availability; substation positions &copy; 
 PG&amp;E Wholesale Distribution Queue (WDAT); parcel and zoning layers from Kings County and Kern County GIS.</p>
 <p>All MW are net-to-grid as filed. Cluster 15 deliverability is requested, not allocated.
 Nothing here is load-side.</p>
-<p>Pipeline commit <code>deb07a9</code> · pipeline run <code>2026-09-14T22:04:53Z</code> · site built <code>2026-09-14T22:05:11Z</code></p>
+<p>Pipeline commit <code>1f77183</code> · pipeline run <code>2026-09-15T00:16:50Z</code> · site built <code>2026-09-15T00:17:08Z</code></p>
 </footer>
 </body>
 </html>

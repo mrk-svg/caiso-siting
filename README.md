@@ -33,6 +33,9 @@ Not a "Grid-Ready Score". Transparent, sourced layers — every number traceable
 - distribution-level (WDAT) requests at the same substation
 - what changed in CAISO's files this week, row by row, as a GitHub issue
 
+Each node page is organised as the seven questions to ask before filing there, with a **Not public** line wherever
+the answer is behind a login — see the site's Methodology page.
+
 Every row carries `source_file`, `source_run_date`, `pipeline_commit`. `DATA.md` is the data dictionary;
 `DATA_LICENSES.md` lists the sources and their terms.
 
@@ -41,7 +44,7 @@ Every row carries `source_file`, `source_run_date`, `pipeline_commit`. `DATA.md`
     python3 -m venv .venv && source .venv/bin/activate   # Homebrew/Debian Python refuse system-wide installs (PEP 668)
     pip install -e ".[dev]"        # Python 3.10+; pandas, openpyxl, requests, tabulate
     caiso-siting --help
-    python -m pytest -q            # 317 tests, ~12 s
+    python -m pytest -q            # 323 tests, ~14 s
 
 ## Layout
 

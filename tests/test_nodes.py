@@ -507,6 +507,37 @@ def test_build_nodes_synthetic():
     assert (out.wd_recent_mw <= out.wd_alltime_mw).all()
 
 
+def test_build_nodes_phase2_attrition_commitment_and_counts():
+    """Phase II attrition = of MW that received Phase II results, the share that withdrew; commitment = ACTIVE MW
+    with an executed IA; every ratio carries the project count behind it."""
+    this = nodes.THIS_YEAR
+    pq = project_rows([
+        ("GATES", "GATES", "FRESNO", "PGAE", "a", 500, 500, "ACTIVE", np.nan, False, "FULL CAPACITY"),
+        ("GATES", "GATES", "FRESNO", "PGAE", "b", 300, 0, "ACTIVE", np.nan, False, "FULL CAPACITY"),
+        ("GATES", "GATES", "FRESNO", "PGAE", "c", 200, 0, "COMPLETED", np.nan, False, "FULL CAPACITY"),
+        ("GATES", "GATES", "FRESNO", "PGAE", "d", 1000, 1000, "WITHDRAWN", this - 1, True, "FULL CAPACITY"),
+        ("GATES", "GATES", "FRESNO", "PGAE", "e", 400, 0, "WITHDRAWN", 2012, False, "FULL CAPACITY"),
+        ("VIEJO", "VIEJO", "ORANGE", "SCE", "t", 300, 300, "ACTIVE", np.nan, False, "FULL CAPACITY"),
+    ])
+    pq["study_fas_phase2"] = ["COMPLETE", "", "COMPLETE", "COMPLETE", "", "COMPLETE"]
+    pq["ia_status"] = ["EXECUTED", "IN PROGRESS", "EXECUTED", "", "", "EXECUTED"]
+    c15 = project_rows([
+        ("VIEJO", "VIEJO", "ORANGE", "SCE", "k", 1000, 1000, "WITHDRAWN", this, False, "FULL CAPACITY (REQ)"),
+    ])
+    out = nodes.build_nodes(pq, c15).set_index("node_key")
+    g = out.loc["GATES"]
+    assert g.p2_reached_projects == 3 and g.p2_reached_mw == 1700        # a, c, d received Phase II results
+    assert g.p2_withdrawn_projects == 1 and g.p2_withdrawn_mw == 1000 == g.wd_post_phase2_mw
+    assert g.p2_attrition == round(1000 / 1700, 2)
+    assert g.committed_projects == 1 and g.committed_mw == 500           # ACTIVE + EXECUTED only (not c, not b)
+    assert g.churn_n == 1 + 2 + 0 + 1 and g.c15_n == 0 and g.p2_n == 3    # wd_recent(d) + active(a,b) + operating(c)
+    v = out.loc["VIEJO"]
+    assert v.storage_churn == round(1000 / 300, 2) and v.churn_n == 2     # right ratio; the n says not to trust it
+    assert v.c15_survival == 0.0 and v.c15_n == 1
+    assert v.p2_reached_mw == 300 and v.p2_withdrawn_mw == 0 and v.p2_attrition == 0.0 and v.p2_n == 1
+    assert out.p2_attrition.dropna().between(0, 1).all()
+
+
 # ---------------------------------------------------------------- real reports
 
 @pytest.mark.real_data
@@ -537,6 +568,11 @@ def test_build_nodes_real_invariants(real_nodes):
     assert (n.storage_churn.isna() == zero_denominator).all()
     assert n.storage_churn.dropna().ge(0).all()
     assert n.c15_survival.dropna().between(0, 1).all()
+    assert n.p2_attrition.dropna().between(0, 1).all()
+    assert (n.p2_withdrawn_mw <= n.p2_reached_mw + 1e-6).all()
+    assert (n.p2_withdrawn_mw == n.wd_post_phase2_mw).all()
+    assert (n.committed_mw <= n.legacy_active_mw + 1e-6).all()
+    assert (n.churn_n >= 0).all() and (n.c15_n >= 0).all()
     assert n.pipeline_mw.is_monotonic_decreasing
     assert len(n) > 500
 

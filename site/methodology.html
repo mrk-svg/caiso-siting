@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Methodology · CAISO node intelligence</title>
+<style>
+:root{--fg:#1b1b1b;--muted:#5b5b5b;--bg:#f6f6f2;--line:#dcdcd6;--card:#fff;--accent:#1d4ed8;--warn:#9a3412;--warnbg:#fff4ec;
+  --ok:#0f6b3f;--okbg:#eaf6ef;--dim:#8a8a84;--th:#f1f1ec;--code:#eeeee8;--np:#6b5d00;--npbg:#fdf6d8}
+@media (prefers-color-scheme:dark){:root{--fg:#e8e8e3;--muted:#a7a7a0;--bg:#121311;--line:#2e2f2b;--card:#1b1c19;
+  --accent:#8ab4f8;--warn:#f0a070;--warnbg:#2a1d14;--ok:#7fd3a5;--okbg:#14261c;--dim:#6f6f69;--th:#22231f;--code:#26271f;
+  --np:#e6cf6a;--npbg:#2a2510}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+header{border-bottom:1px solid var(--line);background:var(--card)}
+header .in{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline}
+header .brand{font-weight:700;margin-right:auto}
+header nav a{white-space:nowrap}
+main{max-width:1180px;margin:0 auto;padding:16px}
+h1{font-size:1.7rem;margin:.2em 0 .25em;letter-spacing:-.01em}
+h2{font-size:1.2rem;margin:1.5em 0 .5em;border-bottom:1px solid var(--line);padding-bottom:.25em}
+h3{font-size:1.02rem;margin:1em 0 .3em}
+.sub{color:var(--muted);margin:0 0 .8em}
+.disclaimer{background:var(--warnbg);border-left:4px solid var(--warn);padding:8px 12px;margin:12px 0;font-size:.92rem}
+.warn{color:var(--warn);font-weight:600}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:14px 0}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.tile .n{font-size:1.5rem;font-weight:700;line-height:1.15}.tile .l{color:var(--muted);font-size:.85rem}
+.tbl{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:10px;margin:8px 0 16px}
+table{border-collapse:collapse;width:100%;font-size:.9rem;font-variant-numeric:tabular-nums}
+th,td{padding:6px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;white-space:nowrap}
+th{background:var(--th);position:sticky;top:0}
+td.num,th.num{text-align:right}
+tr:last-child td{border-bottom:0}
+td.wrap,th.wrap{white-space:normal;min-width:16em}
+dl.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:8px 0}
+dl.kv dt{font-weight:600}dl.kv dd{margin:0}
+.md table{width:auto}
+.chart{max-width:760px;margin:12px 0}.chart svg{width:100%;height:auto;display:block}
+.md pre,.md code,code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em}
+.md code,code{background:var(--code);padding:1px 4px;border-radius:3px}
+/* node page: seven questions */
+.qs{counter-reset:q}
+.q{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px 10px;margin:14px 0}
+.q h2{border:0;margin:0 0 .4em;padding:0;font-size:1.15rem}
+.q h2::before{counter-increment:q;content:counter(q) ". ";color:var(--muted)}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px 14px;margin:6px 0 10px}
+.fact{padding:6px 0}
+.fact .v{font-size:1.25rem;font-weight:700;line-height:1.2}.fact .k{color:var(--muted);font-size:.82rem}
+.fact .n{color:var(--muted);font-size:.8rem;font-weight:400}
+.fact.dim .v{color:var(--dim);font-weight:500}
+.fact.dim .k::after{content:" — too few projects to read as a rate"}
+.np{background:var(--npbg);color:var(--np);border-left:3px solid var(--np);padding:6px 10px;margin:8px 0;font-size:.9rem;border-radius:0 6px 6px 0}
+.np b{font-weight:700}
+.np.soft{background:transparent;border-left-color:var(--line);color:var(--muted)}
+.ok{background:var(--okbg);color:var(--ok);border-left:3px solid var(--ok);padding:6px 10px;margin:8px 0;font-size:.92rem;border-radius:0 6px 6px 0}
+.q p.sub{margin:.2em 0 .6em}
+.badge{display:inline-block;font-size:.78rem;padding:1px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted);margin-left:6px;vertical-align:middle}
+footer{max-width:1180px;margin:24px auto 40px;padding:12px 16px;border-top:1px solid var(--line);color:var(--muted);font-size:.85rem}
+footer p{margin:.3em 0}
+@media (max-width:600px){body{font-size:14px}main{padding:10px}th,td{padding:5px 7px}.q{padding:12px 12px 8px}}
+</style>
+</head>
+<body>
+<header><div class="in">
+<span class="brand"><a href="index.html">CAISO node intelligence</a></span>
+<nav><a href="index.html">Home</a> · <a href="map.html">Map</a> ·
+<a href="note.html">Node Watch</a> · <a href="survival.html">Survival</a> ·
+<a href="diff.html">Weekly diff</a> · <a href="methodology.html">Methodology</a></nav>
+</div></header>
+<main>
+<h1>Methodology</h1>
+<p class="sub">Everything on this site is a deterministic transform of a public file. This page states the sources,
+the node definition, every window and exclusion, every metric, and the list of things the public files cannot answer.
+An auditor should be able to reproduce any figure from this page and <code>DATA.md</code> without reading code.</p>
+
+<h2>Sources</h2>
+<p>CAISO Public Queue Report (three sheets: active, completed, withdrawn; report run date 2026-09-14).
+CAISO Cluster 15 Interconnection Requests report (active + withdrawn sheets; posted 2026-07-16). CAISO 2024 and
+2025 Transmission Plan Deliverability allocation cycle results. CAISO 2025 TPD Allocation Report (group definitions,
+2026-04-13). CAISO Final 2027 Local Capacity Technical Report (area boundary substations, 2026-04-29). CAISO and PTO
+notices on Cluster 16 POI availability, encoded only where a notice names the POI. PG&amp;E Wholesale Distribution
+(WDAT) public queue. OpenStreetMap substations (ODbL) for positions. Kings and Kern county GIS and CEC open data for
+land screens. Licences and attribution: <code>DATA_LICENSES.md</code>.</p>
+
+<h2>What a node is</h2>
+<p>A node is CAISO's free-text point of interconnection normalised: upper-cased, voltage tokens, "SUBSTATION" /
+"SWITCHING STATION" and circuit suffixes (#1, #2) removed, line POIs split at the hyphen. Two consequences to keep in
+mind: a station's 230 kV and 500 kV yards are one node here even though they are different constraints, and a
+same-name station in two utilities can collide (utility is used to separate them where a source names it).</p>
+
+<h2>Windows, censoring, exclusions</h2>
+<p>"Recent" means withdrawn in the last 5 calendar years including the current one, i.e. from
+2022. Storage MW per project is the sum of its storage components capped at its net-to-grid figure.
+Survival curves: event = withdrawal at <code>withdrawn_date</code>; active projects censored at the public report run
+date; completed projects censored at their on-line date (completion is success, not an event); Cluster 15 censored at
+2026-07-16; a cohort's S(t) is reported only while at least 5 projects remain at risk; rows with a
+withdrawal before their queue date, or no queue date, are excluded and counted.</p>
+<p>Attrition compares regimes, not only nodes. C10–C13 entered under the standard cluster process; C14 entered in April 2021 at 2.4x the prior year&#x27;s volume under special procedures that made Phase I cost estimates advisory and refunded deposits in full on early withdrawal when Phase II costs came in 25 % or more above Phase I; C15 is the first cohort scored and capped by zone under the 2023 IPE, and its queue date (2025-02-12) is the post-scoring date, so the 541 → 170 intake cut happened before its month 0. A flatter C14 or C15 curve is partly the rule change, not only the projects or the nodes.</p>
+
+<h2>Ratios and small numbers</h2>
+<p>Every ratio on a node page carries the count of projects behind it. A ratio built on fewer than 3 projects or
+on a denominator under 500 MW is shown dimmed: it is arithmetically correct and statistically empty
+(a node with one withdrawal and one survivor has a churn of 1.00 or 3.33 or 0.10 depending on their sizes, and none of
+those numbers describes the node).</p>
+
+<h2>Metric definitions</h2>
+<div class="tbl"><table><thead><tr><th>metric</th><th class="wrap">definition</th></tr></thead><tbody><tr><td><code>legacy_active_mw</code></td><td class="wrap">active MW in the public report (C14 and earlier)</td></tr><tr><td><code>c15_active_mw</code></td><td class="wrap">active MW in the Cluster 15 report</td></tr><tr><td><code>operating_mw</code></td><td class="wrap">completed MW in the public report</td></tr><tr><td><code>pipeline_storage_mw</code></td><td class="wrap">storage MW inside legacy_active_mw + c15_active_mw</td></tr><tr><td><code>operating_storage_mw</code></td><td class="wrap">storage MW inside operating_mw (completed, public report)</td></tr><tr><td><code>wd_recent_mw</code></td><td class="wrap">withdrawn in the last 5 years (both reports)</td></tr><tr><td><code>wd_recent_storage_mw</code></td><td class="wrap">storage MW of those rows — each project&#x27;s storage components capped at its net-to-grid figure; a handful of filings report net-to-grid as 0 and keep the component MW, so this can exceed the row above at 3 nodes.</td></tr><tr><td><code>wd_post_phase2_mw</code></td><td class="wrap">withdrew AFTER Phase II / Facilities Study results (public report only)</td></tr><tr><td><code>p2_reached_mw</code></td><td class="wrap">MW of projects that received Phase II / Facilities Study results here (public report, any sheet)</td></tr><tr><td><code>p2_withdrawn_mw</code></td><td class="wrap">of those, MW that then withdrew (== wd_post_phase2_mw)</td></tr><tr><td><code>p2_attrition</code></td><td class="wrap">p2_withdrawn_mw / p2_reached_mw — share of studied MW that left with results in hand</td></tr><tr><td><code>committed_mw</code></td><td class="wrap">ACTIVE MW holding an executed interconnection agreement (public report)</td></tr><tr><td><code>churn_n</code></td><td class="wrap">projects behind storage_churn (withdrawn recent + queued + operating)</td></tr><tr><td><code>c15_n</code></td><td class="wrap">projects behind c15_survival</td></tr><tr><td><code>p2_n</code></td><td class="wrap">projects behind p2_attrition</td></tr><tr><td><code>wd_alltime_mw</code></td><td class="wrap">every withdrawn MW since 2006 (includes dead wind/solar-era projects)</td></tr><tr><td><code>storage_churn</code></td><td class="wrap">wd_recent_storage_mw / (active + operating storage MW) — the one to quote</td></tr><tr><td><code>churn_alltime</code></td><td class="wrap">wd_alltime_mw / (pipeline + operating MW) — historical color only</td></tr><tr><td><code>c15_survival</code></td><td class="wrap">c15_active / (c15_active + c15_withdrawn)</td></tr><tr><td><code>c15_fcds_req_mw</code></td><td class="wrap">C15 active MW that requested Full Capacity Deliverability Status (requested, not allocated)</td></tr><tr><td><code>tpd25_projects</code></td><td class="wrap">projects at the node that sought TPD in CAISO&#x27;s 2025 allocation cycle</td></tr><tr><td><code>tpd25_req_mw</code></td><td class="wrap">MW at the node that sought TPD in CAISO&#x27;s 2025 allocation cycle</td></tr><tr><td><code>tpd25_alloc_mw</code></td><td class="wrap">MW allocated in that cycle (requested × allocation %)</td></tr><tr><td><code>tpd25_denied_mw</code></td><td class="wrap">MW requested by rows that received 0 %</td></tr><tr><td><code>tpd25_unalloc_mw</code></td><td class="wrap">requested minus allocated: MW refused outright PLUS the remainder left by partial allocations — quote this for &#x27;what the developer did not get&#x27;</td></tr><tr><td><code>tpd25_unknown_mw</code></td><td class="wrap">MW requested by rows with no allocation percentage in the file; 0 today</td></tr><tr><td><code>tpd25_req_A_mw</code></td><td class="wrap">of tpd25_req_mw, requested in allocation group A: executed PPA (or LSE own load)</td></tr><tr><td><code>tpd25_req_B_mw</code></td><td class="wrap">of tpd25_req_mw, requested in allocation group B: shortlisted / negotiating a PPA</td></tr><tr><td><code>tpd25_req_C_mw</code></td><td class="wrap">of tpd25_req_mw, requested in allocation group C: already in commercial operation</td></tr><tr><td><code>tpd25_req_D_mw</code></td><td class="wrap">of tpd25_req_mw, requested in allocation group D: no PPA, Section 8.9.2.3 path</td></tr><tr><td><code>tpd25_denied_A_mw</code></td><td class="wrap">of tpd25_denied_mw, refused at 0 % in group A</td></tr><tr><td><code>tpd25_denied_B_mw</code></td><td class="wrap">of tpd25_denied_mw, refused at 0 % in group B</td></tr><tr><td><code>tpd25_denied_C_mw</code></td><td class="wrap">of tpd25_denied_mw, refused at 0 % in group C</td></tr><tr><td><code>tpd25_denied_D_mw</code></td><td class="wrap">of tpd25_denied_mw, refused at 0 % in group D</td></tr><tr><td><code>tpd25_denied_ppa_mw</code></td><td class="wrap">refused MW in groups A + B: contracted or shortlisted projects that did not get deliverability; the refusal that matters</td></tr><tr><td><code>tpd24_fcdsa_projects</code></td><td class="wrap">projects at the node allocated Full Capacity in the 2024 cycle</td></tr><tr><td><code>lcr_status</code></td><td class="wrap">CAISO Local Capacity Area (Resource Adequacy geography): &#x27;in &lt;area&gt;&#x27; or &#x27;outside &lt;area&gt;&#x27; as the LCT report&#x27;s boundary lists state it; blank = not encoded, never &#x27;outside every area&#x27;</td></tr><tr><td><code>lcr_sub_area</code></td><td class="wrap">sub-area / load pocket within that area, when the LCT report delineates it</td></tr><tr><td><code>wdat_active_projects</code></td><td class="wrap">active WDAT requests at the same substation (WDAT = distribution-level queue at the same substation, PG&amp;E file today; not CAISO deliverability)</td></tr><tr><td><code>wdat_active_mw</code></td><td class="wrap">MW of active WDAT (distribution-level) requests at the same substation (PG&amp;E file today)</td></tr><tr><td><code>wdat_active_storage_mw</code></td><td class="wrap">storage MW attributed from wdat_active_mw — an assumption: the PG&amp;E file publishes one MW figure per request, so storage-only requests count in full and solar+storage requests count at half (160 of 1,011 active requests carry storage; 362 of their 479 MW is attributed as storage).</td></tr><tr><td><code>wdat_inservice_mw</code></td><td class="wrap">WDAT MW already in service at that substation</td></tr><tr><td><code>wdat_withdrawn_mw</code></td><td class="wrap">WDAT MW withdrawn at that substation (all-time in the file)</td></tr></tbody></table></div>
+
+<h2>What the public files cannot answer</h2>
+<p>These are stated on every node page as <b>Not public</b>. They are the questions a developer must pay for, ask for,
+or accept as unknown — knowing which is which is most of the diligence.</p>
+<div class="tbl"><table><thead><tr><th class="wrap">question</th><th class="wrap">where the answer lives</th></tr></thead><tbody><tr><td class="wrap"><b>Network upgrade cost per project</b></td><td class="wrap">Phase I / Phase II cluster study reports, served through CAISO&#x27;s RIMS login.</td></tr><tr><td class="wrap"><b>Per-constraint transmission headroom</b></td><td class="wrap">the same study reports; CAISO&#x27;s zonal transmission-capability table is the public proxy used for cluster scoring.</td></tr><tr><td class="wrap"><b>Interconnection customer identity</b></td><td class="wrap">not in the Public Queue Report or the Cluster 15 report; project names only.</td></tr><tr><td class="wrap"><b>Interconnection financial security posted</b></td><td class="wrap">computed per project from non-public study costs; no public $/MW rate reconstructs it.</td></tr><tr><td class="wrap"><b>Why a project withdrew</b></td><td class="wrap">the files carry no reason beyond the withdrawal date.</td></tr><tr><td class="wrap"><b>Begin-construction status (tax credit eligibility)</b></td><td class="wrap">not a CAISO data element.</td></tr><tr><td class="wrap"><b>Landowner willingness</b></td><td class="wrap">assessor parcels give ownership class; owner names are withheld on purpose.</td></tr><tr><td class="wrap"><b>Load-side interconnection</b></td><td class="wrap">data-center and other load requests are a utility process with no public queue.</td></tr></tbody></table></div>
+
+<h2>What this site never does</h2>
+<p>No composite score. No cause attributed to a withdrawal. No dollar figure that is not in a source. No per-project
+prediction. No owner names from parcel data. No figure generated by a language model: the pipeline is deterministic
+Python, the code is public, and every output row carries the source file, the source run date and the pipeline commit.</p>
+
+<h2>Update cadence</h2>
+<p>A GitHub Actions job runs every Monday: it downloads CAISO's current files, rebuilds everything, and commits a dated
+snapshot, redeploys the site and opens a row-level diff issue only when CAISO's report run date is new.</p>
+
+<p class="disclaimer">No figure on this site states a cause. CAISO files carry no withdrawal reason beyond &quot;IC Request&quot;.</p>
+</main>
+<footer>
+<p>Sources: CAISO Public Queue Report and Cluster 15 Interconnection Requests report (CAISO report run date 2026-09-14);
+CAISO 2024 and 2025 Transmission Plan Deliverability allocation cycle results;
+CAISO / PTO notices on Cluster 16 POI availability; substation positions &copy; OpenStreetMap contributors, ODbL;
+PG&amp;E Wholesale Distribution Queue (WDAT); parcel and zoning layers from Kings County and Kern County GIS.</p>
+<p>All MW are net-to-grid as filed. Cluster 15 deliverability is requested, not allocated.
+Nothing here is load-side.</p>
+<p>Pipeline commit <code>1f77183</code> · pipeline run <code>2026-09-15T00:16:50Z</code> · site built <code>2026-09-15T00:17:08Z</code></p>
+</footer>
+</body>
+</html>

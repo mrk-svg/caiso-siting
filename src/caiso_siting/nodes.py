@@ -28,6 +28,11 @@ Metric definitions (read before quoting any of them):
                           filings that report net-to-grid as 0 (there the component MW is kept, so the
                           battery is not erased); 3 nodes today.
   wd_post_phase2_mw       withdrew AFTER Phase II / Facilities Study results (public report only)
+  p2_reached_projects/mw  projects that received Phase II / Facilities Study results here (any sheet, public report)
+  p2_withdrawn_projects/mw of those, the ones that then withdrew (== wd_post_phase2_mw)
+  p2_attrition            p2_withdrawn_mw / p2_reached_mw — share of studied MW that left with results in hand
+  committed_projects/mw   ACTIVE projects holding an executed interconnection agreement
+  churn_n, c15_n, p2_n    project counts behind storage_churn, c15_survival, p2_attrition (small n = read with care)
   storage_churn           wd_recent_storage_mw / (active + operating storage MW)   <- the one to quote
   churn_alltime           wd_alltime_mw / (pipeline + operating MW)                 <- historical color only
   c15_survival            c15_active / (c15_active + c15_withdrawn)
@@ -202,6 +207,9 @@ def build_nodes(pq: pd.DataFrame, c15: pd.DataFrame) -> pd.DataFrame:
     both = both[both[key] != ""]
     recent = both["withdrawn_year"].fillna(0) >= RECENT_FROM_YEAR
     wd = both["sheet_status"] == "WITHDRAWN"
+    p2 = pq.get("study_fas_phase2", pd.Series("", index=pq.index)).fillna("").str.upper() == "COMPLETE"
+    if "ia_status" not in pq:
+        pq = pq.assign(ia_status="")
 
     parts = [
         agg(pq, pq.sheet_status == "ACTIVE", "legacy_active"),
@@ -213,6 +221,14 @@ def build_nodes(pq: pd.DataFrame, c15: pd.DataFrame) -> pd.DataFrame:
         pq[pq["withdrew_post_phase2"]].groupby(key).net_mw.sum().rename("wd_post_phase2_mw").to_frame(),
         c15[(c15.sheet_status == "ACTIVE") & c15.deliverability.str.startswith("FULL")]
             .groupby(key).net_mw.sum().rename("c15_fcds_req_mw").to_frame(),
+        # Phase II attrition: of the projects that RECEIVED Phase II / Facilities Study results at this node
+        # (public report, study column == COMPLETE, any sheet), how many and how much then withdrew. The closest
+        # public proxy for "did people leave once they saw the upgrade costs" — still not a cause.
+        agg(pq, p2, "p2_reached"),
+        agg(pq, p2 & (pq.sheet_status == "WITHDRAWN"), "p2_withdrawn"),
+        # Commitment: active projects that hold an executed interconnection agreement. Financial security is
+        # posted against study costs that are not public, so this is the only public commitment signal.
+        agg(pq, (pq.sheet_status == "ACTIVE") & (pq.ia_status.fillna("").str.upper() == "EXECUTED"), "committed"),
     ]
     nodes = parts[0]
     for p in parts[1:]:
@@ -236,6 +252,12 @@ def build_nodes(pq: pd.DataFrame, c15: pd.DataFrame) -> pd.DataFrame:
                               nz(nodes.pipeline_storage_mw + nodes.operating_storage_mw)).round(2)
     nodes["churn_alltime"] = (nodes.wd_alltime_mw / nz(nodes.pipeline_mw + nodes.operating_mw)).round(2)
     nodes["c15_survival"] = (nodes.c15_active_mw / nz(nodes.c15_active_mw + nodes.c15_withdrawn_mw)).round(2)
+    nodes["p2_attrition"] = (nodes.p2_withdrawn_mw / nz(nodes.p2_reached_mw)).round(2)
+    # project counts behind each ratio, so a 3.33 built on two rows can be shown for what it is
+    nodes["churn_n"] = (nodes.wd_recent_projects + nodes.legacy_active_projects + nodes.c15_active_projects
+                        + nodes.operating_projects).astype(int)
+    nodes["c15_n"] = (nodes.c15_active_projects + nodes.c15_withdrawn_projects).astype(int)
+    nodes["p2_n"] = nodes.p2_reached_projects.astype(int)
     return nodes.sort_values("pipeline_mw", ascending=False).reset_index(drop=True)
 
 

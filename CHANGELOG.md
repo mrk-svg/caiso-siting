@@ -1,5 +1,26 @@
 # Changelog
 
+## 1.5.0 — 2026-09-15 — the node page a person reads before filing
+
+The node page is rebuilt around the seven questions a developer, lender or counsel asks before filing at a POI —
+can you get in; who is ahead of you; do projects leave after seeing the costs; will you be deliverable; will the
+power be worth anything; will the land pass intake; how long, and who gave up. Each is answered with the sourced
+figure and the project count behind it, and each carries a **Not public** line naming what the public files cannot
+answer and where that answer lives (RIMS study reports, customer identity, financial security, withdrawal reasons,
+begin-construction status, landowner intent, load-side queues). "Not on this site yet" is kept distinct from
+"not public".
+
+New metrics: Phase II attrition (`p2_reached_*`, `p2_withdrawn_*`, `p2_attrition` — of the MW that received Phase II
+/ Facilities Study results at a node, the share that then withdrew; 43 % across the public report, 100 % at Morro
+Bay, 23 % at Whirlwind), and the commitment layer (`committed_*` — ACTIVE MW with an executed interconnection
+agreement; 60,302 of 74,687 MW). Every ratio now carries its project count (`churn_n`, `c15_n`, `p2_n`) and is dimmed
+on the page when built on fewer than 3 projects or a denominator under 500 MW — Viejo's storage churn of 3.33 is
+one withdrawal over one survivor and now reads that way.
+
+New `methodology.html`: sources, node definition, windows and censoring, the regime caveat, the small-number rule,
+every metric definition, the not-public list, and what the site never does. Dark mode follows the system.
+323 tests.
+
 ## 1.4.0 — 2026-09-14 — what a siting engineer asks in the first five minutes
 
 Four changes from a senior-engineer critique of the published site.

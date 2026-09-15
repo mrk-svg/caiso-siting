@@ -23,7 +23,7 @@ from string import Template
 import pandas as pd
 
 from .config import OUT, RECENT_YEARS, SITE
-from .nodes import APPROX_METHODS
+from .nodes import APPROX_METHODS, RECENT_FROM_YEAR
 from .tpd import GROUPS
 
 DISCLAIMER = ('No figure on this site states a cause. CAISO files carry no withdrawal reason beyond '
@@ -47,6 +47,13 @@ METRIC_DEFS = [
                              "net-to-grid figure; a handful of filings report net-to-grid as 0 and keep the "
                              "component MW, so this can exceed the row above at 3 nodes."),
     ("wd_post_phase2_mw", "withdrew AFTER Phase II / Facilities Study results (public report only)"),
+    ("p2_reached_mw", "MW of projects that received Phase II / Facilities Study results here (public report, any sheet)"),
+    ("p2_withdrawn_mw", "of those, MW that then withdrew (== wd_post_phase2_mw)"),
+    ("p2_attrition", "p2_withdrawn_mw / p2_reached_mw — share of studied MW that left with results in hand"),
+    ("committed_mw", "ACTIVE MW holding an executed interconnection agreement (public report)"),
+    ("churn_n", "projects behind storage_churn (withdrawn recent + queued + operating)"),
+    ("c15_n", "projects behind c15_survival"),
+    ("p2_n", "projects behind p2_attrition"),
     ("wd_alltime_mw", "every withdrawn MW since 2006 (includes dead wind/solar-era projects)"),
     ("storage_churn", "wd_recent_storage_mw / (active + operating storage MW) — the one to quote"),
     ("churn_alltime", "wd_alltime_mw / (pipeline + operating MW) — historical color only"),
@@ -84,34 +91,37 @@ METRIC_DEFS = [
 ]
 
 TOP_COLS = ["poi_base", "county", "utility", "legacy_active_mw", "c15_active_mw", "operating_mw",
-            "wd_recent_mw", "storage_churn", "c15_survival", "tpd25_denied_mw", "wdat_active_mw", "lcr_status",
+            "wd_recent_mw", "storage_churn", "c15_survival", "p2_attrition", "tpd25_denied_ppa_mw", "lcr_status",
             "c16_poi_status"]
 
 CSS = """
-:root{--fg:#1b1b1b;--muted:#5b5b5b;--bg:#fbfbf9;--line:#dcdcd6;--card:#fff;--accent:#1d4ed8;--warn:#9a3412;--warnbg:#fff4ec}
+:root{--fg:#1b1b1b;--muted:#5b5b5b;--bg:#f6f6f2;--line:#dcdcd6;--card:#fff;--accent:#1d4ed8;--warn:#9a3412;--warnbg:#fff4ec;
+  --ok:#0f6b3f;--okbg:#eaf6ef;--dim:#8a8a84;--th:#f1f1ec;--code:#eeeee8;--np:#6b5d00;--npbg:#fdf6d8}
+@media (prefers-color-scheme:dark){:root{--fg:#e8e8e3;--muted:#a7a7a0;--bg:#121311;--line:#2e2f2b;--card:#1b1c19;
+  --accent:#8ab4f8;--warn:#f0a070;--warnbg:#2a1d14;--ok:#7fd3a5;--okbg:#14261c;--dim:#6f6f69;--th:#22231f;--code:#26271f;
+  --np:#e6cf6a;--npbg:#2a2510}}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 header{border-bottom:1px solid var(--line);background:var(--card)}
-header .in{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;gap:6px 18px;
-  align-items:baseline}
+header .in{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline}
 header .brand{font-weight:700;margin-right:auto}
 header nav a{white-space:nowrap}
 main{max-width:1180px;margin:0 auto;padding:16px}
-h1{font-size:1.6rem;margin:.2em 0 .3em}
-h2{font-size:1.2rem;margin:1.4em 0 .4em;border-bottom:1px solid var(--line);padding-bottom:.2em}
-h3{font-size:1.05rem;margin:1.2em 0 .3em}
+h1{font-size:1.7rem;margin:.2em 0 .25em;letter-spacing:-.01em}
+h2{font-size:1.2rem;margin:1.5em 0 .5em;border-bottom:1px solid var(--line);padding-bottom:.25em}
+h3{font-size:1.02rem;margin:1em 0 .3em}
 .sub{color:var(--muted);margin:0 0 .8em}
 .disclaimer{background:var(--warnbg);border-left:4px solid var(--warn);padding:8px 12px;margin:12px 0;font-size:.92rem}
 .warn{color:var(--warn);font-weight:600}
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:14px 0}
-.tile{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
 .tile .n{font-size:1.5rem;font-weight:700;line-height:1.15}.tile .l{color:var(--muted);font-size:.85rem}
-.tbl{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:8px;margin:8px 0 16px}
+.tbl{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:10px;margin:8px 0 16px}
 table{border-collapse:collapse;width:100%;font-size:.9rem;font-variant-numeric:tabular-nums}
 th,td{padding:6px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;white-space:nowrap}
-th{background:#f1f1ec;position:sticky;top:0}
+th{background:var(--th);position:sticky;top:0}
 td.num,th.num{text-align:right}
 tr:last-child td{border-bottom:0}
 td.wrap,th.wrap{white-space:normal;min-width:16em}
@@ -119,12 +129,28 @@ dl.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:8px
 dl.kv dt{font-weight:600}dl.kv dd{margin:0}
 .md table{width:auto}
 .chart{max-width:760px;margin:12px 0}.chart svg{width:100%;height:auto;display:block}
-.md pre,.md code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em}
-.md code{background:#eeeee8;padding:1px 4px;border-radius:3px}
-footer{max-width:1180px;margin:24px auto 40px;padding:12px 16px;border-top:1px solid var(--line);color:var(--muted);
-  font-size:.85rem}
+.md pre,.md code,code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em}
+.md code,code{background:var(--code);padding:1px 4px;border-radius:3px}
+/* node page: seven questions */
+.qs{counter-reset:q}
+.q{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px 10px;margin:14px 0}
+.q h2{border:0;margin:0 0 .4em;padding:0;font-size:1.15rem}
+.q h2::before{counter-increment:q;content:counter(q) ". ";color:var(--muted)}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px 14px;margin:6px 0 10px}
+.fact{padding:6px 0}
+.fact .v{font-size:1.25rem;font-weight:700;line-height:1.2}.fact .k{color:var(--muted);font-size:.82rem}
+.fact .n{color:var(--muted);font-size:.8rem;font-weight:400}
+.fact.dim .v{color:var(--dim);font-weight:500}
+.fact.dim .k::after{content:" — too few projects to read as a rate"}
+.np{background:var(--npbg);color:var(--np);border-left:3px solid var(--np);padding:6px 10px;margin:8px 0;font-size:.9rem;border-radius:0 6px 6px 0}
+.np b{font-weight:700}
+.np.soft{background:transparent;border-left-color:var(--line);color:var(--muted)}
+.ok{background:var(--okbg);color:var(--ok);border-left:3px solid var(--ok);padding:6px 10px;margin:8px 0;font-size:.92rem;border-radius:0 6px 6px 0}
+.q p.sub{margin:.2em 0 .6em}
+.badge{display:inline-block;font-size:.78rem;padding:1px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted);margin-left:6px;vertical-align:middle}
+footer{max-width:1180px;margin:24px auto 40px;padding:12px 16px;border-top:1px solid var(--line);color:var(--muted);font-size:.85rem}
 footer p{margin:.3em 0}
-@media (max-width:600px){body{font-size:14px}main{padding:10px}th,td{padding:5px 7px}}
+@media (max-width:600px){body{font-size:14px}main{padding:10px}th,td{padding:5px 7px}.q{padding:12px 12px 8px}}
 """
 
 PAGE = Template("""<!doctype html>
@@ -140,7 +166,7 @@ PAGE = Template("""<!doctype html>
 <span class="brand"><a href="${root}index.html">CAISO node intelligence</a></span>
 <nav><a href="${root}index.html">Home</a> · <a href="${root}map.html">Map</a> ·
 <a href="${root}note.html">Node Watch</a> · <a href="${root}survival.html">Survival</a> ·
-<a href="${root}diff.html">Weekly diff</a></nav>
+<a href="${root}diff.html">Weekly diff</a> · <a href="${root}methodology.html">Methodology</a></nav>
 </div></header>
 <main>
 $body
@@ -171,10 +197,10 @@ def esc(v) -> str:
 def fmt(col: str, v) -> str:
     """MW columns as integers with thousands separators, ratios to 2 dp, NaN as n/a."""
     if v is None or (isinstance(v, float) and pd.isna(v)) or v == "":
-        return "n/a" if col in ("storage_churn", "churn_alltime", "c15_survival", "geo_score") else ""
+        return "n/a" if col in ("storage_churn", "churn_alltime", "c15_survival", "geo_score", "p2_attrition") else ""
     if col.endswith("_mw") or col.endswith("_projects") or col in ("mw_requested", "mw_allocated"):
         return f"{float(v):,.0f}"
-    if col in ("storage_churn", "churn_alltime", "c15_survival", "geo_score"):
+    if col in ("storage_churn", "churn_alltime", "c15_survival", "geo_score", "p2_attrition"):
         return f"{float(v):.2f}"
     if col == "allocation_pct":
         return f"{float(v):.0%}"
@@ -186,7 +212,7 @@ def fmt(col: str, v) -> str:
 
 
 def is_num(col: str) -> bool:
-    return col.endswith(("_mw", "_projects")) or col in ("storage_churn", "churn_alltime", "c15_survival", "geo_score", "lat", "lon",
+    return col.endswith(("_mw", "_projects", "_n")) or col in ("storage_churn", "churn_alltime", "c15_survival", "geo_score", "lat", "lon", "p2_attrition",
                                           "queue_position", "allocation_pct", "tpd_year", "queue_id", "mw_requested", "mw_allocated")
 
 
@@ -436,65 +462,189 @@ The latest dated statement per POI wins.</p>
     return render("Home", body, "", prov)
 
 
+MIN_N = 3          # ratios built on fewer projects than this are shown dimmed
+MIN_DENOM_MW = 500  # ... or on a denominator smaller than this
+
+
+def fact(label: str, value: str, n: int | None = None, dim: bool = False, note: str = "") -> str:
+    nn = f' <span class="n">(n={n})</span>' if n is not None else ""
+    return (f'<div class="fact{" dim" if dim else ""}"><div class="v">{value}{nn}</div>'
+            f'<div class="k">{esc(label)}{(" · " + esc(note)) if note else ""}</div></div>')
+
+
+def mw(v) -> str:
+    try:
+        return f"{float(v):,.0f} MW"
+    except (TypeError, ValueError):
+        return "0 MW"
+
+
+def ratio(v, n: int, denom_mw: float) -> tuple[str, bool]:
+    if v is None or (isinstance(v, float) and pd.isna(v)):
+        return "n/a", True
+    return f"{float(v):.2f}", (n < MIN_N or denom_mw < MIN_DENOM_MW)
+
+
+def not_public(what: str, where: str) -> str:
+    return f'<div class="np"><b>Not public:</b> {esc(what)} — {esc(where)}</div>'
+
+
+def not_here_yet(what: str, where: str) -> str:
+    """Public, but not on this site yet — never dressed up as 'not public'."""
+    return f'<div class="np soft"><b>Not on this site yet:</b> {esc(what)} — {esc(where)}</div>'
+
+
 def node_page(r: pd.Series, projects: pd.DataFrame, prov: dict, wdat: pd.DataFrame | None = None,
               tpd_rows: pd.DataFrame | None = None) -> str:
+    """One node, read top to bottom before filing: seven questions, each answered with the sourced figure, the
+    count behind it, and a 'not public' line where the truth is that the answer is behind a login."""
+    g = lambda k, d=0: r.get(k, d) if not (isinstance(r.get(k, d), float) and pd.isna(r.get(k, d))) else d
     title = r.poi_base or r.node_key
-    status = str(r.get("c16_poi_status") or "")
-    c16 = ""
+    active = projects[projects.sheet_status == "ACTIVE"] if len(projects) else projects
+    ahead_mw = float(g("legacy_active_mw")) + float(g("c15_active_mw"))
+    ahead_n = int(g("legacy_active_projects")) + int(g("c15_active_projects"))
+
+    # --- 1. can you get in
+    status = str(g("c16_poi_status", "") or "")
     if status:
-        c16 = (f'<p><b>Official Cluster 16 POI statement: {esc(status)}</b> — {esc(r.get("c16_poi_note", ""))}</p>')
-    lcr_status = str(r.get("lcr_status") or "")
-    lcr_line = ""
-    if lcr_status:
-        sub = str(r.get("lcr_sub_area") or "")
-        note = str(r.get("lcr_note") or "")
-        head = (f"Local Capacity Area: {esc(r.get('lcr_area'))}" if lcr_status.startswith("in ")
-                else f"{esc(lcr_status[0].upper() + lcr_status[1:])} local area boundary")
-        lcr_line = (f'<p><b>{head}</b>{(" · sub-area " + esc(sub)) if sub else ""}'
-                    f'{(" — " + esc(note)) if note else ""} '
-                    f'<span class="sub">({esc(r.get("lcr_source", ""))}; Resource Adequacy geography — the report '
-                    f'names only boundary substations, so an unlabelled node is "not encoded", not "outside")</span></p>')
-    metrics = "".join(
-        f'<tr><td><code>{m}</code></td><td class="num">{fmt(m, r.get(m))}</td><td class="wrap">{esc(d)}</td></tr>'
-        for m, d in METRIC_DEFS)
+        q1 = (f'<div class="ok"><b>Official Cluster 16 POI statement: {esc(status)}</b> — '
+              f'{esc(g("c16_poi_note", ""))}</div>')
+    else:
+        q1 = ('<p class="sub">No official Cluster 16 availability statement names this POI. Absence of a statement '
+              'is not availability.</p>')
+    q1 += not_public("per-constraint transmission headroom at this POI",
+                     "CAISO's cluster study reports (RIMS login).")
+    q1 += not_here_yet("the zonal transmission-capability table CAISO publishes for cluster scoring",
+                       "public; the join is planned.")
+
+    # --- 2. who is ahead
+    q2 = '<div class="facts">' + "".join([
+        fact("queued ahead of a new request (legacy + C15)", mw(ahead_mw), ahead_n),
+        fact("with an executed interconnection agreement", mw(g("committed_mw")), int(g("committed_projects")),
+             note="public report; C15 has no IA yet"),
+        fact("operating at this node", mw(g("operating_mw")), int(g("operating_projects"))),
+        fact("Cluster 15 requests seeking full capacity", mw(g("c15_fcds_req_mw"))),
+    ]) + "</div>"
+    q2 += not_public("who the interconnection customers are",
+                     "CAISO's public files carry project names only; the projects table below is the full public record.")
+
+    # --- 3. do they leave after seeing costs
+    p2n, p2r = int(g("p2_n")), float(g("p2_reached_mw"))
+    p2v, p2dim = ratio(g("p2_attrition", float("nan")), p2n, p2r)
+    q3 = '<div class="facts">' + "".join([
+        fact("received Phase II / Facilities Study results here", mw(p2r), p2n, note="any sheet, public report"),
+        fact("of that, withdrew with results in hand", mw(g("p2_withdrawn_mw")), int(g("p2_withdrawn_projects"))),
+        fact("Phase II attrition (MW share)", p2v, p2n, dim=p2dim),
+    ]) + "</div>"
+    q3 += not_public("the network upgrade cost allocated to a project here",
+                     "Phase I / Phase II study reports, served through RIMS. Ask the incumbent developer or request "
+                     "the report; nothing public reconstructs it.")
+
+    # --- 4. deliverability
+    req, alloc = float(g("tpd25_req_mw")), float(g("tpd25_alloc_mw"))
+    q4 = '<div class="facts">' + "".join([
+        fact("2025 TPD requested at this node", mw(req), int(g("tpd25_projects"))),
+        fact("allocated", mw(alloc)),
+        fact("refused at 0 % — contracted / shortlisted (groups A+B)", mw(g("tpd25_denied_ppa_mw"))),
+        fact("refused at 0 % — no PPA (group D)", mw(g("tpd25_denied_D_mw"))),
+        fact("2024 cycle: projects given full / partial capacity",
+             f"{int(g('tpd24_fcdsa_projects'))} / {int(g('tpd24_pcdsa_projects'))}"),
+    ]) + "</div>"
+    if req == 0:
+        q4 += '<p class="sub">No request from this node appears in the 2025 allocation results.</p>'
+    q4 += ('<p class="sub">A 0 % in group D is the expected result for an uncontracted project; a 0 % in group A or B '
+           'is a contracted project that did not get deliverability. Rows are joined through all three sheets, so a '
+           'request whose project has since withdrawn still appears. CAISO states no reason.</p>')
+
+    # --- 5. worth anything
+    lcr_status = str(g("lcr_status", "") or "")
+    if lcr_status.startswith("in "):
+        sub = str(g("lcr_sub_area", "") or "")
+        q5 = (f'<div class="ok"><b>Local Capacity Area: {esc(g("lcr_area"))}</b>'
+              f'{(" · sub-area " + esc(sub)) if sub else ""}'
+              f'{(" — " + esc(g("lcr_note"))) if g("lcr_note", "") else ""} '
+              f'<span class="badge">{esc(g("lcr_source", ""))}</span></div>')
+    elif lcr_status.startswith("outside"):
+        q5 = (f'<div class="np"><b>{esc(lcr_status[0].upper() + lcr_status[1:])} local area boundary</b>'
+              f'{(" — " + esc(g("lcr_note"))) if g("lcr_note", "") else ""} '
+              f'<span class="badge">{esc(g("lcr_source", ""))}</span></div>')
+    else:
+        q5 = ('<p class="sub">The Local Capacity Technical Report does not name this substation on any area boundary: '
+              'not encoded, which is not the same as outside every area.</p>')
+    lmp = g("lmp_tb4_12mo_mean", float("nan"))
+    if isinstance(lmp, (int, float)) and not pd.isna(lmp):
+        q5 += '<div class="facts">' + fact("day-ahead TB4 spread, 12-month mean ($/MWh)", f"{float(lmp):,.1f}",
+                                           note=f"{int(g('lmp_months', 0))} months") + "</div>"
+    else:
+        q5 += not_here_yet("day-ahead price history at this POI",
+                           "CAISO OASIS publishes it; it is shown only for a pricing node confirmed by hand in "
+                           "data/poi_pnodes.csv, and this one is not confirmed yet.")
+
+    # --- 6. will the land pass
+    q6 = ('<p class="sub">Intake scoring under the 2023 IPE rewards site control, permitting progress and system need '
+          'before study begins. Parcel, zoning, Williamson Act and CEC exclusion screens run for Kings and Kern counties '
+          '(<code>caiso-siting parcels</code>, <code>layers screen</code>); results are in <code>outputs/parcels_*.md</code> '
+          'for the nodes they were run on and are not yet rendered per node here.</p>')
+    q6 += not_public("landowner willingness and option terms",
+                     "county assessor parcels give ownership class, not intent; owner names are withheld on purpose.")
+
+    # --- 7. how long
+    cn, sc = int(g("churn_n")), g("storage_churn", float("nan"))
+    scv, scdim = ratio(sc, cn, float(g("pipeline_storage_mw")) + float(g("operating_storage_mw")))
+    c15n = int(g("c15_n"))
+    sv, svdim = ratio(g("c15_survival", float("nan")), c15n, float(g("c15_active_mw")) + float(g("c15_withdrawn_mw")))
+    cods = sorted(c for c in active.cod.tolist() if c) if len(active) else []
+    cod_txt = (cods[0] if cods[0] == cods[-1] else f"{cods[0]} to {cods[-1]}") if cods else "none active"
+    q7 = '<div class="facts">' + "".join([
+        fact(f"withdrawn since {RECENT_FROM_YEAR} (both reports)", mw(g("wd_recent_mw")), int(g("wd_recent_projects"))),
+        fact("of that, storage", mw(g("wd_recent_storage_mw"))),
+        fact("storage churn", scv, cn, dim=scdim, note="withdrawn storage ÷ queued + operating storage"),
+        fact("Cluster 15 survival", sv, c15n, dim=svdim, note="active ÷ (active + withdrawn)"),
+        fact("all-time withdrawn since 2006", mw(g("wd_alltime_mw")), int(g("wd_alltime_projects")),
+             note="mostly wind/solar-era; colour, not signal"),
+        fact("current on-line dates of active projects", cod_txt),
+    ]) + "</div>"
+    q7 += ('<p class="sub">Cluster-level time-to-withdrawal curves are on the <a href="../survival.html">Survival</a> '
+           'page; they compare process regimes, not only nodes.</p>')
+
     proj_cols = ["project_name", "queue_position", "sheet_status", "cluster", "net_mw", "storage_mw", "deliverability",
                  "ia_status", "cod", "withdrawn_date"]
-    method = str(r.get("geo_method") or "none")
+    method = str(g("geo_method", "") or "none")
     warn = ""
     if method in APPROX_METHODS:
-        if method == "county-centroid":
-            why = "position unknown; placed at the median of located nodes in the county"
-        elif method == "line-one-end":
-            why = "marker sits at one end of a transmission line, not at the tap point"
-        elif method == "fuzzy":
-            why = "name matched an OpenStreetMap substation only approximately"
-        elif method == "ambiguous":
-            why = ("several OSM features share this name more than 50 km apart — the position may be the wrong one")
-        elif method == "state-mismatch":
-            why = ("the matched position was provably outside the filed state and was rejected; this node falls back "
-                   "to a county centroid")
-        elif method == "override-approx":
-            why = "hand-entered approximate coordinate (e.g. plant centroid), not a verified substation position"
-        else:
-            why = "no position found; this node is not on the map"
+        why = {
+            "county-centroid": "position unknown; placed at the median of located nodes in the county",
+            "line-one-end": "marker sits at one end of a transmission line, not at the tap point",
+            "fuzzy": "name matched an OpenStreetMap substation only approximately",
+            "ambiguous": "several OSM features share this name more than 50 km apart — the position may be the wrong one",
+            "state-mismatch": "the matched position was provably outside the filed state and was rejected; this node "
+                              "falls back to a county centroid",
+            "override-approx": "hand-entered approximate coordinate (e.g. plant centroid), not a verified substation position",
+        }.get(method, "no position found; this node is not on the map")
         warn = f'<p class="warn">Position is approximate or unknown ({esc(method)}): {why}.</p>'
-    lat, lon = r.get("lat"), r.get("lon")
-    has_pos = lat is not None and not pd.isna(lat)
+    lat, lon = g("lat", None), g("lon", None)
+    has_pos = lat is not None and lat != 0 and not pd.isna(lat)
     geo = f"""<dl class="kv">
 <dt>geo_method</dt><dd>{esc(method)}</dd>
-<dt>geo_score</dt><dd>{fmt('geo_score', r.get('geo_score'))}</dd>
-<dt>osm_name</dt><dd>{esc(r.get('osm_name', '')) or '—'}</dd>
+<dt>geo_score</dt><dd>{fmt('geo_score', g('geo_score', None))}</dd>
+<dt>osm_name</dt><dd>{esc(g('osm_name', '')) or '—'}</dd>
 <dt>lat, lon</dt><dd>{(fmt('lat', lat) + ', ' + fmt('lon', lon)) if has_pos else 'none'}</dd>
 </dl>"""
     body = f"""<h1>{esc(title)}</h1>
-<p class="sub">{esc(r.county) or 'county unknown'}{(' (' + esc(r.get('state')) + ')') if r.get('state') else ''} ·
-{esc(r.utility) or 'utility unknown'} · node key <code>{esc(r.node_key)}</code></p>
-{c16}
-{lcr_line}
-<h2>Metrics</h2>
-<div class="tbl"><table><thead><tr><th>metric</th><th class="num">value</th><th class="wrap">definition</th></tr>
-</thead>
-<tbody>{metrics}</tbody></table></div>
+<p class="sub">{esc(r.county) or 'county unknown'}{(' (' + esc(g('state')) + ')') if g('state', '') else ''} ·
+{esc(r.utility) or 'utility unknown'} · node key <code>{esc(r.node_key)}</code> · CAISO run date {esc(prov['run_date'])}</p>
+<p class="sub">Seven questions a developer, lender or counsel asks before filing here. Every figure is a CAISO row;
+<b>Not public</b> marks what the public files cannot answer and where to get it. Definitions:
+<a href="../methodology.html">methodology</a>.</p>
+<div class="qs">
+<section class="q"><h2>Can you get in?</h2>{q1}</section>
+<section class="q"><h2>Who is ahead of you?</h2>{q2}</section>
+<section class="q"><h2>Do projects leave after seeing the costs?</h2>{q3}</section>
+<section class="q"><h2>Will you be deliverable?</h2>{q4}</section>
+<section class="q"><h2>Will the power be worth anything here?</h2>{q5}</section>
+<section class="q"><h2>Will the land pass intake?</h2>{q6}</section>
+<section class="q"><h2>How long, and who gave up?</h2>{q7}</section>
+</div>
 <h2>Projects at this node ({len(projects)})</h2>
 <p class="sub">Both reports. cod = current on-line date (public report) or proposed on-line date (Cluster 15).
 ia_status exists only in the public report. Cluster 15 deliverability is requested, not allocated.</p>
@@ -504,6 +654,9 @@ ia_status exists only in the public report. Cluster 15 deliverability is request
 <h2>Geocode provenance</h2>
 {warn}
 {geo}
+<h2>All metrics</h2>
+<div class="tbl"><table><thead><tr><th>metric</th><th class="num">value</th><th class="wrap">definition</th></tr></thead>
+<tbody>{"".join(f'<tr><td><code>{m}</code></td><td class="num">{fmt(m, r.get(m))}</td><td class="wrap">{esc(d)}</td></tr>' for m, d in METRIC_DEFS)}</tbody></table></div>
 """
     return render(title, body, "../", prov)
 
@@ -607,6 +760,80 @@ the queue at all will withdraw less for that reason alone.</p>
     return render("Survival", body, "", prov)
 
 
+NOT_PUBLIC = [
+    ("Network upgrade cost per project", "Phase I / Phase II cluster study reports, served through CAISO's RIMS login."),
+    ("Per-constraint transmission headroom", "the same study reports; CAISO's zonal transmission-capability table is the "
+                                             "public proxy used for cluster scoring."),
+    ("Interconnection customer identity", "not in the Public Queue Report or the Cluster 15 report; project names only."),
+    ("Interconnection financial security posted", "computed per project from non-public study costs; no public $/MW rate "
+                                                  "reconstructs it."),
+    ("Why a project withdrew", "the files carry no reason beyond the withdrawal date."),
+    ("Begin-construction status (tax credit eligibility)", "not a CAISO data element."),
+    ("Landowner willingness", "assessor parcels give ownership class; owner names are withheld on purpose."),
+    ("Load-side interconnection", "data-center and other load requests are a utility process with no public queue."),
+]
+
+
+def methodology_page(prov: dict) -> str:
+    from .config import RECENT_YEARS as RY
+    from .survival import C15_CENSOR_DATE, MIN_AT_RISK, REGIME_CAVEAT
+    defs = "".join(f'<tr><td><code>{m}</code></td><td class="wrap">{esc(d)}</td></tr>' for m, d in METRIC_DEFS)
+    npub = "".join(f'<tr><td class="wrap"><b>{esc(a)}</b></td><td class="wrap">{esc(b)}</td></tr>' for a, b in NOT_PUBLIC)
+    body = f"""<h1>Methodology</h1>
+<p class="sub">Everything on this site is a deterministic transform of a public file. This page states the sources,
+the node definition, every window and exclusion, every metric, and the list of things the public files cannot answer.
+An auditor should be able to reproduce any figure from this page and <code>DATA.md</code> without reading code.</p>
+
+<h2>Sources</h2>
+<p>CAISO Public Queue Report (three sheets: active, completed, withdrawn; report run date {esc(prov['run_date'])}).
+CAISO Cluster 15 Interconnection Requests report (active + withdrawn sheets; posted {C15_CENSOR_DATE}). CAISO 2024 and
+2025 Transmission Plan Deliverability allocation cycle results. CAISO 2025 TPD Allocation Report (group definitions,
+2026-04-13). CAISO Final 2027 Local Capacity Technical Report (area boundary substations, 2026-04-29). CAISO and PTO
+notices on Cluster 16 POI availability, encoded only where a notice names the POI. PG&amp;E Wholesale Distribution
+(WDAT) public queue. OpenStreetMap substations (ODbL) for positions. Kings and Kern county GIS and CEC open data for
+land screens. Licences and attribution: <code>DATA_LICENSES.md</code>.</p>
+
+<h2>What a node is</h2>
+<p>A node is CAISO's free-text point of interconnection normalised: upper-cased, voltage tokens, "SUBSTATION" /
+"SWITCHING STATION" and circuit suffixes (#1, #2) removed, line POIs split at the hyphen. Two consequences to keep in
+mind: a station's 230 kV and 500 kV yards are one node here even though they are different constraints, and a
+same-name station in two utilities can collide (utility is used to separate them where a source names it).</p>
+
+<h2>Windows, censoring, exclusions</h2>
+<p>"Recent" means withdrawn in the last {RY} calendar years including the current one, i.e. from
+{RECENT_FROM_YEAR}. Storage MW per project is the sum of its storage components capped at its net-to-grid figure.
+Survival curves: event = withdrawal at <code>withdrawn_date</code>; active projects censored at the public report run
+date; completed projects censored at their on-line date (completion is success, not an event); Cluster 15 censored at
+{C15_CENSOR_DATE}; a cohort's S(t) is reported only while at least {MIN_AT_RISK} projects remain at risk; rows with a
+withdrawal before their queue date, or no queue date, are excluded and counted.</p>
+<p>{esc(REGIME_CAVEAT)}</p>
+
+<h2>Ratios and small numbers</h2>
+<p>Every ratio on a node page carries the count of projects behind it. A ratio built on fewer than {MIN_N} projects or
+on a denominator under {MIN_DENOM_MW:,} MW is shown dimmed: it is arithmetically correct and statistically empty
+(a node with one withdrawal and one survivor has a churn of 1.00 or 3.33 or 0.10 depending on their sizes, and none of
+those numbers describes the node).</p>
+
+<h2>Metric definitions</h2>
+<div class="tbl"><table><thead><tr><th>metric</th><th class="wrap">definition</th></tr></thead><tbody>{defs}</tbody></table></div>
+
+<h2>What the public files cannot answer</h2>
+<p>These are stated on every node page as <b>Not public</b>. They are the questions a developer must pay for, ask for,
+or accept as unknown — knowing which is which is most of the diligence.</p>
+<div class="tbl"><table><thead><tr><th class="wrap">question</th><th class="wrap">where the answer lives</th></tr></thead><tbody>{npub}</tbody></table></div>
+
+<h2>What this site never does</h2>
+<p>No composite score. No cause attributed to a withdrawal. No dollar figure that is not in a source. No per-project
+prediction. No owner names from parcel data. No figure generated by a language model: the pipeline is deterministic
+Python, the code is public, and every output row carries the source file, the source run date and the pipeline commit.</p>
+
+<h2>Update cadence</h2>
+<p>A GitHub Actions job runs every Monday: it downloads CAISO's current files, rebuilds everything, and commits a dated
+snapshot, redeploys the site and opens a row-level diff issue only when CAISO's report run date is new.</p>
+"""
+    return render("Methodology", body, "", prov)
+
+
 def md_page(title: str, path: Path, fallback: str, prov: dict) -> str:
     if path.exists():
         body = md_to_html(path.read_text(encoding="utf-8"))
@@ -649,7 +876,8 @@ def main() -> None:
 
     written = 0
     (SITE / "index.html").write_text(index_page(nodes, projects, slugs, prov), encoding="utf-8")
-    written += 1
+    (SITE / "methodology.html").write_text(methodology_page(prov), encoding="utf-8")
+    written += 2
 
     by_node = {k: g for k, g in projects.groupby("node_key")} if len(projects) else {}
     wdat_by_node = load_wdat()
