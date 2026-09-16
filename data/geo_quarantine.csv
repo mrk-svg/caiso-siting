@@ -1,0 +1,10 @@
+node_key,reason,source,source_date
+WALNUT,"Position matched a different Walnut Substation in Stanislaus County (PG&E). All four queue projects are SCE at WALNUT SUBSTATION 220/230 KV in Los Angeles County; Walnut Creek Energy Park is in the City of Industry. Published position was ~474 km from the real substation with geo_score 1.0",Domain review 2026-09-16,2026-09-16
+MUSTANG,"Position matched PG&E's Mustang 70 kV distribution substation in San Luis Obispo County. All queue rows are MUSTANG SWITCHING STATION 230 KV in Kings/Fresno County, and the EIA plants named for it (RE Mustang, Mustang Two, Slate) sit ~123 km away beside Henrietta. Published position contradicted the node's own county and local capacity area",Domain review 2026-09-16,2026-09-16
+MERCED,"Position matched SCE's Merced Substation in Baldwin Park, Los Angeles County. Node is PG&E in Merced County. ~430 km error published as geo_method exact with geo_score 1.0",Domain review 2026-09-16,2026-09-16
+MERCED CIRCUIT,"Same mismatch as MERCED",Domain review 2026-09-16,2026-09-16
+CAMDEN,"Position matched SCE's Camden Substation in Santa Ana, Orange County. Node is PG&E Camden 70 kV in Fresno County. ~370 km error published as geo_method exact with geo_score 1.0",Domain review 2026-09-16,2026-09-16
+MISSION,"Position matched a San Diego feature. Node is PG&E Mission in San Francisco. ~730 km error",Domain review 2026-09-16,2026-09-16
+WARNER,"Position matched a feature in Modoc County. Node is SDG&E Warner Springs in San Diego County. ~980 km error",Domain review 2026-09-16,2026-09-16
+OLINDA,"Position matched PG&E's Olinda near Redding, Shasta County. Node is SCE Olinda in Brea, Orange County. ~820 km error",Domain review 2026-09-16,2026-09-16
+SAN MATEO,"Position matched PG&E's San Mateo in San Mateo County. Node is SDG&E San Mateo in San Clemente, Orange County. ~630 km error",Domain review 2026-09-16,2026-09-16

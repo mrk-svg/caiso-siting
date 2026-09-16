@@ -15,7 +15,7 @@ explains why everything under `outputs/` and `site/` is ODbL 1.0 rather than MIT
 | CAISO TPD Allocation Report (2025 cycle, 2026-04-13) | allocation-group definitions (A–D) | public information published by CAISO | cite when quoting a group |
 | CAISO market notices (e.g. PG&E POI availability for Cluster 16) | per-POI availability statements | public notices | link to the notice; encoded only where the notice names the POI |
 | OpenStreetMap (via Overpass) | substation names and coordinates | ODbL 1.0 — **attribution and share-alike for derived databases** | "© OpenStreetMap contributors, ODbL" on every map and on `poi_geocode.csv` |
-| Kings County GIS (parcels, general plan) | parcel APN, acreage, AG flag, GP designation | public county GIS; owner names withheld under Cal. Gov. Code §7928.205 | "Source: Kings County GIS" |
+| Kings County GIS (parcels, general plan) | parcel APN, acreage, AG flag, GP designation | public county GIS; **owner names are never read** — a project policy, not a statutory requirement (see note below) | "Source: Kings County GIS" |
 | Kern County GIS (zoning) | zoning district polygons | public county GIS | "Source: Kern County GIS (KernGIS)" |
 | CEC GIS open data (transmission lines, exclusion layers) | geometry for line POIs, siting screens | CEC open data, provided "as is" | "Source: California Energy Commission GIS" |
 
@@ -29,3 +29,24 @@ Rules we follow:
 2. Every output row carries `source_file`, `source_run_date`, `pipeline_commit`, `pipeline_run`.
 3. OSM-derived coordinates are marked by `geo_method` and the ODbL notice appears on the map and site.
 4. No owner names, ever, even where a county layer leaks them.
+
+## Why owner names are withheld
+
+County assessor and parcel records are generally public in California, and no statute obliges a
+third party to withhold the owner name on an ordinary parcel. Withholding them here is this
+project's own policy, adopted because a parcel-by-parcel list of named landowners next to
+"here is where developers are looking" is a different and worse artifact than a siting screen,
+whatever its legal status.
+
+One statute is directly relevant and is cited accurately: **Cal. Gov. Code § 7928.205** provides
+that "No state or local agency shall publicly post the home address, telephone number, or both the
+name and assessor parcel number associated with the home address of any elected or appointed
+official on the internet without first obtaining the written permission of that individual." That
+binds agencies rather than this project, and it concerns officials rather than owners generally —
+but it is the reason the combination this project most carefully never produces is a **name joined
+to an assessor parcel number**. Parcel rows here carry APN, acreage and designation and no name at
+all, so the prohibited pairing cannot be assembled from these outputs.
+
+The same reasoning governs EIA-860 owner names: owners that classify as organisations are named,
+owners that classify as individuals are counted and never named, and the classifier deliberately
+errs toward not naming.

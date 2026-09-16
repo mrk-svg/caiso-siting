@@ -70,7 +70,7 @@ RECENT_FROM_YEAR = pd.Timestamp.today().year - RECENT_YEARS + 1  # inclusive fir
 THIS_YEAR = pd.Timestamp.today().year
 AMBIGUOUS_KM = 50   # OSM features sharing a name further apart than this make the position untrustworthy
 APPROX_METHODS = ["line-one-end", "line-midpoint", "fuzzy", "override-approx", "county-centroid", "ambiguous",
-                  "state-mismatch", "none"]
+                  "state-mismatch", "none", "disputed"]
 
 
 # ------------------------------------------------------------------ geocoding
@@ -241,9 +241,9 @@ def build_nodes(pq: pd.DataFrame, c15: pd.DataFrame) -> pd.DataFrame:
         both["state"] = ""
     labels = both.groupby(key).agg(
         poi_base=("poi_base", lambda s: s.mode().iloc[0]),
-        county=("county", lambda s: s[s != ""].mode().iloc[0] if (s != "").any() else ""),
-        utility=("utility", lambda s: s[s != ""].mode().iloc[0] if (s != "").any() else ""),
-        state=("state", lambda s: s[s.fillna("") != ""].mode().iloc[0] if (s.fillna("") != "").any() else ""))
+        county=("county", sole_mode),
+        utility=("utility", sole_mode),
+        state=("state", sole_mode))
     nodes = labels.join(nodes, how="right").fillna({"poi_base": "", "county": "", "utility": "", "state": ""}).reset_index()
     nodes = nodes[nodes[key] != ""]
 
@@ -368,6 +368,9 @@ def geocode_nodes(nodes: pd.DataFrame) -> pd.DataFrame:
     nodes = nodes.merge(geo.drop(columns="poi_base"), on="node_key", how="left")
     nodes = apply_line_cache(nodes)
     nodes = county_centroid_fallback(nodes)
+    # Last, so a quarantined node is not quietly rescued by the centroid fallback: a position we
+    # have proven wrong should read as "disputed", not as "we never knew".
+    nodes = quarantine_positions(nodes)
     located = nodes.lat.notna() & (nodes.geo_method != "county-centroid")
     print(f"geocode: {located.sum()}/{len(nodes)} nodes located ({located.mean():.0%}); "
           f"{nodes.loc[located, 'pipeline_mw'].sum() / nodes.pipeline_mw.sum():.0%} of pipeline MW; "
@@ -391,6 +394,43 @@ def apply_line_cache(nodes: pd.DataFrame) -> pd.DataFrame:
     nodes.loc[hit, "osm_name"] = ("CEC line: " + cache.tline_name.astype(str) + kv)\
         .reindex(nodes.loc[hit, "node_key"]).values
     print(f"cec-line cache: {hit.sum()} line POIs placed on transmission-line geometry")
+    return nodes
+
+
+def sole_mode(s: pd.Series) -> str:
+    """Modal label, but ONLY when the mode is unique.
+
+    county/utility/state on a node are the *projects'* labels, not the POI's, so a node whose
+    projects disagree is a node whose label is unknown. pandas breaks a tie alphabetically, which
+    silently published PGAE on Los Angeles County substations (EAGLE ROCK, EL NIDO) and then made
+    them match the wrong local-capacity row. A tie is ambiguity, and ambiguity is blank.
+    """
+    s = s.fillna("")
+    s = s[s != ""]
+    if s.empty:
+        return ""
+    m = s.mode()
+    return "" if len(m) > 1 else str(m.iloc[0])
+
+
+def quarantine_positions(nodes: pd.DataFrame) -> pd.DataFrame:
+    """Drop positions that a review proved wrong.
+
+    A confidently wrong coordinate is worse than no coordinate: it is drawn on the map, it is used
+    to attribute EIA-860 plants by distance, and it carries a high geo_score while doing it. Nodes
+    listed in data/geo_quarantine.csv lose their position and are marked `disputed`, which is not
+    in REAL_POSITIONS, so nothing joins on them until a sourced override replaces the coordinate.
+    """
+    f = DATA / "geo_quarantine.csv"
+    if not f.exists():
+        return nodes
+    q = pd.read_csv(f, comment="#")
+    hit = nodes.node_key.isin(q.node_key)
+    if hit.any():
+        nodes.loc[hit, ["lat", "lon", "geo_score", "osm_name"]] = float("nan"), float("nan"), float("nan"), ""
+        nodes.loc[hit, "geo_method"] = "disputed"
+        print(f"geo: quarantined {int(hit.sum())} proven-wrong position(s): "
+              f"{', '.join(sorted(nodes.loc[hit, 'node_key']))}")
     return nodes
 
 

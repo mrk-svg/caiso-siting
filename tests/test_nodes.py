@@ -683,3 +683,34 @@ def test_map_escapes_hostile_source_text(tmp_path, monkeypatch):
     assert "<\\/script>" in html
     assert "esc(p.poi)" in html and "esc(p.osm)" in html      # popup fields go through the escaper
     assert 'integrity="sha256-' in html                         # Leaflet loads with SRI
+
+
+# --- domain review 2026-09-16: ambiguity must not be resolved by guessing ---------------------
+
+def test_sole_mode_returns_blank_on_a_tie():
+    """A 2-2 split on utility published PGAE for Los Angeles County substations, because
+    pandas.mode() breaks ties alphabetically. A tie means unknown, not the first letter."""
+    assert nodes.sole_mode(pd.Series(["SCE", "SCE", "PGAE", "PGAE"])) == ""
+    assert nodes.sole_mode(pd.Series(["SCE", "SCE", "PGAE"])) == "SCE"
+    assert nodes.sole_mode(pd.Series(["", "", "SCE"])) == "SCE"
+    assert nodes.sole_mode(pd.Series(["", ""])) == ""
+    assert nodes.sole_mode(pd.Series([float("nan"), "SCE", "SCE"])) == "SCE"
+
+
+def test_quarantine_drops_proven_wrong_positions(tmp_path, monkeypatch):
+    """A confidently wrong coordinate is worse than none: it is mapped and it wins distance
+    joins. Quarantined nodes keep no position and are marked disputed."""
+    q = tmp_path / "geo_quarantine.csv"
+    q.write_text("node_key,reason,source,source_date\nWALNUT,matched the wrong Walnut,review,2026-09-16\n")
+    monkeypatch.setattr(nodes, "DATA", tmp_path)
+    df = pd.DataFrame({"node_key": ["WALNUT", "GATES"], "lat": [37.49, 36.0], "lon": [-120.9, -120.1],
+                       "geo_score": [1.0, 1.0], "osm_name": ["Walnut Substation", "Gates"],
+                       "geo_method": ["exact", "exact"]})
+    out = nodes.quarantine_positions(df.copy())
+    w = out[out.node_key == "WALNUT"].iloc[0]
+    assert w.geo_method == "disputed"
+    assert pd.isna(w.lat) and pd.isna(w.lon) and pd.isna(w.geo_score)
+    g = out[out.node_key == "GATES"].iloc[0]
+    assert g.geo_method == "exact" and g.lat == 36.0
+    assert "disputed" in nodes.APPROX_METHODS
+    assert "disputed" not in __import__("caiso_siting.eia860", fromlist=["x"]).REAL_POSITIONS

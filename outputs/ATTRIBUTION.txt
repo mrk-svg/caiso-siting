@@ -1,0 +1,46 @@
+ATTRIBUTION — required when any file in this directory is redistributed
+=======================================================================
+
+These outputs are licensed under the Open Database Licence 1.0 (ODbL), NOT under the
+MIT licence that covers this project's source code. ODbL is share-alike for databases:
+if you build a database from these files and distribute it publicly, that database must
+also be offered under ODbL. See LICENSE-DATA.md in the repository root for why.
+
+    https://opendatacommons.org/licenses/odbl/1-0/
+
+Carry this attribution on any map, page, table or derived dataset built from these files:
+
+    Substation positions (c) OpenStreetMap contributors, ODbL.
+    Interconnection queue, deliverability and local capacity data: California ISO.
+    Generator and storage data: U.S. Energy Information Administration, Form EIA-860.
+    Wholesale distribution queue: Pacific Gas and Electric Company (WDAT).
+    Parcel and zoning layers: Kings County GIS and Kern County GIS.
+    Transmission line geometry and siting layers: California Energy Commission.
+
+Source terms, in summary:
+  - California ISO material may be used provided all copyright, trademark and other
+    proprietary notices are kept intact and the California ISO is credited. CAISO
+    publishes its materials AS IS, without warranties of any kind, and disclaims
+    liability. CAISO's API terms are narrower than its website terms; no raw CAISO
+    OASIS API response is redistributed here.
+  - EIA-860 is a U.S. federal government work in the public domain; EIA asks for
+    attribution.
+  - OpenStreetMap data is ODbL and requires attribution and share-alike.
+
+NO WARRANTY, AND NOT ENGINEERING ADVICE
+---------------------------------------
+Every row here was produced by an automated pipeline from public filings, by an energy
+engineer who is not a licensed Professional Engineer. Figures are a screening aid.
+Verify each one against the source filing named in its own `source_file` and
+`source_run_date` columns before relying on it for any decision. No warranty of any
+kind is given. This project is not affiliated with, endorsed by or connected to the
+California ISO, the EIA, PG&E, SCE, SDG&E, the CEC, the CPUC or any other agency or
+utility. See DISCLAIMER.md.
+
+KNOWN DEFECTS
+-------------
+This directory ships with a register of known errors in KNOWN_ISSUES.md at the
+repository root. Read it before quoting any figure. In particular, a node's position,
+county and utility are known to be wrong for a specific list of nodes, and the EIA-860
+columns describe capacity within 5 km of a node rather than capacity interconnected at
+that node.

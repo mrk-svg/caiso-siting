@@ -26,6 +26,10 @@ Not a "Grid-Ready Score". Transparent, sourced layers — every number traceable
 > it for any decision. No warranty of any kind. Not affiliated with CAISO, the EIA, or any utility.
 > Full terms in [DISCLAIMER.md](DISCLAIMER.md).
 
+> **Known defects are published.** [KNOWN_ISSUES.md](KNOWN_ISSUES.md) lists every error a review
+> has found and this project has not yet fixed — node identity collisions, nine quarantined
+> positions, the 5 km EIA attribution radius, and more. Read it before quoting a figure.
+
 ## Found a wrong number?
 
 That is the contribution this project wants most. Some of the judgment calls in here — which

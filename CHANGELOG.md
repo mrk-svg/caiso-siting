@@ -1,5 +1,52 @@
 # Changelog
 
+## 1.6.0 — 2026-09-16 — domain review: identity, positions, and a published defect register
+
+Two independent domain review passes against the primary source documents — one checking
+`data/lcr_areas.csv` row by row against the Final 2027 Local Capacity Technical Report, one
+checking the outputs for physical and commercial plausibility. Neither has been confirmed by a
+licensed engineer; that is the next step, not a completed one.
+
+**Ambiguity is no longer resolved by guessing.** `county`, `utility` and `state` on a node are the
+*projects'* labels, and pandas broke a tied mode alphabetically — which published PGAE on Los
+Angeles County substations (`EAGLE ROCK`, `EL NIDO`) and then matched them to the wrong local
+capacity row. `sole_mode` returns the modal value only when the mode is unique, blank otherwise.
+`EAGLE ROCK` no longer displays "in North Coast/North Bay" on a Los Angeles substation.
+
+**Nine proven-wrong positions quarantined.** `WALNUT` was mapped 474 km away in Stanislaus County
+with `geo_method=exact` and `geo_score=1.0`; `MERCED`, `CAMDEN`, `MISSION`, `WARNER`, `OLINDA`,
+`SAN MATEO`, `MUSTANG` and `MERCED CIRCUIT` were similarly matched to same-named substations on
+the wrong utility's system. `data/geo_quarantine.csv` lists them with the evidence; they now carry
+no position, read as `disputed`, and are excluded from the map and from the EIA distance join. A
+confidently wrong coordinate is worse than no coordinate, because it is drawn and it wins joins.
+
+**Four local-capacity corrections, each quoted to a report page.** `Bellota` moved to `out`: the
+note claimed every queue POI there is 115 kV, but the only *active* POI is 230 kV (Belterra, 500
+MW) and the report puts Bellota 230 kV outside — the row was overstating RA value and breaking the
+file's own high-side rule. `Tranquility` loses its `Panoche` sub-area, which the report never
+assigns. The seven Kern `out` rows now carry `Kern PP` as the sub-area, because the report defines
+a Kern-PP sub-area boundary and no Kern *area* boundary at all; the `Magunden` note no longer
+claims the area. The `Panoche` note no longer asserts a 230 kV POI majority the queue files do not
+support.
+
+**`KNOWN_ISSUES.md`** publishes every defect the review found and this release did not fix — node
+identity collisions, project-county-as-substation-county, the 5 km EIA attribution radius, EIA
+respondent errors that make one-hour batteries, PG&E Fast Track rows above the tariff ceiling,
+boundary-only local capacity coverage. A tool whose claim is traceability cannot keep a private
+list of where it is wrong.
+
+**Legal.** `DATA_LICENSES.md` cited Cal. Gov. Code § 7928.205 as the reason parcel owner names are
+withheld. The section actually bars *agencies* from posting an *elected or appointed official's*
+home address, telephone number, or name joined to an assessor parcel number — it does not oblige
+this project to withhold owner names at all. The claim is corrected: withholding is this project's
+own policy, and the statute is now cited accurately for the pairing the outputs are built never to
+produce. `outputs/ATTRIBUTION.txt` ships the ODbL, CAISO and EIA attribution with the files
+themselves, since a CSV that travels alone carries none of the site's footer. `AI_USE.md` states
+who authored what, why AI-assisted code fails as plausible wrong answers rather than crashes, and
+the limits of what this project can claim copyright over.
+
+341 tests.
+
 ## 1.5.1 — 2026-09-15 — open-source readiness: licence boundary, reliance disclaimer, supply chain
 
 Nothing in the pipeline changed. Everything that decides whether this repository can safely be

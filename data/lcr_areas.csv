@@ -48,7 +48,7 @@ Tracy,PGAE,Stockton,Tesla-Bellota,in,,Final 2027 LCT Report,2026-04-29
 Salado,PGAE,Stockton,Tesla-Bellota,in,,Final 2027 LCT Report,2026-04-29
 Manteca,PGAE,Stockton,Tesla-Bellota,in,,Final 2027 LCT Report,2026-04-29
 Schulte,PGAE,Stockton,Tesla-Bellota,in,,Final 2027 LCT Report,2026-04-29
-Bellota,PGAE,Stockton,Tesla-Bellota,in,"Bellota 115 kV is in the Tesla-Bellota sub-area; Bellota 230 kV is out (of Stockton and of Sierra). Every queue POI at this node is 115 kV, so the node is encoded in",Final 2027 LCT Report,2026-04-29
+Bellota,PGAE,Stockton,Tesla-Bellota,out,"Report p.55: Bellota 230 kV is out, Bellota 115 kV is in; p.44: Bellota is out of Sierra. The only ACTIVE queue POI here is 230 kV (Belterra Energy Storage, 500 MW); the 115 kV POIs are all withdrawn. Encoded out on the high side, matching the Gates and Los Banos treatment. Corrected 2026-09-16 (was in)",Final 2027 LCT Report,2026-04-29
 Industrial,PGAE,Stockton,Lockeford,in,,Final 2027 LCT Report,2026-04-29
 Lockeford,PGAE,Stockton,Lockeford,out,Lockeford is the source station of the Lockeford 60 kV sub-area and is listed as out; also out of Sierra,Final 2027 LCT Report,2026-04-29
 Sobrante,PGAE,Greater Bay Area,,in,also listed as out of North Coast/North Bay,Final 2027 LCT Report,2026-04-29
@@ -73,7 +73,7 @@ Oakdale TID,PGAE,Greater Bay Area,,out,,Final 2027 LCT Report,2026-04-29
 Mustang,PGAE,Greater Fresno,,in,,Final 2027 LCT Report,2026-04-29
 Wilson,PGAE,Greater Fresno,Wilson,in,,Final 2027 LCT Report,2026-04-29
 North Merced,PGAE,Greater Fresno,,in,,Final 2027 LCT Report,2026-04-29
-Tranquility,PGAE,Greater Fresno,Panoche,in,Tranquility lines 1 and 2 (230 kV) are in; Panoche 230 kV is out,Final 2027 LCT Report,2026-04-29
+Tranquility,PGAE,Greater Fresno,,in,"Report p.80 states Tranquility 1 and 2 are in at AREA level only. The Panoche sub-area is the pocket behind the Panoche 230/115 kV banks and its station list does not include Tranquility, so no sub-area is claimed. Sub-area removed 2026-09-16 (was Panoche)",Final 2027 LCT Report,2026-04-29
 Corcoran,PGAE,Greater Fresno,,in,,Final 2027 LCT Report,2026-04-29
 Coalinga,PGAE,Greater Fresno,Coalinga,in,,Final 2027 LCT Report,2026-04-29
 Gates,PGAE,Greater Fresno,,out,Gates 230 kV (and the 500 kV yard) is out of Greater Fresno; only the Gates 70 kV bus is in,Final 2027 LCT Report,2026-04-29
@@ -81,7 +81,7 @@ Mercy Springs,PGAE,Greater Fresno,,in,"Mercy Springs 70 kV is in; Mercy Springs 
 Los Banos,PGAE,Greater Fresno,,out,"Los Banos 230 kV and 500 kV are out of Greater Fresno and out of the Greater Bay Area; only the 70 kV bus is in Greater Fresno. Most queue POIs at this node are 230/500 kV (a minority are 70 kV and are inside)",Final 2027 LCT Report,2026-04-29
 Warnerville,PGAE,Greater Fresno,,out,,Final 2027 LCT Report,2026-04-29
 Melones,PGAE,Greater Fresno,,out,,Final 2027 LCT Report,2026-04-29
-Panoche,PGAE,Greater Fresno,,out,"Panoche 230 kV is out; only the Panoche 115 kV bus is in. Most queue POIs at this node are 230 kV (some are 115 kV and are inside)",Final 2027 LCT Report,2026-04-29
+Panoche,PGAE,Greater Fresno,,out,"Report p.80: Panoche 230 is out, Panoche 115 is in. AMBIGUOUS at node level - the queue names 6 POIs at 115 kV, 6 at 230 kV and 3 with no voltage, and the single ACTIVE POI states no voltage at all. Encoded out on the high side as the conservative reading. Note corrected 2026-09-16: it previously claimed a 230 kV majority that the queue files do not support",Final 2027 LCT Report,2026-04-29
 Smyrna,PGAE,Greater Fresno,,out,,Final 2027 LCT Report,2026-04-29
 San Miguel,PGAE,Greater Fresno,,out,,Final 2027 LCT Report,2026-04-29
 Bakersfield,PGAE,Kern,Kern PP,in,Bakersfield 230 kV,Final 2027 LCT Report,2026-04-29
@@ -93,13 +93,13 @@ McFarland,PGAE,Kern,Kern PP,in,,Final 2027 LCT Report,2026-04-29
 Bakersfield Junction,PGAE,Kern,Kern PP,in,,Final 2027 LCT Report,2026-04-29
 South Kern Solar,PGAE,Kern,Kern PP,in,,Final 2027 LCT Report,2026-04-29
 San Emidio Junction,PGAE,Kern,Kern PP,in,,Final 2027 LCT Report,2026-04-29
-Midway,PGAE,Kern,,out,Midway 230 kV (and 500 kV) is out of the Kern area,Final 2027 LCT Report,2026-04-29
-Famoso,PGAE,Kern,,out,,Final 2027 LCT Report,2026-04-29
-Adobe Switching Station,PGAE,Kern,,out,,Final 2027 LCT Report,2026-04-29
-Wasco,PGAE,Kern,,out,,Final 2027 LCT Report,2026-04-29
-Magunden,PGAE,Kern,,out,Magunden 70 kV is out of the Kern area,Final 2027 LCT Report,2026-04-29
-Copus,PGAE,Kern,,out,,Final 2027 LCT Report,2026-04-29
-Lakeview,PGAE,Kern,,out,,Final 2027 LCT Report,2026-04-29
+Midway,PGAE,Kern,Kern PP,out,"Report p.100 lists Midway as delineating the Kern-PP SUB-AREA. Midway 230 kV and 500 kV. The report defines no Kern area boundary list",Final 2027 LCT Report,2026-04-29
+Famoso,PGAE,Kern,Kern PP,out,"Report p.100 lists this substation as delineating the Kern-PP SUB-AREA. The report defines no Kern area boundary list",Final 2027 LCT Report,2026-04-29
+Adobe Switching Station,PGAE,Kern,Kern PP,out,"Report p.100 lists this substation as delineating the Kern-PP SUB-AREA. The report defines no Kern area boundary list",Final 2027 LCT Report,2026-04-29
+Wasco,PGAE,Kern,Kern PP,out,"Report p.100 lists this substation as delineating the Kern-PP SUB-AREA. The report defines no Kern area boundary list",Final 2027 LCT Report,2026-04-29
+Magunden,PGAE,Kern,Kern PP,out,"Report p.100 places Magunden outside the Kern-PP SUB-AREA, not outside the Kern area. Table 3.3-61 makes the Magunden-Magunden Jct 115 kV line the limiting facility of the Westpark sub-area, which is itself inside Kern. Every Magunden queue POI is 115 kV or unspecified, never 70 kV. Note corrected 2026-09-16",Final 2027 LCT Report,2026-04-29
+Copus,PGAE,Kern,Kern PP,out,"Report p.100 lists this substation as delineating the Kern-PP SUB-AREA. The report defines no Kern area boundary list",Final 2027 LCT Report,2026-04-29
+Lakeview,PGAE,Kern,Kern PP,out,"Report p.100 lists this substation as delineating the Kern-PP SUB-AREA. The report defines no Kern area boundary list",Final 2027 LCT Report,2026-04-29
 Pardee,SCE,Big Creek/Ventura,,in,,Final 2027 LCT Report,2026-04-29
 Santa Clara,SCE,Big Creek/Ventura,Santa Clara,in,,Final 2027 LCT Report,2026-04-29
 Antelope,SCE,Big Creek/Ventura,,in,"Antelope 230 kV is in; the Antelope 500 kV yard is out. Every queue POI at this node is 66/220/230 kV, so the node is encoded in",Final 2027 LCT Report,2026-04-29
