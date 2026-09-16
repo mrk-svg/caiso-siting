@@ -1,5 +1,50 @@
 # Changelog
 
+## 1.7.0 — 2026-09-16 — source freshness, publication review, legal corrections
+
+Three independent reviews — a data engineer on source freshness, an application security engineer
+on the repository as a publishable artifact, and a technology-and-data-licensing attorney on legal
+exposure. None was performed by a licensed professional; each read the code and the primary
+documents. Their blocking findings are fixed here.
+
+**Freshness: a missing source no longer publishes as the number zero.** Deleting `data/eia860.zip`
+used to give every node `eia_nameplate_mw = 0.0`, which a reader parses as "nothing operates near
+this node" rather than "we do not know"; the same pattern zeroed the TPD, WDAT and availability
+columns. Those now go blank. `data/source_freshness.csv` records every source's cadence and the
+age at which it is stale or expired, **measured against its own publication schedule** — an annual
+report eleven months old is current, a monthly file two months old is not. `caiso-siting freshness`
+reports the table; `nodes` runs it first and withholds the figures a source can no longer support.
+The CAISO queue is the one source that fails the build rather than publishing under a false as-of
+date. The methodology page carries a per-source as-of table, replacing a footer that printed the
+queue's two-day-old date beside a sentence naming six sources, one of them 244 days old.
+
+**Legal.** The claim that California statute redacts parcel owner names appeared in six places; the
+previous release corrected one of them. Cal. Gov. Code § 7928.205 bars *agencies* from posting an
+*elected or appointed official's* home address, phone, or name joined to an assessor parcel number —
+it does not oblige anyone to withhold owner names, and a land broker is a named target user who was
+being told otherwise. README, LICENSE-DATA, DATA.md, `parcels.py` and the three shipped parcel
+summaries now say plainly that withholding is this project's policy. The ODbL grant was asserted
+over all of `outputs/`, including EIA-860-derived files that are public-domain federal work; it is
+narrowed to the two files that actually carry OSM-derived coordinates. `data/ATTRIBUTION.txt`
+carries CAISO's required credit with the workbooks redistributed there. The outreach working files
+are gitignored before they can collect named third parties in a public repository.
+
+**The map had no disclaimer at all.** It is copied verbatim into `site/` rather than rendered, so it
+bypassed the template that carries the reliance line — on the one page most likely to be shared. It
+now carries the reliance text and the ODbL attribution the repository promises "on every map", and a
+test walks every built page rather than naming two by hand.
+
+**Security.** The queue report — the file the whole pipeline rests on — was written straight onto
+its destination on any HTTP 200, so a captive portal or CDN error page destroyed the only local
+copy. All downloads now go through `fetch.py`: HTTPS enforced on every hop, redirects refused if
+they downgrade or leave a host allow-list, an 80 MB body cap, and `.part` + verify + replace.
+Output CSVs are escaped against spreadsheet formula injection (`config.csv_safe`) — SECURITY.md
+claimed a test for this that did not exist; the test exists now. Workflow permissions are declared
+per job, so the Pages deploy no longer holds `contents: write`. Five inaccurate sentences in
+SECURITY.md are corrected.
+
+355 tests.
+
 ## 1.6.0 — 2026-09-16 — domain review: identity, positions, and a published defect register
 
 Two independent domain review passes against the primary source documents — one checking

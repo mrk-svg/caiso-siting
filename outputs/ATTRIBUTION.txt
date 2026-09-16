@@ -1,10 +1,15 @@
 ATTRIBUTION — required when any file in this directory is redistributed
 =======================================================================
 
-These outputs are licensed under the Open Database Licence 1.0 (ODbL), NOT under the
-MIT licence that covers this project's source code. ODbL is share-alike for databases:
-if you build a database from these files and distribute it publicly, that database must
-also be offered under ODbL. See LICENSE-DATA.md in the repository root for why.
+nodes.csv and poi_geocode.csv carry OpenStreetMap-derived coordinates, which makes each
+a Derivative Database under the Open Database Licence 1.0 (ODbL) rather than MIT: if you
+build a database from either and distribute it publicly, that database must also be
+offered under ODbL.
+
+The other files in this directory contain no OSM-derived content. They are derived from
+CAISO reports, PG&E's WDAT file and EIA-860, which this project does not own and does not
+purport to license; they are redistributed on their publishers' own terms. See
+LICENSE-DATA.md in the repository root.
 
     https://opendatacommons.org/licenses/odbl/1-0/
 

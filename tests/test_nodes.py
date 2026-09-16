@@ -680,7 +680,8 @@ def test_map_escapes_hostile_source_text(tmp_path, monkeypatch):
     nodes.write_map(df)
     html = (tmp_path / "nodes_map.html").read_text()
     assert "</script><script>alert(2)" not in html          # JSON payload cannot close the script block
-    assert "<\\/script>" in html
+    # every "<" in the embedded JSON is \u003c now, so no source string can open OR close a tag
+    assert "\\u003cscript>" in html or "\\u003c/script>" in html
     assert "esc(p.poi)" in html and "esc(p.osm)" in html      # popup fields go through the escaper
     assert 'integrity="sha256-' in html                         # Leaflet loads with SRI
 

@@ -6,7 +6,6 @@ BELLOTA,1.0,132.0,132.0,528.0,Batteries 132,"North Central Valley Energy Storage
 BIRDS LANDING,5.0,508.2,0.0,0.0,Onshore Wind Turbine 508,"Avangrid Power LLC; EDF Renewable Asset Holdings, Inc.; FPLE High Winds, LLC; NextEra Energy Montezuma Wind II, LLC","EDF Renewable Windfarm V, Inc; Florida Power & Light Co",,1990.0,0.0
 BITTERWATER,2.0,262.0,92.0,368.0,Solar Photovoltaic 170; Batteries 92,Onward Energy; RWE Clean Energy,,NORORC_2_NOSBX2,2015.0,0.0
 BLYTHE,3.0,946.6,112.0,448.0,Natural Gas Fired Combined Cycle 591; Solar Photovoltaic 244; Batteries 112,"AltaGas Blythe Operations Inc; Intersect USA, LLC; NRG Solar Blythe II LLC","NRG Energy, Inc",Buck BL_2_PL1X3-APND; CENTPD_2_BMSSX2-APND; CENTPD_2_BMSX2-APND,2003.0,1000.0
-CAMDEN,2.0,2.4,2.4,9.7,Batteries 2,"Hybrid-Electric Building Technologies West Los Angeles 1, LLC; Southern California Edison Co",SUSI Partners AG; Sk Holdings Co. Ltd.,,2017.0,0.0
 CARBERRY,3.0,54.0,0.0,0.0,Wood/Wood Waste Biomass 51; Conventional Hydroelectric 3,"Burney Forest Products, A Joint Venture; Sierra Pacific Industries; Snow Mountain Hydro LLC",Olympus Power,BioRAM; SPI-BURN_7_N003,1986.0,0.0
 CAYETANO,2.0,6.7,0.0,0.0,Landfill Gas 4; Solar Photovoltaic 2,"Ameresco Vasco Road, LLC; Chabot Las Positas Community College District",,,2014.0,200.0
 CHINO,2.0,32.3,0.0,0.0,Natural Gas Fired Combined Cycle 31; Solar Photovoltaic 2,CamChino Leasing LLC; SS San Antonio West LLC,,CIMGEN_7_B1,1987.0,0.0
@@ -48,7 +47,7 @@ HUMBOLDT BAY HUMBOLDT,1.0,167.0,0.0,0.0,Natural Gas Internal Combustion Engine 1
 IMPERIAL VALLEY,3.0,478.4,331.0,724.0,Batteries 331; Solar Photovoltaic 147,"Big Rock ESS Assets, LLC; RWE Clean Energy; Southern Power Co","Campo Verde Solar, LLC",,2013.0,299.0
 INYOKERN,2.0,31.8,0.0,0.0,Solar Photovoltaic 32,Dimension Energy LLC,,,2024.0,0.0
 IVANPAH,3.0,392.8,0.0,0.0,Solar Thermal without Energy Storage 393,NRG Energy Services,Solar Partners I LLC; Solar Partners II LLC; Solar Partners VIII LLC,,2013.0,0.0
-JOHANNA,7.0,123.0,122.0,502.5,Batteries 122; Other Natural Gas 1,"Bloom Energy; Convergent Energy and Power LP; Electrodes; Hecate Energy Johanna Facility LLC; Hybrid-Electric Building Technologies West Los Angeles 1, LLC; Johanna Energy Center, LLC","KeyBank; Macquarie Capital; Orange County Energy Storage 2, LLC; Orange County Energy Storage 3, LLC; SUSI Partners AG; Sk Holdings Co. Ltd.",JOHANNA_6_N06; JOHANNA_6_N07; NODE,2017.0,0.0
+JOHANNA,8.0,124.0,123.0,508.5,Batteries 123; Other Natural Gas 1,"Bloom Energy; Convergent Energy and Power LP; Electrodes; Hecate Energy Johanna Facility LLC; Hybrid-Electric Building Technologies West Los Angeles 1, LLC; Johanna Energy Center, LLC","KeyBank; Macquarie Capital; Orange County Energy Storage 2, LLC; Orange County Energy Storage 3, LLC; SUSI Partners AG; Sk Holdings Co. Ltd.",JOHANNA_6_N06; JOHANNA_6_N07; NODE,2017.0,0.0
 KASSON,1.0,1.5,0.0,0.0,Solar Photovoltaic 2,Prologis Logistics Services Incorporated,,,2025.0,1.5
 KEARNY,6.0,36.9,31.4,92.0,Batteries 31; Natural Gas Internal Combustion Engine 4; Solar Photovoltaic 2,"Kearny Mesa Storage LLC; Kyocera International, Inc; San Diego Gas & Electric Co; Solar Star California LXXVIII, LLC",53 SP Solar Trust,,2012.0,1.6
 KELSO,3.0,263.6,0.0,0.0,Natural Gas Fired Combustion Turbine 200; Onshore Wind Turbine 64,"Diamond Generating Corporation; Golden Hills Interconnection Wind, LLC; Sequitur Renewables, LLC",,,2004.0,97.0
@@ -65,7 +64,6 @@ LOS ESTEROS,6.0,356.1,0.0,0.0,Natural Gas Fired Combined Cycle 338; Natural Gas 
 MANDALAY,2.0,52.3,0.0,0.0,Natural Gas Fired Combustion Turbine 50; Solar Photovoltaic 2,"Forefront Power, LLC; Southern California Edison Co",,,2012.0,0.0
 MARTIN,1.0,2.1,0.0,0.0,Other Waste Biomass 2,City & County of San Francisco - (CA),,DLAP_PGAE-APND,2002.0,0.0
 MCCALL,1.0,2.9,0.0,0.0,Solar Photovoltaic 3,National Raisin,,,2015.0,0.0
-MERCED CIRCUIT,1.0,6.8,0.0,0.0,Landfill Gas 7,MM West Covina Energy LLC,,,1993.0,0.0
 MERCHANT,5.0,842.9,0.0,0.0,Natural Gas Fired Combined Cycle 537; Solar Photovoltaic 306,Desert Star Energy Center SDG&E; RWE Clean Energy,,COPPERMT_6_GN001; LSCM92_7_N005; LSQ855_7_N001; MRCHNT13_7_N001; MRCHNT13_7_N002; MRCHNT2_7_N001,2000.0,0.0
 MESA HEIGHTS,3.0,18.3,10.0,10.0,Batteries 10; Landfill Gas 7; Other Natural Gas 1,Bloom Energy; MM San Diego Energy-Miramar; San Diego Gas & Electric Co,,,1997.0,3.0
 METCALF,2.0,638.1,0.0,0.0,Natural Gas Fired Combined Cycle 635; Solar Photovoltaic 3,Calpine Corp - Metcalf Energy Center; County of Santa Clara - (CA),,,2005.0,0.0
@@ -74,7 +72,6 @@ MILLBRAE,2.0,5.7,2.6,5.3,Solar Photovoltaic 3; Batteries 3,"Google, Inc.; Vista 
 MILPITAS,4.0,12.6,0.0,0.0,Other Natural Gas 8; Petroleum Liquids 5,"2016 ESA Project Company, LLC; Bloom Energy; CoreSite Real Estate 1656 McCarthy, L.P.",KeyBank,,2000.0,0.0
 MOORPARK,0.0,0.0,0.0,0.0,,,,,,135.0
 MOSS LANDING,2.0,2030.5,632.5,2530.0,"Natural Gas Fired Combined Cycle 1,398; Batteries 632",Dynegy -Moss Landing LLC; Pacific Gas & Electric Co.,,,2002.0,0.0
-MUSTANG,2.0,6.7,0.0,0.0,Solar Photovoltaic 7,"Forefront Power, LLC; Stenner Creek Solar LLC",,,2018.0,0.0
 NEWARK,3.0,2.6,0.0,0.0,Other Natural Gas 1; Solar Photovoltaic 1,Bloom Energy; Delta Electronics (Americas) Ltd; Tesla Inc.,,,2016.0,3.8
 OAKLAND C,5.0,216.1,0.0,0.0,Petroleum Liquids 149; Natural Gas Fired Combustion Turbine 55; Other Waste Biomass 11; Other Natural Gas 1,"Bloom Energy; Dynegy Oakland, LLC; East Bay Municipal Util Dist - (CA); Northern California Power Agny",Pixar Animation Studio,OAK C_1_EBMUD; OAK L_1_GTG1,1978.0,43.3
 OTAY,2.0,43.2,6.0,12.0,Natural Gas Fired Combustion Turbine 37; Batteries 6,"EnerSmart Chula Vista Sub Station; Wellhead Services, Inc",,,2001.0,50.0

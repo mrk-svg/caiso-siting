@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import argparse
 import io
+import re
 import sys
 import time
 import zipfile
@@ -38,7 +39,7 @@ from pathlib import Path
 import pandas as pd
 
 from .common import norm_poi
-from .config import DATA, OUT, add_provenance
+from .config import DATA, OUT, add_provenance, csv_safe
 
 OASIS_BASE = "https://oasis.caiso.com/oasisapi/SingleZip"
 POLITE_DELAY = 5.0          # seconds between OASIS calls; OASIS throttles and blocks bursts
@@ -330,6 +331,8 @@ def fetch_daily(mapping: pd.DataFrame, windows: list[tuple[str, pd.Timestamp, pd
     for r in confirmed(mapping).itertuples(index=False):
         hourly = []
         for month, start, end in windows:
+            if not re.fullmatch(r"[A-Za-z0-9_.-]+", str(r.pnode)):
+                raise ValueError(f"unsafe pnode id for a path segment: {r.pnode!r}")
             path = cache_dir / r.pnode / f"{month}.csv"
             if path.exists():
                 text = path.read_text()
@@ -359,8 +362,8 @@ def write_outputs(daily: pd.DataFrame, out_dir: Path | None = None) -> tuple[pd.
     out_dir.mkdir(parents=True, exist_ok=True)
     m = add_provenance(monthly(daily), SOURCE)
     s = add_provenance(summarise(daily), SOURCE)
-    m.to_csv(out_dir / "lmp_tb4.csv", index=False)
-    s.to_csv(out_dir / "lmp_tb4_summary.csv", index=False)
+    csv_safe(m).to_csv(out_dir / "lmp_tb4.csv", index=False)
+    csv_safe(s).to_csv(out_dir / "lmp_tb4_summary.csv", index=False)
     return m, s
 
 

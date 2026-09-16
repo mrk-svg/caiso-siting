@@ -234,12 +234,12 @@ def test_join_wdat_synthetic(wdat_dir, capsys):
     assert "2 WDAT-only substations" in msg                                 # WILLOW PASS, LUGO
 
 
-def test_join_wdat_without_files_zeroes_columns(tmp_path, monkeypatch, capsys):
+def test_join_wdat_without_files_blanks_columns(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(wdat, "DATA", tmp_path)
     out = nodes.join_wdat(pd.DataFrame({"node_key": ["A", "B"]}))
     assert list(out.columns) == ["node_key", *nodes.WDAT_COLS]
-    assert (out[nodes.WDAT_COLS] == 0).all().all()
-    assert "WDAT columns are zero" in capsys.readouterr().out
+    assert out[nodes.WDAT_COLS].isna().all().all()
+    assert "blank (not zero)" in capsys.readouterr().out
 
 
 # ------------------------------------------------------------------- real file

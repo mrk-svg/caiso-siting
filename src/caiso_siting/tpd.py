@@ -42,7 +42,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from .config import DATA, OUT, add_provenance
+from .config import DATA, OUT, add_provenance, csv_safe
 
 FILES = {2024: "tpd_2024.xlsx", 2025: "tpd_2025.xlsx"}
 
@@ -169,7 +169,7 @@ def main() -> None:
     tpd = load_all()
     if tpd.empty:
         sys.exit(f"no TPD files in {DATA} (expected {list(FILES.values())})")
-    tpd.to_csv(OUT / "tpd_allocations.csv", index=False)
+    csv_safe(tpd).to_csv(OUT / "tpd_allocations.csv", index=False)
     for y in sorted(tpd.tpd_year.unique()):
         s = tpd[tpd.tpd_year == y]
         gq = s[s.in_generator_queue]

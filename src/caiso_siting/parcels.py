@@ -27,7 +27,7 @@ import pandas as pd
 import requests
 
 from .common import norm_poi
-from .config import OUT
+from .config import OUT, csv_safe
 
 LAYERS = {
     # county: {kind: (url, fields, label_field)}
@@ -135,7 +135,7 @@ def run(name: str, lat: float, lon: float, km: float) -> None:
 
     if len(df):
         df = df.drop(columns="_rings").sort_values("km_to_poi")
-        df.to_csv(OUT / f"parcels_{name}.csv", index=False)
+        csv_safe(df).to_csv(OUT / f"parcels_{name}.csv", index=False)
 
     lines = [f"# Parcels within {km} km of {name} ({lat:.5f}, {lon:.5f})", ""]
     if len(df):
@@ -154,7 +154,9 @@ def run(name: str, lat: float, lon: float, km: float) -> None:
         if kind != "parcels" and not len(df):
             codes = pd.Series([str(a.get(lbl) or a.get("Comb_Zn") or "").strip() for a, _, lbl in feats]).value_counts()
             lines += [f"## {county} {kind} polygons intersecting the buffer", "", codes.to_markdown(), ""]
-    lines += ["", "_Ownership is not published by these counties (Cal. Gov. Code 7928.205). Source layers listed in parcels.py._"]
+    lines += ["", "_Owner names are not read or published by this project - a project policy, not a "
+                  "statutory requirement; California assessor records are generally public. "
+                  "Source layers listed in parcels.py._"]
     (OUT / f"parcels_{name}_summary.md").write_text("\n".join(lines))
     print(f"wrote outputs/parcels_{name}.csv and _summary.md")
 

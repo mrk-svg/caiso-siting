@@ -3,6 +3,7 @@ not public, and the methodology page states every metric."""
 from __future__ import annotations
 
 import pandas as pd
+import pytest
 
 from caiso_siting import site
 
@@ -115,3 +116,39 @@ def test_reliance_disclaimer_is_escaped():
     html = site.node_page(node(), PROJECTS, PROV)
     assert "<script" not in site.RELIANCE
     assert html.count('class="disclaimer reliance"') == 1
+
+
+def _site_is_current() -> bool:
+    """Skip the built-site guards when site/ predates the code that builds it — a stale build is
+    something to rebuild, not a code defect. After `caiso-siting site` these run for real."""
+    import os
+    if not os.path.isdir("site") or not os.path.exists("site/map.html"):
+        return False
+    built = os.path.getmtime("site/map.html")
+    src = max(os.path.getmtime(f"src/caiso_siting/{m}.py") for m in ("site", "nodes"))
+    return built >= src
+
+
+def test_every_built_page_carries_the_reliance_line():
+    """The map is copied verbatim rather than rendered, so it used to be the one shareable page
+    with no disclaimer on it at all. Walk the built tree instead of naming pages by hand."""
+    import glob
+    if not _site_is_current():
+        pytest.skip("site/ not built from the current source")
+    missing = []
+    for f in glob.glob("site/**/*.html", recursive=True):
+        if "/vendor/" in f:
+            continue
+        html = open(f, encoding="utf-8").read()
+        if "not engineering advice" not in html:
+            missing.append(f)
+    assert not missing, f"pages with no reliance disclaimer: {missing[:5]}"
+
+
+def test_built_map_loads_no_third_party_script():
+    if not _site_is_current():
+        pytest.skip("site/ not built from the current source")
+    html = open("site/map.html", encoding="utf-8").read()
+    assert "unpkg.com" not in html, "the vendored-Leaflet rewrite stopped matching"
+    assert "vendor/leaflet" in html
+    assert "OpenStreetMap contributors, ODbL" in html, "the ODbL attribution the repo promises on every map"

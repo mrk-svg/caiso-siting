@@ -29,7 +29,7 @@ from pathlib import Path
 import pandas as pd
 
 from .common import cap_storage_mw, clean_county, norm_poi, poi_base, tech_flags
-from .config import DATA, OUT, PUBLIC_QUEUE_URL, add_provenance, xlsx_run_date
+from .config import DATA, OUT, PUBLIC_QUEUE_URL, add_provenance, csv_safe, xlsx_run_date
 
 QUEUE_URL = PUBLIC_QUEUE_URL
 HEADER_ROW = 3  # 0-indexed: row 4 in Excel holds the column names on every sheet
@@ -243,17 +243,20 @@ def deliverability(df: pd.DataFrame) -> pd.DataFrame:
 # --------------------------------------------------------------------- main
 
 def download(dest: Path) -> bool:
+    """Fetch the queue report through the guarded path.
+
+    This file is the spine of the pipeline and it used to be written straight onto its destination
+    on any HTTP 200 — so a captive portal, a CDN error page or a truncated body destroyed the only
+    local copy, which is gitignored and therefore unrecoverable. It now goes through the same
+    .part + verify + replace path as every other download.
+    """
+    from . import fetch
     try:
-        import requests
-        r = requests.get(QUEUE_URL, timeout=60,
-                         headers={"User-Agent": "Mozilla/5.0 (queue-parser)"})
-        r.raise_for_status()
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        dest.write_bytes(r.content)
-        print(f"downloaded {len(r.content):,} bytes -> {dest}")
+        n = fetch.download_to(QUEUE_URL, dest, verify=fetch.verify_xlsx, timeout=60)
+        print(f"downloaded {n:,} bytes -> {dest}")
         return True
     except Exception as e:  # noqa: BLE001
-        print(f"download failed ({e}); falling back to local file", file=sys.stderr)
+        print(f"download failed ({e}); keeping the existing local file", file=sys.stderr)
         return False
 
 
@@ -274,17 +277,17 @@ def main() -> None:
     out.mkdir(parents=True, exist_ok=True)
 
     df = load_all(path)
-    df.to_csv(out / "projects_all.csv", index=False)
+    csv_safe(df).to_csv(out / "projects_all.csv", index=False)
     county = by_county(df)
-    county.to_csv(out / "by_county.csv")
+    csv_safe(county).to_csv(out / "by_county.csv")
     poi = by_poi(df)
-    poi.to_csv(out / "by_poi.csv", index=False)
+    csv_safe(poi).to_csv(out / "by_poi.csv", index=False)
     clus = by_cluster(df)
-    clus.to_csv(out / "by_cluster.csv")
+    csv_safe(clus).to_csv(out / "by_cluster.csv")
     wby = withdrawals_by_year(df)
-    wby.to_csv(out / "withdrawals_by_year.csv")
+    csv_safe(wby).to_csv(out / "withdrawals_by_year.csv")
     deliv = deliverability(df)
-    deliv.to_csv(out / "deliverability.csv")
+    csv_safe(deliv).to_csv(out / "deliverability.csv")
 
     pd.set_option("display.width", 160, "display.max_columns", 20)
     act = df[df.sheet_status == "ACTIVE"]

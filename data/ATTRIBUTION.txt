@@ -1,0 +1,26 @@
+ATTRIBUTION — for the files redistributed in this directory
+===========================================================
+
+tpd_2024.xlsx and tpd_2025.xlsx are California ISO Transmission Plan Deliverability
+allocation cycle results, published by the California ISO and redistributed here
+unmodified so that this pipeline is reproducible without a live fetch.
+
+    Source: California ISO, Transmission Plan Deliverability Allocation Cycle Results
+    (2024 and 2025 cycles). Used under the California ISO's published terms of use,
+    which permit use of materials compiled from publicly available information provided
+    all copyright, trademark and other proprietary notices are kept intact and the
+    California ISO is credited.
+
+The California ISO publishes its materials AS IS, without warranties of any kind, and
+disclaims liability for any damages arising from their use. This project is not
+affiliated with, endorsed by or connected to the California ISO.
+
+These workbooks are CAISO's own files and are byte-identical to what CAISO published,
+including their embedded document metadata. They are not modified here, because a
+modified copy would no longer be the source anyone can check this project against.
+
+If the California ISO asks for them to be removed they will be removed the same day;
+nothing in the pipeline depends on them being local. See LICENSE-DATA.md.
+
+Every other file in this directory is either hand-encoded by this project from published
+documents (with a source and date on every row) or gitignored.

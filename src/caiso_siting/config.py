@@ -72,3 +72,41 @@ def xlsx_run_date(path: Path, sheet: int | str = 0, pattern: str = "Report Run D
     except Exception:  # noqa: BLE001
         return None
     return None
+
+
+# --- CSV writing ------------------------------------------------------------
+# A cell beginning = + - @ (or a tab/CR) is executed as a formula when the file is opened in Excel
+# or LibreOffice. Our audience opens spreadsheets, and the cell values come from CAISO and PG&E
+# workbooks we do not control, so every string cell is escaped on write. Numbers are untouched:
+# a negative longitude is not a formula.
+_FORMULA_LEAD = ("=", "+", "@", "\t", "\r")
+
+
+def _is_formula(v) -> bool:
+    if not isinstance(v, str) or not v:
+        return False
+    if v[0] in _FORMULA_LEAD:
+        return True
+    # "-" only matters when what follows is not a number: -118.25 is a longitude, -cmd is a payload
+    return v[0] == "-" and not (v[1:2].isdigit() or v[1:2] == ".")
+
+
+def csv_safe(df):
+    """Return a copy of `df` with formula-leading string cells prefixed by a single quote."""
+    out = df.copy()
+    for c in out.columns:
+        col = out[c]
+        if col.dtype != object:
+            continue
+        # .map over an object column returns object dtype; pandas will not use that as a boolean
+        # mask, so the escape silently did nothing until this astype(bool) was added.
+        mask = col.map(_is_formula).astype(bool)
+        if mask.any():
+            out.loc[mask, c] = col[mask].map(lambda v: "'" + v)
+    return out
+
+
+def write_csv(df, path, **kw):
+    """to_csv with the formula guard applied. Use this instead of df.to_csv for anything we ship."""
+    csv_safe(df).to_csv(path, index=kw.pop("index", False), **kw)
+    return path

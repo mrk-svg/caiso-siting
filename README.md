@@ -132,7 +132,7 @@ each as the difference between two CAISO rows. Self-tested against a mutated sna
 Public layers wired in (verified live 2026-09-07): Kings County parcels + general plan; Kern County zoning.
 Live check: 40 Kings parcels within 5 km of the proposed Dry Lake 500 kV station, all agricultural, 160–320-acre sections;
 Kern zoning around Bitterwater returns Exclusive Agriculture plus a "South Kern Industrial Specific Plan" polygon.
-Not public: Kern countywide parcels (the Assessor sells them), Fresno County parcel REST (not found). Ownership is redacted
+Not public: Kern countywide parcels (the Assessor sells them), Fresno County parcel REST (not found). This project does not read or publish parcel owner names. That is its own policy, not a statutory requirement: California assessor records are generally public. Parcel + APN is what you get here; owner lookup is the broker's job.
 by statute in every California county layer — parcel + APN is what you get; owner lookup is the broker's job.
 
 ## What the data says (2026-09-07 run)

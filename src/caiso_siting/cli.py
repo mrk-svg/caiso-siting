@@ -16,12 +16,28 @@
   site       build the static site                    -> site/
   weekly     queue + cluster15 + nodes + survival + snapshot + diff + site, in order
   download   fetch both CAISO files (needs internet)
+  freshness  report each source's publication date against its own cadence
 """
 from __future__ import annotations
 
 import sys
 
-from . import cluster15, diff, eia860, layers, nodes, oasis, parcels, queue_report, survival, tpd, watch, wdat
+from . import (
+    cluster15,
+    diff,
+    eia860,
+    fetch,
+    freshness,
+    layers,
+    nodes,
+    oasis,
+    parcels,
+    queue_report,
+    survival,
+    tpd,
+    watch,
+    wdat,
+)
 from .config import CLUSTER15_URL, DATA
 
 
@@ -50,21 +66,13 @@ EXTRA_DOWNLOADS = {
 
 
 def download(argv) -> None:
-    import requests
     ok = queue_report.download(DATA / "publicqueuereport.xlsx")
     for name, (url, required) in EXTRA_DOWNLOADS.items():
         try:
-            r = requests.get(url, timeout=120, headers={"User-Agent": "Mozilla/5.0 (caiso-siting)"})
-            r.raise_for_status()
-            part = DATA / (name + ".part")
-            part.write_bytes(r.content)
-            # a 200 with an HTML error page, or a truncated body, must never replace a good file
-            if name.endswith(".zip"):
-                eia860.verify(part)
-            elif name.endswith(".xlsx") and not r.content.startswith(b"PK"):
-                raise ValueError("not an xlsx (no zip signature)")
-            part.replace(DATA / name)
-            print(f"downloaded {len(r.content):,} bytes -> {DATA / name}")
+            verify = eia860.verify if name.endswith(".zip") else (
+                fetch.verify_xlsx if name.endswith(".xlsx") else None)
+            n = fetch.download_to(url, DATA / name, verify=verify)
+            print(f"downloaded {n:,} bytes -> {DATA / name}")
         except Exception as e:  # noqa: BLE001
             print(f"{name} download failed ({e}){' — required' if required else ' — optional, keeping existing file'}",
                   file=sys.stderr)
@@ -97,6 +105,7 @@ def weekly(argv) -> None:
 
 
 COMMANDS = {
+    "freshness": lambda a: _run(freshness, a),
     "queue": lambda a: _run(queue_report, a),
     "cluster15": lambda a: _run(cluster15, a),
     "nodes": lambda a: _run(nodes, a),

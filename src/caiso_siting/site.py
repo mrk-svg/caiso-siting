@@ -8,7 +8,7 @@
   diff.html           outputs/diff_latest.md rendered (or a placeholder until two snapshots exist)
 
 No template engine: stdlib string.Template + f-strings. No external assets except the Leaflet CDN
-already inside map.html. Every page repeats the same disclaimer because every number on it needs it.
+vendored into site/vendor and referenced from map.html. Every page repeats the same disclaimer because every number on it needs it.
 """
 from __future__ import annotations
 
@@ -823,6 +823,35 @@ NOT_PUBLIC = [
 ]
 
 
+def asof_table() -> str:
+    """Per-source publication dates, measured against each source's own cadence.
+
+    The site used to print one date — the CAISO queue run date — in the footer of every page,
+    beside a sentence naming six sources. A 244-day-old POI notice was published under a two-day-old
+    date. This table is the honest version.
+    """
+    f = OUT / "source_freshness.csv"
+    if not f.exists():
+        return ""
+    d = pd.read_csv(f)
+    rows = []
+    for _, r in d.iterrows():
+        sev = str(r.severity)
+        cls = "" if sev == "FRESH" else ' class="np soft"'
+        age = "" if pd.isna(r.age_days) else f"{int(r.age_days)} d"
+        pub = r.published if isinstance(r.published, str) and r.published else "not established"
+        shown = "figures shown" if r.publishable else "<b>figures withheld</b>"
+        rows.append(f"<tr><td>{esc(r.label)}</td><td>{esc(r.cadence)}</td><td>{esc(pub)}</td>"
+                    f"<td>{esc(age)}</td><td{cls}>{esc(sev)}</td><td>{shown}</td></tr>")
+    return ("<h2 id=\"as-of\">Source as-of dates</h2>\n"
+            "<p>Age is measured against each source's own publication cadence, not against today. "
+            "An annual report eleven months old is current, not stale; a monthly file two months old "
+            "is stale. Thresholds are recorded per source in <code>data/source_freshness.csv</code>, "
+            "and a source whose figures are withheld shows blank cells rather than zero.</p>\n"
+            "<table><thead><tr><th>Source</th><th>Cadence</th><th>Published</th><th>Age</th>"
+            "<th>Status</th><th></th></tr></thead><tbody>" + "".join(rows) + "</tbody></table>")
+
+
 def methodology_page(prov: dict) -> str:
     from .config import RECENT_YEARS as RY
     from .survival import C15_CENSOR_DATE, MIN_AT_RISK, REGIME_CAVEAT
@@ -833,6 +862,7 @@ def methodology_page(prov: dict) -> str:
 the node definition, every window and exclusion, every metric, and the list of things the public files cannot answer.
 An auditor should be able to reproduce any figure from this page and <code>DATA.md</code> without reading code.</p>
 
+{asof_table()}
 <h2>Sources</h2>
 <p>CAISO Public Queue Report (three sheets: active, completed, withdrawn; report run date {esc(prov['run_date'])}).
 CAISO Cluster 15 Interconnection Requests report (active + withdrawn sheets; posted {C15_CENSOR_DATE}). CAISO 2024 and

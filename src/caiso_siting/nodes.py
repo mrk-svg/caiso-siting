@@ -56,14 +56,15 @@ from __future__ import annotations
 
 import json
 from difflib import SequenceMatcher
+from html import escape as html_escape
 from pathlib import Path
 
 import pandas as pd
 
-from . import cluster15, eia860, lcr, tpd, wdat
+from . import cluster15, eia860, freshness, lcr, tpd, wdat
 from . import queue_report as caiso_queue
 from .common import haversine_km, in_state, norm_poi, poi_endpoints
-from .config import DATA, OUT, RECENT_YEARS, add_provenance
+from .config import DATA, OUT, RECENT_YEARS, add_provenance, csv_safe
 
 RECENT_FROM_YEAR = pd.Timestamp.today().year - RECENT_YEARS + 1  # inclusive first year of the window
 
@@ -269,15 +270,17 @@ TPD_COLS = (["tpd25_projects", "tpd25_req_mw", "tpd25_alloc_mw", "tpd25_denied_m
             + ["tpd25_denied_ppa_mw", "tpd24_fcdsa_projects", "tpd24_pcdsa_projects"])
 
 
-def join_tpd(nodes: pd.DataFrame, pq: pd.DataFrame) -> pd.DataFrame:
+def join_tpd(nodes: pd.DataFrame, pq: pd.DataFrame, withheld: bool = False) -> pd.DataFrame:
     """Allocated deliverability per node from CAISO's TPD allocation cycle results (data/tpd_*.xlsx).
     Joined through the public report on queue position — all sheets, because a project allocated in
     2024 may have withdrawn since and its node should still show the history."""
-    t = tpd.load_all()
+    t = pd.DataFrame() if withheld else tpd.load_all()
     if t.empty:
+        # NaN, not 0.0. "No TPD file" and "nobody sought deliverability here" are different facts,
+        # and a reader cannot tell them apart from a zero.
         for c in TPD_COLS:
-            nodes[c] = 0.0
-        print("tpd: no data/tpd_*.xlsx files — TPD columns are zero")
+            nodes[c] = float("nan")
+        print("tpd: no usable data/tpd_*.xlsx — TPD columns are blank (not zero)")
         return nodes
     pn = tpd.per_node(t, pq)
     nodes = nodes.merge(pn, left_on="node_key", right_index=True, how="left")
@@ -293,15 +296,15 @@ def join_tpd(nodes: pd.DataFrame, pq: pd.DataFrame) -> pd.DataFrame:
 WDAT_COLS = ["wdat_active_projects", "wdat_active_mw", "wdat_active_storage_mw", "wdat_inservice_mw", "wdat_withdrawn_mw"]
 
 
-def join_wdat(nodes: pd.DataFrame) -> pd.DataFrame:
+def join_wdat(nodes: pd.DataFrame, withheld: bool = False) -> pd.DataFrame:
     """Distribution-level (WDAT) queue activity at the same substation, from data/wdat_*.xlsx.
     Only substations that already exist as CAISO nodes are joined here; WDAT-only substations live in
     outputs/wdat_projects.csv (they are a different market: no CAISO deliverability unless studied)."""
-    w = wdat.load_all()
+    w = pd.DataFrame() if withheld else wdat.load_all()
     if w.empty:
         for c in WDAT_COLS:
-            nodes[c] = 0.0
-        print("wdat: no data/wdat_*.xlsx files — WDAT columns are zero")
+            nodes[c] = float("nan")
+        print("wdat: no usable data/wdat_*.xlsx — WDAT columns are blank (not zero)")
         return nodes
     pn = wdat.per_node(w)
     nodes = nodes.merge(pn, left_on="node_key", right_index=True, how="left")
@@ -364,7 +367,7 @@ def geocode_nodes(nodes: pd.DataFrame) -> pd.DataFrame:
         rows.append(dict(node_key=nk, poi_base=poi, lat=r["lat"], lon=r["lon"], osm_name=r["osm_name"],
                          geo_score=round(r["score"], 2), geo_method=r["method"]))
     geo = pd.DataFrame(rows)
-    geo.to_csv(OUT / "poi_geocode.csv", index=False)
+    csv_safe(geo).to_csv(OUT / "poi_geocode.csv", index=False)
     nodes = nodes.merge(geo.drop(columns="poi_base"), on="node_key", how="left")
     nodes = apply_line_cache(nodes)
     nodes = county_centroid_fallback(nodes)
@@ -473,16 +476,27 @@ def write_map(nodes: pd.DataFrame) -> None:
                   st=r.c16_poi_status, note=r.c16_poi_note, score=r.geo_score, method=r.geo_method, osm=r.osm_name)
              for _, r in pts.iterrows()]
     # '</' -> '<\/' so no source string can close the <script> block (valid JSON, identical in JS)
-    pts_json = json.dumps(feats).replace("</", "<\\/")
+    pts_json = json.dumps(feats).replace("<", "\\u003c")  # no source string can reopen or close a tag
+    from .site import RELIANCE  # local import: site imports nodes at module level
+    reliance = html_escape(RELIANCE)
     html = f"""<!doctype html><html><head><meta charset="utf-8"><title>CAISO interconnection nodes</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<style>html,body,#m{{height:100%;margin:0;font-family:system-ui}} .lg{{background:#fff;padding:8px 10px;border-radius:6px;font-size:12px;line-height:1.55;max-width:260px}}</style>
-</head><body><div id="m"></div><script>
+<style>html,body{{height:100%;margin:0;font-family:system-ui}}
+#m{{position:absolute;top:0;left:0;right:0;bottom:64px}}
+#rl{{position:absolute;left:0;right:0;bottom:0;height:64px;box-sizing:border-box;overflow:auto;
+    background:#fff6e5;border-top:3px solid #d97706;color:#3a2b10;padding:8px 12px;font-size:12px;line-height:1.5;z-index:1000}}
+@media(max-width:700px){{#m{{bottom:92px}} #rl{{height:92px}}}}
+.lg{{background:#fff;padding:8px 10px;border-radius:6px;font-size:12px;line-height:1.55;max-width:260px}}</style>
+</head><body><div id="m"></div>
+<div id="rl"><b>{reliance}</b> Most positions here are approximate or missing &mdash; see
+<a href="https://github.com/mrk-svg/caiso-siting/blob/master/KNOWN_ISSUES.md">KNOWN_ISSUES.md</a>.
+&copy; OpenStreetMap contributors, ODbL.</div>
+<script>
 const pts={pts_json};
 const esc=v=>v==null?'':String(v).replace(/[&<>"']/g,c=>({{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}}[c]));
 const m=L.map('m').setView([36.3,-119.3],6);
-L.tileLayer('https://tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png',{{attribution:'&copy; OpenStreetMap; data: CAISO public queue + Cluster 15 reports + CAISO POI notices'}}).addTo(m);
+L.tileLayer('https://tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png',{{attribution:'&copy; OpenStreetMap contributors, ODbL &middot; data: CAISO public queue + Cluster 15 reports + CAISO POI notices'}}).addTo(m);
 const col=c=> c==null?'#9a9a9a': c<0.25?'#2a9d8f': c<1?'#e9c46a':'#e63946';
 for(const p of pts){{
   const mw=p.legacy+p.c15; const r=Math.max(4,Math.sqrt(mw)/2.2);
@@ -662,20 +676,27 @@ Heavily queued nodes the report names as OUTSIDE an area boundary — bulk stati
 
 def main() -> None:
     OUT.mkdir(exist_ok=True)
+    # Freshness first. A source that is missing, or older than its own publication cadence allows,
+    # must not be published as if it were current — and the spine (the CAISO queue) raises rather
+    # than letting the build produce a document that states a false as-of date.
+    st = freshness.check_all()
+    freshness.write_report(st)
+    ok = {k: freshness.gate(v) for k, v in st.items()}
     pq, c15 = load_projects()
     nodes = build_nodes(pq, c15)
-    nodes = join_tpd(nodes, pq)
+    nodes = join_tpd(nodes, pq, withheld=not ok.get("caiso_tpd_2025", True))
     # per-request rows for the node pages (written here, not in join_tpd, so tests never touch outputs/)
-    tpd.node_rows(tpd.load_all(), pq).to_csv(OUT / "tpd_node_rows.csv", index=False)
+    csv_safe(tpd.node_rows(tpd.load_all(), pq)).to_csv(OUT / "tpd_node_rows.csv", index=False)
     nodes = lcr.join(nodes)
-    nodes = join_wdat(nodes)
+    nodes = join_wdat(nodes, withheld=not ok.get("pge_wdat", True))
     nodes = join_lmp(nodes)
     nodes = join_availability(nodes)
     nodes = geocode_nodes(nodes)
-    nodes = eia860.join(nodes)          # needs positions, so after geocoding
+    nodes = eia860.join(nodes, withheld=not ok.get("eia860", True))   # needs positions, so after geocoding
     nodes = add_provenance(nodes, "publicqueuereport.xlsx+cluster15.xlsx",
                            str(pq["source_run_date"].iloc[0]) if "source_run_date" in pq else None)
-    nodes.to_csv(OUT / "nodes.csv", index=False)
+    nodes["freshness_worst"] = freshness.worst(st)
+    csv_safe(nodes).to_csv(OUT / "nodes.csv", index=False)
     write_map(nodes)
     write_node_watch(nodes, pq, c15)
     pd.set_option("display.width", 220, "display.max_columns", 30)

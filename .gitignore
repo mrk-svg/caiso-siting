@@ -18,3 +18,9 @@ data/snapshots/*/*.xlsx
 .preview/
 data/eia860.zip
 data/lct_2027.pdf
+
+# Outreach working files: these hold, or will hold, named third parties, their employers and
+# the substance of private replies. A public repo is not the place for that, and git history
+# would make it permanent.
+notes/outreach/targets.csv
+notes/outreach/corrections.csv

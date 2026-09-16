@@ -26,7 +26,7 @@ from pathlib import Path
 import pandas as pd
 
 from .common import clean_county, norm_poi, poi_base, tech_flags
-from .config import DATA, OUT, add_provenance
+from .config import DATA, OUT, add_provenance, csv_safe
 
 FILES = {"PGAE": "wdat_pge.xlsx", "SCE": "wdat_sce.xlsx", "SDGE": "wdat_sdge.xlsx"}
 
@@ -145,7 +145,7 @@ def main() -> None:
     w = load_all()
     if w.empty:
         sys.exit(f"no WDAT files in {DATA} (expected any of {list(FILES.values())})")
-    w.to_csv(OUT / "wdat_projects.csv", index=False)
+    csv_safe(w).to_csv(OUT / "wdat_projects.csv", index=False)
     for u, s in w.groupby("utility"):
         print(f"{u}: {len(s)} requests | active {(s.sheet_status == 'ACTIVE').sum()} / "
               f"{s[s.sheet_status == 'ACTIVE'].net_mw.sum():,.0f} MW (storage-attributed {s[s.sheet_status == 'ACTIVE'].storage_mw.sum():,.0f} MW) | "

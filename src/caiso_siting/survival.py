@@ -39,11 +39,12 @@ from __future__ import annotations
 
 import math
 import sys
+from html import escape as _esc
 
 import numpy as np
 import pandas as pd
 
-from .config import OUT
+from .config import OUT, csv_safe
 
 CLUSTER_COHORTS = ["C10", "C11", "C12", "C13", "C14", "C15"]
 # The Cluster 15 report carries no run date and its last observable withdrawal is dated 2026-07-14;
@@ -272,8 +273,8 @@ def render_svg(long_df: pd.DataFrame, title: str = "Share of projects not yet wi
 
     font = 'font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif"'
     out = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" width="{width}" height="{height}" '
-           f'role="img" aria-label="{title}" {font} font-size="12" fill="currentColor">',
-           f'<title>{title}</title>']
+           f'role="img" aria-label="{_esc(title)}" {font} font-size="12" fill="currentColor">',
+           f'<title>{_esc(title)}</title>']
     if adaptive:
         out.append('<style>svg{color:#2a2a28}@media (prefers-color-scheme: dark){svg{color:#d8d8d2}}</style>')
     out += [f'<text x="{ml}" y="18" font-size="13" font-weight="600">{title}</text>']
@@ -307,7 +308,7 @@ def render_svg(long_df: pd.DataFrame, title: str = "Share of projects not yet wi
             pts.append(f"{x(m):.1f},{y(s):.1f}")
             prev = s
         out.append(f'<polyline points="{" ".join(pts)}" fill="none" stroke="{col}" stroke-width="2" '
-                   f'stroke-linejoin="round"><title>{c}</title></polyline>')
+                   f'stroke-linejoin="round"><title>{_esc(str(c))}</title></polyline>')
         last_m, last_s = float(g["month"].iloc[-1]), float(g["survival"].iloc[-1])
         label_slots.append((y(last_s), f"{short[c]} {last_s:.2f} @ {int(last_m)}m", col))
     # direct labels at line ends, nudged apart so they never overlap
@@ -449,8 +450,8 @@ def main() -> None:
         print(f"warning: public report carries no run date; censoring at today ({run_date})", file=sys.stderr)
     long_df, summary = analyse(pq, c15, run_date)
     OUT.mkdir(exist_ok=True)
-    long_df.to_csv(OUT / "survival_by_cluster.csv", index=False)
-    summary.to_csv(OUT / "survival_summary.csv", index=False)
+    csv_safe(long_df).to_csv(OUT / "survival_by_cluster.csv", index=False)
+    csv_safe(summary).to_csv(OUT / "survival_summary.csv", index=False)
     (OUT / "survival.svg").write_text(render_svg(long_df[long_df["cohort"].isin(CLUSTER_COHORTS)]), encoding="utf-8")
     (OUT / "survival_tech.svg").write_text(
         render_svg(long_df[long_df["cohort"].isin(TECH_COHORTS)],

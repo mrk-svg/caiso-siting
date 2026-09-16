@@ -1,0 +1,23 @@
+# Source freshness registry. One row per data source the pipeline reads.
+#
+# Staleness is measured against each source's OWN publication cadence, never against "is this
+# today's file". An annual report eleven months old is current, not stale; a monthly file two
+# months old is stale. stale_days and expired_days encode that per source.
+#
+# on_expired: fail    = abort the run (the figure would make the whole document false)
+#             withhold = blank the figures this source feeds, publish the rest
+#             mark     = publish with a staleness badge (a dated record of a past decision stays
+#                        true forever provided its date is on the label)
+#
+# as_of_method: manual | xlsx_run_date | csv_max:<col> | zip_member_mtime
+source_id,label,artifact,cadence,cadence_days,as_of_method,published,vintage,stale_days,expired_days,on_expired,feeds,note
+caiso_public_queue,CAISO Public Queue Report,data/publicqueuereport.xlsx,weekly,7,xlsx_run_date,,,14,21,fail,legacy_ operating_ wd_ p2_ committed_ pipeline_ churn,The spine. Every page is stated as of this date
+caiso_cluster15,CAISO Cluster 15 Interconnection Requests report,data/cluster15.xlsx,ad-hoc,,manual,2026-07-16,,180,365,mark,c15_,The workbook carries no run date; this is the CAISO posting date and is maintained by hand
+caiso_tpd_2025,CAISO 2025 TPD allocation cycle results,data/tpd_2025.xlsx,annual,365,manual,2026-05-04,2025,425,550,mark,tpd25_,A dated record of a closed cycle: true forever provided the year is on the label
+caiso_tpd_2024,CAISO 2024 TPD allocation cycle results,data/tpd_2024.xlsx,archival,,manual,2025-05-06,2024,,,mark,tpd24_,Closed cycle; never expires
+pge_wdat,PG&E Wholesale Distribution Access Tariff queue,data/wdat_pge.xlsx,monthly,30,manual,2026-07-17,,60,120,withhold,wdat_,A claim about what is queued at the substation now
+eia860,EIA-860 annual generator census,data/eia860.zip,annual,365,zip_member_mtime,,2025,425,550,withhold,eia_,A claim about what operates near the node now
+caiso_lct,CAISO Final 2027 Local Capacity Technical Report,data/lcr_areas.csv,annual,365,csv_max:source_date,,2027,425,550,mark,lcr_,Hand-encoded from the report; withholding would blank the Resource Adequacy layer entirely
+caiso_poi_availability,CAISO and PTO Cluster 16 POI availability notices,data/poi_availability.csv,ad-hoc,,csv_max:date,,,270,540,withhold,c16_poi_,A statement about what CAISO will accept today; an old one is a false claim
+osm_substations,OpenStreetMap substations via Overpass,data/osm_substations.csv,on-demand,,manual,2026-09-08,,365,730,mark,lat lon osm_name geo_,Positions drift slowly; mark rather than withhold - a marked position beats no map
+caiso_oasis_lmp,CAISO OASIS day-ahead LMP,outputs/lmp_tb4_summary.csv,on-demand,,csv_max:last_month,,,120,240,withhold,lmp_,A 12-month window must not be republished a year later

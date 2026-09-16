@@ -28,7 +28,7 @@ Bias hard towards people who can contradict you. Ranked by usefulness:
    falsify the LCR encodings and the POI groupings immediately.
 2. Consultants and owner's engineers doing pre-feasibility. They will tell you whether the seven
    questions are the right seven.
-3. Former colleagues from WSP or ETS who touched CAISO projects. Warm, and they owe you a read.
+3. Former colleagues who touched CAISO projects. Warm, and they owe you a read.
 4. One journalist or researcher covering queue reform. Different failure mode — they will tell
    you whether the survival caveat reads as honest or as hedging.
 5. One person who knows nothing about interconnection. If the page is incomprehensible to them,

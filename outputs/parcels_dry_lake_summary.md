@@ -37,4 +37,4 @@
 | KINGS    | 048380058000 |    7.5  | N    |        4.6  | General Agriculture (AG40) |               |
 
 
-_Ownership is not published by these counties (Cal. Gov. Code 7928.205). Source layers listed in parcels.py._
+_Owner names are not read or published by this project - a project policy, not a statutory requirement; California assessor records are generally public. Source layers listed in parcels.py._

@@ -119,11 +119,11 @@ def test_per_node_joins_by_distance_to_positioned_nodes_only(tmp_path):
     assert "GATES" not in pn.index and "NOPOS" not in pn.index
 
 
-def test_join_adds_columns_fills_zero_and_writes_outputs(tmp_path, monkeypatch, capsys):
+def test_join_adds_columns_and_writes_outputs(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(eia860, "OUT", tmp_path)
-    out = eia860.join(NODES.copy(), write_zip(tmp_path / "eia860.zip"))
+    out = eia860.join(NODES.copy(), path=write_zip(tmp_path / "eia860.zip"))
     assert list(c for c in eia860.EIA_COLS if c in out.columns) == eia860.EIA_COLS
-    assert out.set_index("node_key").loc["GATES", "eia_plants"] == 0
+    assert out.set_index("node_key").loc["GATES", "eia_plants"] == 0  # joined, genuinely nothing near it
     assert out.set_index("node_key").loc["GATES", "eia_pnodes"] == ""
     assert (tmp_path / "eia860_plants.csv").exists() and (tmp_path / "eia860_by_node.csv").exists()
     assert "nodes get EIA columns" in capsys.readouterr().out
@@ -132,12 +132,12 @@ def test_join_adds_columns_fills_zero_and_writes_outputs(tmp_path, monkeypatch, 
 def test_join_tolerates_a_corrupt_or_partial_zip(tmp_path, capsys):
     bad = tmp_path / "eia860.zip"
     bad.write_bytes(b"<html>503 Service Unavailable</html>")
-    out = eia860.join(NODES.copy(), bad)
-    assert (out.eia_plants == 0).all() and "unusable" in capsys.readouterr().err
+    out = eia860.join(NODES.copy(), path=bad)
+    assert out.eia_plants.isna().all() and "unusable" in capsys.readouterr().err
     good = write_zip(tmp_path / "good.zip").read_bytes()
     (tmp_path / "trunc.zip").write_bytes(good[: len(good) // 2])
-    out = eia860.join(NODES.copy(), tmp_path / "trunc.zip")
-    assert (out.eia_plants == 0).all()
+    out = eia860.join(NODES.copy(), path=tmp_path / "trunc.zip")
+    assert out.eia_plants.isna().all()
 
 
 def test_verify_rejects_implausible_member_sizes(tmp_path, monkeypatch):
@@ -154,9 +154,10 @@ def test_per_node_with_matched_plants_but_no_operable_generators(tmp_path):
     assert pn.loc["WHIRLWIND", "eia_proposed_mw"] == 80
 
 
-def test_join_without_zip_leaves_columns_empty(tmp_path, capsys):
-    out = eia860.join(NODES.copy(), tmp_path / "absent.zip")
-    assert (out.eia_plants == 0).all() and (out.eia_pnodes == "").all()
+def test_join_without_zip_leaves_columns_blank(tmp_path, capsys):
+    """Blank, not zero. A missing EIA file must not render as 'nothing operates near this node'."""
+    out = eia860.join(NODES.copy(), path=tmp_path / "absent.zip")
+    assert out.eia_plants.isna().all() and (out.eia_pnodes == "").all()
     assert "absent" in capsys.readouterr().out
 
 
@@ -185,3 +186,10 @@ def test_individuals_are_never_named():
         assert eia860.is_org(brand), brand
     keep, withheld = eia860.org_only(["Boralex US Operations LLC", "John Smith", "", "nan"])
     assert keep == ["Boralex US Operations LLC"] and withheld == 1
+
+
+def test_join_withheld_by_the_freshness_gate_blanks_columns(capsys):
+    """When the registry says an expired EIA file must be withheld, the columns go blank and say so."""
+    out = eia860.join(NODES.copy(), withheld=True)
+    assert out.eia_plants.isna().all()
+    assert "withheld by the freshness gate" in capsys.readouterr().out

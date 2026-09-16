@@ -18,7 +18,7 @@ from pathlib import Path
 import pandas as pd
 
 from .common import cap_storage_mw, clean_county, norm_poi, poi_base, tech_flags
-from .config import CLUSTER15_URL, DATA, OUT, add_provenance
+from .config import CLUSTER15_URL, DATA, OUT, add_provenance, csv_safe
 
 C15_URL = CLUSTER15_URL
 
@@ -105,7 +105,7 @@ def main() -> None:
         sys.exit(f"missing {path} — download {C15_URL}")
     df = load(path)
     OUT.mkdir(exist_ok=True)
-    df.to_csv(OUT / "cluster15_projects.csv", index=False)
+    csv_safe(df).to_csv(OUT / "cluster15_projects.csv", index=False)
 
     a = df[df.sheet_status == "ACTIVE"]
     w = df[df.sheet_status == "WITHDRAWN"]

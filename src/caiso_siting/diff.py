@@ -33,7 +33,7 @@ import pandas as pd
 
 from . import cluster15
 from . import queue_report as caiso_queue
-from .config import DATA, OUT
+from .config import DATA, OUT, csv_safe
 from .config import SNAPSHOTS as SNAP
 
 TRACKED = ["sheet_status", "net_mw", "storage_mw", "current_cod", "ia_status", "deliverability",
@@ -67,7 +67,7 @@ def snapshot() -> Path:
     for f in ("publicqueuereport.xlsx", "cluster15.xlsx"):
         if (DATA / f).exists():
             shutil.copy2(DATA / f, d / f)
-    rows[TRACKED + ["report", "queue_position"]].to_csv(d / "projects.csv")
+    csv_safe(rows[TRACKED + ["report", "queue_position"]]).to_csv(d / "projects.csv")
     print(f"snapshot written: {d}")
     return d
 
@@ -146,7 +146,7 @@ def write_report(changes: pd.DataFrame, tots: dict, a_name: str, b_name: str) ->
         md.append(show[["change", "project", "poi", "county", "mw", "detail"]].to_markdown(index=False))
     md += ["", "_Every line above is the difference between two CAISO rows. No reason is stated because CAISO states none._"]
     (OUT / "diff_latest.md").write_text("\n".join(md))
-    changes.to_csv(OUT / "diff_latest.csv", index=False)
+    csv_safe(changes).to_csv(OUT / "diff_latest.csv", index=False)
     print(f"{len(changes)} changes; wrote outputs/diff_latest.md")
 
 

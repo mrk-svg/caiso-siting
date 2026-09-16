@@ -136,7 +136,24 @@ The source carries POI voltage and the node table does not, so a reader cannot d
 `WEBER 60 KV`, which is roughly 2,500 A on a bus class typically rated 1,200–2,000 A. These are
 filings as made, not pipeline errors, but the product gives a reader no way to apply the check.
 
-## 10. Smaller items
+## 10. Freshness: what is still not wired
+
+`data/source_freshness.csv` and `caiso-siting freshness` now check every source against its own
+publication cadence, and the pipeline withholds figures rather than publishing zeros for a source
+it cannot honour. Three gaps remain:
+
+- **Supersession is not detected.** `watch.py` sees that CAISO has posted a new TPD cycle or a new
+  LCT report, and writes it to `outputs/new_documents.md`, but nothing compares the year in that
+  link text against the file on disk. The download URLs are still string literals with `2025` and
+  `2027` in them, so `caiso-siting download` would happily re-fetch a superseded file forever.
+- **Per-figure staleness marks are not on the pages yet.** The methodology page carries the per-source
+  as-of table; individual figures do not yet carry a badge when the single source behind them is
+  stale.
+- **PG&E's WDAT as-of is a floor, not a publication date.** It is taken from the newest request in
+  the file, so the file can be newer than the date implies. It is currently STALE at 61 days
+  against a monthly cadence.
+
+## 11. Smaller items
 
 - `LMP`/`TB4` columns are empty for all 949 nodes; `data/poi_pnodes.csv` has three rows, none
   confirmed. Nothing has been fetched yet.

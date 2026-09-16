@@ -44,7 +44,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from .config import DATA, OUT, add_provenance
+from .config import DATA, OUT, add_provenance, csv_safe
 
 URL = "https://www.eia.gov/electricity/data/eia860/xls/eia860{year}.zip"
 ZIP = DATA / "eia860.zip"
@@ -281,12 +281,16 @@ def per_node(frames: dict[str, pd.DataFrame], nodes: pd.DataFrame, km: float = E
     return out
 
 
-def join(nodes: pd.DataFrame, path: Path = ZIP) -> pd.DataFrame:
+def join(nodes: pd.DataFrame, withheld: bool = False, path: Path = ZIP) -> pd.DataFrame:
+    # NaN, not 0.0: "we have no EIA file" must not render as "nothing operates near this node".
     for c in EIA_COLS:
-        nodes[c] = "" if c in ("eia_tech", "eia_operators", "eia_owners", "eia_pnodes") else 0.0
+        nodes[c] = "" if c in ("eia_tech", "eia_operators", "eia_owners", "eia_pnodes") else float("nan")
     nodes["eia_first_year"] = float("nan")
+    if withheld:
+        print("eia860: withheld by the freshness gate — EIA columns are blank (not zero)")
+        return nodes
     if not Path(path).exists():
-        print(f"eia860: {path} absent — EIA columns empty (download: {fetch_url(2025)})")
+        print(f"eia860: {path} absent — EIA columns blank (download: {fetch_url(2025)})")
         return nodes
     try:
         frames = load(path)
@@ -297,8 +301,8 @@ def join(nodes: pd.DataFrame, path: Path = ZIP) -> pd.DataFrame:
     OUT.mkdir(exist_ok=True)
     plant = frames["plant"].copy()
     plant["node_key"] = _join_plants_to_nodes(plant, nodes)
-    plant.to_csv(OUT / "eia860_plants.csv", index=False)
-    pn.reset_index().to_csv(OUT / "eia860_by_node.csv", index=False)
+    csv_safe(plant).to_csv(OUT / "eia860_plants.csv", index=False)
+    csv_safe(pn.reset_index()).to_csv(OUT / "eia860_by_node.csv", index=False)
     nodes = nodes.drop(columns=EIA_COLS).merge(pn, left_on="node_key", right_index=True, how="left")
     for c in ("eia_plants", "eia_nameplate_mw", "eia_storage_mw", "eia_storage_mwh", "eia_proposed_mw"):
         nodes[c] = nodes[c].fillna(0.0)

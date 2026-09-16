@@ -9,23 +9,33 @@ data is not ours to license. This file says what covers what.
 |---|---|
 | Everything under `src/`, `tests/`, and the build scripts | MIT (see `LICENSE`) |
 | `data/lcr_areas.csv`, `poi_overrides.csv`, `poi_pnodes.csv`, `poi_availability.csv` | ODbL 1.0 |
-| Everything under `outputs/` and the rendered pages under `site/` | ODbL 1.0 |
+| `outputs/nodes.csv` and `outputs/poi_geocode.csv` (OSM-derived) | ODbL 1.0 |
+| The rendered pages and map under `site/` | ODbL Produced Works — attribution |
+| Every other file under `outputs/` | not ours to license — publishers' own terms |
 | Upstream files fetched by the pipeline | each publisher's own terms — see `DATA_LICENSES.md` |
 
-## Why the outputs are ODbL and not MIT
+## Why some outputs are ODbL and not MIT
 
-Substation coordinates in this project come from OpenStreetMap via Overpass, which is licensed
-under the Open Database Licence 1.0. ODbL is share-alike **for databases**: a database built
-using OSM data and distributed publicly is a Derivative Database and must be offered under
-ODbL. `outputs/nodes.csv` carries `lat`, `lon`, `osm_name` and `geo_method` for the nodes whose
-positions were resolved from OSM, so it is a derivative database, not merely a work produced
-from one. Publishing it under MIT would be a licence violation, and quietly dropping the
-coordinates to avoid the obligation would make the outputs less useful and less checkable.
+Substation coordinates in this project come from OpenStreetMap via Overpass, which is licensed under
+the Open Database Licence 1.0. ODbL is share-alike **for databases**: a database built using OSM data
+and distributed publicly is a Derivative Database and must be offered under ODbL. Two files carry
+OSM-derived content — `outputs/nodes.csv` and `outputs/poi_geocode.csv`, which hold `lat`, `lon`,
+`osm_name` and `geo_method` for the nodes whose positions were resolved from OSM. Both are therefore
+offered under ODbL 1.0. Publishing them under MIT would be a licence violation, and quietly dropping
+the coordinates to avoid the obligation would make the outputs less useful and less checkable.
 
-The rendered map tiles and the HTML pages are Produced Works under ODbL, which require
-attribution rather than share-alike — but they are distributed together with the CSVs, so the
-whole `outputs/` and `site/` tree is offered under ODbL 1.0 to keep the boundary simple and
-the obligation honoured rather than argued.
+The rendered pages and map under `site/` are Produced Works under ODbL, which require attribution
+rather than share-alike. They are distributed with that attribution, on the map itself and in the
+footer of every page.
+
+**The remaining files under `outputs/` contain no OSM-derived content.** They are derived from CAISO
+reports, PG&E's WDAT file and EIA-860 — material this project does not own and does not purport to
+license. They are redistributed on their publishers' own terms, recorded in `DATA_LICENSES.md`, and
+carry the attribution in `outputs/ATTRIBUTION.txt`. EIA-860 in particular is a U.S. federal
+government work in the public domain; offering it under a share-alike licence would assert a
+restriction that does not exist and that this project has no standing to impose. To the extent any
+original selection and arrangement in those files is this project's own, it is offered under ODbL 1.0
+for consistency.
 
 Full licence text: https://opendatacommons.org/licenses/odbl/1-0/
 
@@ -66,7 +76,7 @@ conservatively rather than aggressively:
   terms above. If CAISO asks for them to be removed, they will be removed the same day and the
   pipeline will fetch them instead; nothing in the code depends on them being local.
 - **County GIS layers.** Parcel and zoning layers are read live and never redistributed.
-  Owner names are withheld under Cal. Gov. Code § 7928.205 and are never read into memory.
+  Owner names are never read into memory. This project does not read or publish parcel owner names. That is its own policy, not a statutory requirement: California assessor records are generally public. See `DATA_LICENSES.md`.
 
 ## Takedown
 

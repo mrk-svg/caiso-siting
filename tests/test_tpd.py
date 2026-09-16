@@ -299,11 +299,12 @@ def test_join_tpd_adds_columns_and_fills_zero(tpd_dir, capsys):
     assert "2 nodes with 2025 TPD requests" in capsys.readouterr().out
 
 
-def test_join_tpd_without_files_zeroes_columns(tmp_path, monkeypatch, capsys):
+def test_join_tpd_without_files_blanks_columns(tmp_path, monkeypatch, capsys):
+    """Blank, not zero: "no TPD file" and "nobody sought deliverability here" are different facts."""
     monkeypatch.setattr(tpd, "DATA", tmp_path)
     out = nodes.join_tpd(pd.DataFrame({"node_key": ["A"]}), PROJECTS)
-    assert (out[nodes.TPD_COLS] == 0).all().all()
-    assert "TPD columns are zero" in capsys.readouterr().out
+    assert out[nodes.TPD_COLS].isna().all().all()
+    assert "blank (not zero)" in capsys.readouterr().out
 
 
 # ------------------------------------------------------------------ real files
