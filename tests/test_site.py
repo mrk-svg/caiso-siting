@@ -126,7 +126,11 @@ def _site_is_current() -> bool:
         return False
     built = os.path.getmtime("site/map.html")
     src = max(os.path.getmtime(f"src/caiso_siting/{m}.py") for m in ("site", "nodes"))
-    return built >= src
+    # A fresh git checkout stamps every file at roughly the same moment and the ordering is
+    # arbitrary, so an exact comparison would make this test a coin flip in CI. The tolerance keeps
+    # it deterministic there (site/ is committed and built from the committed source) while still
+    # skipping locally when the source has genuinely moved on since the last build.
+    return built >= src - 120
 
 
 def test_every_built_page_carries_the_reliance_line():

@@ -1,5 +1,33 @@
 # Changelog
 
+## 1.7.1 — 2026-09-16 — fix the CI failure v1.7.0 introduced
+
+**The dependency audit could never pass.** `pip-audit --strict` was pointed at the installed
+environment, which includes this project itself via `pip install -e .`; pip-audit cannot resolve a
+local editable distribution on PyPI, and under `--strict` that unresolvable entry is an error. Every
+run failed regardless of whether a real advisory existed — `--skip-editable` does not help, since a
+skip is also an error under `--strict`. The job now audits the declared dependencies
+(`-r requirements.txt`), which is what actually gets installed anyway. `requirements.txt` was dead
+weight duplicating `pyproject.toml` and missing `numpy`; it is now the audited artifact, and
+`tests/test_packaging.py` fails if the two ever disagree, or if the version in `pyproject.toml`
+drifts from the newest changelog entry.
+
+**The CSV formula guard did nothing on pandas 3.** `csv_safe` tested `dtype != object` to find text
+columns. pandas 3 gives string columns a dedicated `str` dtype, so every text column was skipped and
+the escape ran on nothing — while passing its own test on pandas 2. CI resolves `pandas>=2.0` to
+pandas 3, so the guard SECURITY.md describes was inert in exactly the environment that publishes.
+Now it skips numeric columns instead of trying to name text ones, and is verified against both
+major versions. The underlying exposure — bare floors, no ceilings, no lockfile — is recorded in
+`KNOWN_ISSUES.md`.
+
+**The built-site guard was a coin flip in CI.** The test that walks every built page for the
+reliance line skipped when `site/` predated its source, which is the right behaviour locally but
+arbitrary in a fresh checkout where every file is stamped within the same second. It now allows a
+two-minute tolerance, so it runs deterministically in CI and still skips locally when the source has
+genuinely moved on.
+
+357 tests locally; 336 plus 21 data-dependent skips in a clean checkout.
+
 ## 1.7.0 — 2026-09-16 — source freshness, publication review, legal corrections
 
 Three independent reviews — a data engineer on source freshness, an application security engineer

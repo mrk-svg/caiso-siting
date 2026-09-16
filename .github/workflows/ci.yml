@@ -40,11 +40,12 @@ jobs:
           python-version: "3.11"
 
       - name: Install
-        run: |
-          pip install -e .
-          pip install pip-audit
+        run: pip install pip-audit
 
-      # Fails the build on a known advisory in anything we actually install. Dependabot tells us
-      # weeks later in a pull request; this tells us on the next push.
-      - name: Audit installed dependencies
-        run: pip-audit --strict --progress-spinner off
+      # Audit the DECLARED dependencies, not the installed environment. `pip install -e .` puts this
+      # project itself in the environment, and pip-audit cannot look up a local editable
+      # distribution on PyPI — under --strict that unresolvable entry is an error, so auditing the
+      # environment fails every run regardless of whether any real advisory exists.
+      # requirements.txt is kept in step with pyproject by tests/test_packaging.py.
+      - name: Audit declared dependencies
+        run: pip-audit --strict --progress-spinner off -r requirements.txt

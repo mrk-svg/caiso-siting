@@ -153,7 +153,20 @@ it cannot honour. Three gaps remain:
   the file, so the file can be newer than the date implies. It is currently STALE at 61 days
   against a monthly cadence.
 
-## 11. Smaller items
+## 11. Dependencies float, and the floors are not ceilings
+
+`pyproject.toml` declares bare floors (`pandas>=2.0`), so CI resolves whatever PyPI serves that day
+while development happens on whatever is installed locally. That is a real gap, not a theoretical
+one: the CSV formula guard added in 1.7.0 passed on pandas 2 and **silently escaped nothing on
+pandas 3**, because pandas 3 gives string columns a dedicated `str` dtype and the guard tested for
+`object`. It was caught by running the suite against the version CI actually resolves, not by the
+suite itself.
+
+Until upper bounds or a committed constraints file exist, assume any pandas-behaviour change can
+land in an unattended weekly run without warning, and run the tests against the resolved
+version — not only the local one — before trusting a release.
+
+## 12. Smaller items
 
 - `LMP`/`TB4` columns are empty for all 949 nodes; `data/poi_pnodes.csv` has three rows, none
   confirmed. Nothing has been fetched yet.

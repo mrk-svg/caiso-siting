@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "caiso-siting"
-version = "1.7.0"
+version = "1.7.1"
 description = "Free-data CAISO interconnection node intelligence: queue + Cluster 15 + POI availability + parcels"
 readme = "README.md"
 requires-python = ">=3.10"

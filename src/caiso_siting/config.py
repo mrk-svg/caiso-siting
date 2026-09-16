@@ -93,16 +93,21 @@ def _is_formula(v) -> bool:
 
 def csv_safe(df):
     """Return a copy of `df` with formula-leading string cells prefixed by a single quote."""
+    from pandas.api.types import is_numeric_dtype
+
     out = df.copy()
     for c in out.columns:
         col = out[c]
-        if col.dtype != object:
+        # NOT `dtype != object`: pandas 3 gives string columns the dedicated `str` dtype, so that
+        # check skipped every text column and the escape silently did nothing. Skip what cannot
+        # hold a formula instead of trying to name what can.
+        if is_numeric_dtype(col):
             continue
-        # .map over an object column returns object dtype; pandas will not use that as a boolean
-        # mask, so the escape silently did nothing until this astype(bool) was added.
-        mask = col.map(_is_formula).astype(bool)
-        if mask.any():
-            out.loc[mask, c] = col[mask].map(lambda v: "'" + v)
+        # Rebuild the whole column rather than assigning through a boolean mask: masked .loc
+        # assignment behaves differently across pandas 2 and 3, and this ran clean on one and
+        # silently escaped nothing on the other. A plain map is the same on both.
+        if col.map(_is_formula).any():
+            out[c] = col.map(lambda v: "'" + v if _is_formula(v) else v)
     return out
 
 
