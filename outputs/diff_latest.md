@@ -1,36 +1,41 @@
-# CAISO queue diff — 2026-09-07 → 2026-09-14
+# CAISO queue diff — 2026-09-14 → 2026-09-21
 
-| | 2026-09-07 | 2026-09-14 | Δ |
+| | 2026-09-14 | 2026-09-21 | Δ |
 |---|---:|---:|---:|
-| Active projects | 351 | 351 | +0 |
-| Active MW | 103,137 | 103,137 | +0 |
-| Active storage MW | 85,233 | 85,231 | -2 |
+| Active projects | 351 | 348 | -3 |
+| Active MW | 103,137 | 102,647 | -490 |
+| Active storage MW | 85,231 | 84,742 | -490 |
 | Cluster 15 active projects | 86 | 86 | +0 |
 | Cluster 15 active MW | 28,449 | 28,449 | +0 |
-| Withdrawn projects (cumulative) | 1,846 | 1,846 | +0 |
+| Withdrawn projects (cumulative) | 1,846 | 1,848 | +2 |
 
-## Changes (4)
+## Changes (6)
 
-| change         |   n |
-|:---------------|----:|
-| STORAGE_CHANGE |   2 |
-| COD_PULLED_IN  |   1 |
-| COD_SLIP       |   1 |
+| change    |   n |
+|:----------|----:|
+| COD_SLIP  |   3 |
+| WITHDRAWN |   2 |
+| COMPLETED |   1 |
 
 ## By node (withdrawals, resizes, COD slips, new requests)
 
-| poi                  | change         |   count |   sum |
-|:---------------------|:---------------|--------:|------:|
-| ARCO                 | COD_SLIP       |       1 |    65 |
-| WHIRLWIND SUBSTATION | STORAGE_CHANGE |       2 |    48 |
+| poi                  | change    |   count |   sum |
+|:---------------------|:----------|--------:|------:|
+| ANTELOPE SUBSTATION  | WITHDRAWN |       1 |   300 |
+| WHIRLWIND SUBSTATION | COD_SLIP  |       1 |   125 |
+| LLAGAS-GILROY FOODS  | WITHDRAWN |       1 |   120 |
+| KERN PP              | COD_SLIP  |       1 |   110 |
+| COTTLE               | COD_SLIP  |       1 |   100 |
 
 ## Every change
 
-| change         | project      | poi                  | county   |   mw | detail                              |
-|:---------------|:-------------|:---------------------|:---------|-----:|:------------------------------------|
-| COD_PULLED_IN  | GASKELL WEST | WHIRLWIND SUBSTATION | KERN     |  125 | 2026-12-02 -> 2026-06-30 (-156 d)   |
-| COD_SLIP       | CHALAN SOLAR | ARCO                 | KERN     |   65 | 2026-04-12 -> 2026-12-01 (+233 d)   |
-| STORAGE_CHANGE | SOLAR STAR 3 | WHIRLWIND SUBSTATION | KERN     |   24 | storage 24 -> 23 MW (net unchanged) |
-| STORAGE_CHANGE | SOLAR STAR 4 | WHIRLWIND SUBSTATION | KERN     |   24 | storage 24 -> 23 MW (net unchanged) |
+| change    | project                  | poi                  | county      |   mw | detail                            |
+|:----------|:-------------------------|:---------------------|:------------|-----:|:----------------------------------|
+| COD_SLIP  | GASKELL WEST             | WHIRLWIND SUBSTATION | KERN        |  125 | 2026-06-30 -> 2026-12-30 (+183 d) |
+| COD_SLIP  | SERENA STORAGE           | KERN PP              | KERN        |  110 | 2029-09-18 -> 2032-02-16 (+881 d) |
+| COD_SLIP  | OAKDALE STORAGE          | COTTLE               | STANISLAUS  |  100 | 2029-09-18 -> 2031-11-16 (+789 d) |
+| COMPLETED | FALLBROOK ENERGY STORAGE | AVOCADO SUBSTATION   | SAN DIEGO   |   70 | ACTIVE -> COMPLETED               |
+| WITHDRAWN | ELECTRON                 | ANTELOPE SUBSTATION  | LOS ANGELES |  300 | ACTIVE -> WITHDRAWN               |
+| WITHDRAWN | AJO POWER BANK           | LLAGAS-GILROY FOODS  | SANTA CLARA |  120 | ACTIVE -> WITHDRAWN               |
 
 _Every line above is the difference between two CAISO rows. No reason is stated because CAISO states none._

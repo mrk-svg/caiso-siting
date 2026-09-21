@@ -1,21 +1,21 @@
-# CAISO Node Watch — draft 2026-09-16
+# CAISO Node Watch — draft 2026-09-21
 
-Sources: CAISO Public Queue Report (run date 2026-09-14), CAISO Cluster 15 report (posted 2026-07-16),
+Sources: CAISO Public Queue Report (run date 2026-09-21), CAISO Cluster 15 report (posted 2026-07-16),
 CAISO notice "PG&E information on POI availability for Cluster 16" (2026-01-15), OpenStreetMap substations (ODbL).
 All MW are net-to-grid as filed. No figure below states a *cause*; the CAISO files carry none.
 
 ## The state of the queue in three numbers
 
-- **Legacy pipeline (Cluster 14 and earlier):** 265 active projects, 74,687 MW,
-  92% with storage, 214 already under executed IAs.
+- **Legacy pipeline (Cluster 14 and earlier):** 262 active projects, 74,198 MW,
+  92% with storage, 211 already under executed IAs.
 - **Cluster 15 today:** 86 active projects, 28,449 MW (21,513 MW storage).
   84 projects / 30,564 MW have withdrawn — 52%
   of the 59,013 MW this file records as entering the cluster.
   (CAISO's July 2025 briefing put the studied set at 145 projects / ~68 GW; that is a different population from the
   170 requests in this file, so the two are not differenced here.)
-- **Withdrawn 2022–2026 to date, both reports:** 108,198 MW,
-  of which 95,683 MW storage.
-  (All-time since 2006, both reports: 412,480 MW — a number that mostly describes
+- **Withdrawn 2022–2026 to date, both reports:** 108,618 MW,
+  of which 96,103 MW storage.
+  (All-time since 2006, both reports: 412,900 MW — a number that mostly describes
   dead wind and solar-era projects.)
 
 ## Official Cluster 16 POI statements (the layer no spreadsheet tool has)
@@ -62,11 +62,11 @@ Transmission Interconnection Handbook will not reflect this "until updated, no E
 | TROUT CANYON SUBSTATION     | CLARK        | GLW       |                2 |            625 |                0 |                625 |               625 |                   625 |                   0 |                      1 |
 | RIO HONDO SUBSTATION        | LOS ANGELES  | SCE       |                2 |            600 |              600 |                  0 |                 0 |                     0 |                   0 |                      3 |
 | WHEELER RIDGE               | KERN         | PGAE      |                1 |            600 |                0 |                600 |               600 |                   555 |                  45 |                      0 |
-| RECTOR SUBSTATION           | TULARE       | SCE       |                2 |            550 |              350 |                200 |               200 |                     0 |                 200 |                      0 |
-| CONTRA COSTA SUBSTATION     | CONTRA COSTA | PGAE      |                2 |            550 |              449 |                101 |                 0 |                     0 |                   0 |                      0 |
 | OTAY MESA SWITCHYARD        | SAN DIEGO    | SDGE      |                2 |            550 |                0 |                550 |               550 |                   250 |                 300 |                      0 |
+| CONTRA COSTA SUBSTATION     | CONTRA COSTA | PGAE      |                2 |            550 |              449 |                101 |                 0 |                     0 |                   0 |                      0 |
+| RECTOR SUBSTATION           | TULARE       | SCE       |                2 |            550 |              350 |                200 |               200 |                     0 |                 200 |                      0 |
 | MOORPARK SUBSTATION         | VENTURA      | SCE       |                1 |            500 |              462 |                 38 |                 0 |                     0 |                   0 |                      1 |
-| VACA-DIXON                  | SOLANO       | PGAE      |                2 |            500 |              500 |                  0 |                 0 |                     0 |                   0 |                      0 |
+| BEATTY                      | NYE          | GLW       |                1 |            500 |                0 |                500 |               500 |                   500 |                   0 |                      0 |
 
 "Denied" is MW refused outright (0 %); "unalloc" is requested minus allocated, so it also carries the remainder left by
 partial allocations — quote that one for "what the developer did not get". A refusal is not one thing: CAISO allocates
@@ -110,7 +110,7 @@ These developers had upgrade cost estimates in hand when they left. That is the 
 | EAST COUNTY SUBSTATION     |                 | SDGE      |                1980 |          1573 |            276 |
 | PISGAH SUBSTATION          | SAN BERNARDINO  | SCE       |                1650 |           600 |              0 |
 | VINCENT SUBSTATION         | LOS ANGELES     | SCE       |                1565 |          3520 |            199 |
-| WHIRLWIND SUBSTATION       | KERN            | SCE       |                1365 |          3273 |           2120 |
+| ANTELOPE SUBSTATION        | LOS ANGELES     | SCE       |                1382 |          1617 |             90 |
 
 ## Local Capacity Areas — the Resource Adequacy geography (CAISO Final 2027 Local Capacity Technical Report)
 
@@ -121,7 +121,7 @@ The report names only the substations that *delineate* each area ("X is out, Y i
 | poi_base                   | county         | utility   | lcr_area                  | lcr_sub_area           |   legacy_active_mw |   c15_active_mw |   operating_mw | lcr_note                                                                                                                                                                                                                                                         |
 |:---------------------------|:---------------|:----------|:--------------------------|:-----------------------|-------------------:|----------------:|---------------:|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | MOSS LANDING               | MONTEREY       | PGAE      | Greater Bay Area          | South Bay-Moss Landing |               2250 |             199 |            932 | The 2027 report lists Moss Landing as in at every tie (Los Banos / Coburn / Las Aguilas are out, Moss Landing is in); earlier LCT reports drew the 500 kV boundary differently                                                                                   |
-| ANTELOPE SUBSTATION        | LOS ANGELES    | SCE       | Big Creek/Ventura         |                        |               1720 |             197 |             90 | Antelope 230 kV is in; the Antelope 500 kV yard is out. Every queue POI at this node is 66/220/230 kV, so the node is encoded in                                                                                                                                 |
+| ANTELOPE SUBSTATION        | LOS ANGELES    | SCE       | Big Creek/Ventura         |                        |               1420 |             197 |             90 | Antelope 230 kV is in; the Antelope 500 kV yard is out. Every queue POI at this node is 66/220/230 kV, so the node is encoded in                                                                                                                                 |
 | TRANQUILITY                | FRESNO         | PGAE      | Greater Fresno            |                        |               1575 |               0 |              0 | Report p.80 states Tranquility 1 and 2 are in at AREA level only. The Panoche sub-area is the pocket behind the Panoche 230/115 kV banks and its station list does not include Tranquility, so no sub-area is claimed. Sub-area removed 2026-09-16 (was Panoche) |
 | RIO HONDO SUBSTATION       | LOS ANGELES    | SCE       | LA Basin                  |                        |               1000 |               0 |              0 |                                                                                                                                                                                                                                                                  |
 | IMPERIAL VALLEY SUBSTATION | IMPERIAL       | SDGE      | San Diego-Imperial Valley |                        |                875 |               0 |           1347 |                                                                                                                                                                                                                                                                  |
@@ -130,8 +130,8 @@ The report names only the substations that *delineate* each area ("X is out, Y i
 | OTAY MESA SWITCHYARD       | SAN DIEGO      | SDGE      | San Diego-Imperial Valley |                        |                550 |               0 |           1201 |                                                                                                                                                                                                                                                                  |
 | CONTRA COSTA SUBSTATION    | CONTRA COSTA   | PGAE      | Greater Bay Area          |                        |                550 |               0 |            690 | Contra Costa P.P. in the report                                                                                                                                                                                                                                  |
 | PITTSBURG                  | CONTRA COSTA   | PGAE      | Greater Bay Area          |                        |                500 |               0 |             72 |                                                                                                                                                                                                                                                                  |
-| LAMBIE SWITCHING STATION   | SOLANO         | PGAE      | Greater Bay Area          |                        |                400 |               0 |              0 |                                                                                                                                                                                                                                                                  |
 | RIO OSO SUBSTATION         | SUTTER         | PGAE      | Sierra                    |                        |                  0 |             400 |              0 |                                                                                                                                                                                                                                                                  |
+| LAMBIE SWITCHING STATION   | SOLANO         | PGAE      | Greater Bay Area          |                        |                400 |               0 |              0 |                                                                                                                                                                                                                                                                  |
 | METCALF                    | SANTA CLARA    | PGAE      | Greater Bay Area          |                        |                350 |               0 |             75 |                                                                                                                                                                                                                                                                  |
 | MUSTANG SWITCHING STATION  | KINGS          | PGAE      | Greater Fresno            |                        |                300 |               0 |            450 |                                                                                                                                                                                                                                                                  |
 | SCHULTE                    | SAN JOAQUIN    | PGAE      | Stockton                  | Tesla-Bellota          |                220 |               0 |              0 |                                                                                                                                                                                                                                                                  |
@@ -160,19 +160,19 @@ Heavily queued nodes the report names as OUTSIDE an area boundary — bulk stati
 | LUGO-PISGAH                                  | SAN BERNARDINO | SCE       |             700 |                 0 |            150 |                  0 |                  |
 | CALCITE SUBSTATION                           | SAN BERNARDINO | SCE       |             638 |                 0 |            200 |                255 |                  |
 | MAGUNDEN-PASTORIA                            | KERN           | SCE       |             600 |                 0 |              0 |                  0 |                  |
-| NORTH GILA - HOODOO WASH (SDGE PORTION ONLY) | YUMA           | SDGE      |             500 |                 0 |              0 |                  0 |                  |
 | QUINTO SW STA                                | MERCED         | PGAE      |             500 |               500 |            100 |                150 |                  |
+| NORTH GILA - HOODOO WASH (SDGE PORTION ONLY) | YUMA           | SDGE      |             500 |                 0 |              0 |                  0 |                  |
 
 ## Cluster 15 survival by node (lowest first; >500 MW requested)
 
 | poi_base                       | county         | utility   |   c15_active_mw |   c15_withdrawn_mw |   c15_survival |
 |:-------------------------------|:---------------|:----------|----------------:|-------------------:|---------------:|
-| MIDWAY - VINCENT               | KERN           | SCE       |               0 |               1150 |           0    |
-| VIEJO                          | ORANGE         | SCE       |               0 |               1000 |           0    |
-| BEATTY                         | NYE            | GLW       |               0 |               1350 |           0    |
 | TROUT CANYON SUBSTATION        | CLARK          | GLW       |               0 |               1500 |           0    |
-| SLOAN CANYON SWITCHING STATION | CLARK          | GLW       |               0 |                550 |           0    |
 | MOHAVE SUBSTATION              | CLARK          | SCE       |               0 |               1050 |           0    |
+| SLOAN CANYON SWITCHING STATION | CLARK          | GLW       |               0 |                550 |           0    |
+| MIDWAY - VINCENT               | KERN           | SCE       |               0 |               1150 |           0    |
+| BEATTY                         | NYE            | GLW       |               0 |               1350 |           0    |
+| VIEJO                          | ORANGE         | SCE       |               0 |               1000 |           0    |
 | LOS BANOS                      | MERCED         | PGAE      |             400 |               1995 |           0.17 |
 | LUGO                           | SAN BERNARDINO | SCE       |            1798 |               4453 |           0.29 |
 
@@ -210,9 +210,9 @@ Heavily queued nodes the report names as OUTSIDE an area boundary — bulk stati
 | HASSAYAMPA                         | MARICOPA       |           700 | none            |        0.63 |
 | LUGO-PISGAH                        | SAN BERNARDINO |           700 | line-midpoint   |        1    |
 | MIRA LOMA SUBSTATION               | SAN BERNARDINO |           660 | ambiguous       |        0.5  |
-| WALNUT SUBSTATION                  | LOS ANGELES    |           600 | disputed        |      nan    |
 | MAGUNDEN-PASTORIA                  | KERN           |           600 | line-midpoint   |        1    |
 | TEHACHAPI CONCEPTUAL SUBSTATION #1 | KERN           |           600 | county-centroid |        0.3  |
+| WALNUT SUBSTATION                  | LOS ANGELES    |           600 | disputed        |      nan    |
 | OTAY MESA SWITCHYARD               | SAN DIEGO      |           550 | county-centroid |        0.3  |
 
 ## Caveats (say these out loud to any reader)
