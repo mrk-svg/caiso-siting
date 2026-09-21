@@ -53,3 +53,14 @@ def test_weekly_commit_stages_every_tracked_file_the_pipeline_rewrites():
     pull = next(i for i, c in enumerate(cmds) if c.startswith("git pull"))
     assert cmds.index("git add -u") < pull, "tracked changes must be staged before the rebase"
     assert "--autostash" in cmds[pull]
+
+
+def test_workflows_pin_the_runner_image():
+    """ubuntu-latest is a moving label: it moved to Ubuntu 26 on 2026-10-19 underneath the unattended
+    weekly job. Environment changes should be a commit, not a surprise."""
+    for wf in (ROOT / ".github" / "workflows").glob("*.yml"):
+        runs = [ln.split("runs-on:", 1)[1].split("#")[0].strip()
+                for ln in wf.read_text().splitlines() if "runs-on:" in ln]
+        assert runs, wf.name
+        for r in runs:
+            assert r != "ubuntu-latest" and re.fullmatch(r"ubuntu-\d{2}\.\d{2}", r), f"{wf.name}: {r}"

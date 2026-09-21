@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.7.3 — 2026-09-21 — pin the runner image
+
+Both workflows now run on `ubuntu-24.04` instead of `ubuntu-latest`. GitHub moves `ubuntu-latest` to
+Ubuntu 26 on 2026-10-19, underneath an unattended weekly job — the same class of silent environment
+change that made the CSV formula guard inert when CI began resolving pandas 3. The image now changes
+only by commit. `tests/test_packaging.py` fails if any workflow goes back to a moving label. The pin
+must be bumped by hand before GitHub retires Ubuntu 24.04 runners.
+
 ## 1.7.2 — 2026-09-21 — the weekly commit step could not survive new CAISO data
 
 Weekly run #5 failed with exit code 128 — a git error, not a pipeline error: the download and the
