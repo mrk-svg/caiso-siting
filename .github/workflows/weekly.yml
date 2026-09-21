@@ -66,11 +66,17 @@ jobs:
             exit 0
           fi
           echo "new_snapshot=true" >> "$GITHUB_OUTPUT"
-          # quoted pathspecs: git expands them and silently skips .gitignore'd files
-          # (raw xlsx snapshots, outputs/projects_all.csv, outputs/cluster15_projects.csv)
+          # New files: quoted pathspecs, which git expands and which silently skip .gitignore'd files
+          # (raw xlsx snapshots, outputs/projects_all.csv, outputs/cluster15_projects.csv).
           git add -- 'data/snapshots/*/projects.csv' 'outputs/*.csv' 'outputs/*.md' 'outputs/nodes_map.html' site
+          # Every TRACKED file the pipeline rewrote. The list above missed outputs/survival*.svg and
+          # data/documents_seen.csv, which are tracked and regenerated whenever CAISO publishes; left
+          # unstaged, they made `git pull --rebase` refuse with "You have unstaged changes" (exit 128).
+          # The checkout is clean at the start of the job, so -u can only pick up pipeline output.
+          git add -u
+          git status --short
           git commit -m "weekly: ${RUN_DATE} snapshot (CAISO run date $(basename "${latest}")) + site"
-          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
 
       # Only when CAISO published something new: otherwise diff_latest.md still describes last week's changes

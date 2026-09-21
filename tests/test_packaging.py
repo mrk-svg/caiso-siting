@@ -39,3 +39,17 @@ def test_version_matches_the_changelog():
     first = next(line for line in (ROOT / "CHANGELOG.md").read_text().splitlines()
                  if line.startswith("## "))
     assert m.group(1) in first, f"pyproject says {m.group(1)}; newest CHANGELOG entry is {first!r}"
+
+
+def test_weekly_commit_stages_every_tracked_file_the_pipeline_rewrites():
+    """The weekly job listed what to commit by glob, missed outputs/survival*.svg and
+    data/documents_seen.csv, and then `git pull --rebase` refused to run over the unstaged changes
+    (exit 128) on the first Monday CAISO published new data. `git add -u` must stay in that step."""
+    wf = (ROOT / ".github" / "workflows" / "weekly.yml").read_text()
+    step = wf[wf.index("name: Commit snapshot"):]
+    step = step[:step.index("- name:", 10)] if "- name:" in step[10:] else step
+    cmds = [ln.strip() for ln in step.splitlines() if ln.strip().startswith("git ")]
+    assert "git add -u" in cmds, cmds
+    pull = next(i for i, c in enumerate(cmds) if c.startswith("git pull"))
+    assert cmds.index("git add -u") < pull, "tracked changes must be staged before the rebase"
+    assert "--autostash" in cmds[pull]

@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.7.2 — 2026-09-21 — the weekly commit step could not survive new CAISO data
+
+Weekly run #5 failed with exit code 128 — a git error, not a pipeline error: the download and the
+whole pipeline had already succeeded. The commit step staged its outputs by glob and missed three
+files that are tracked and rewritten every time CAISO publishes: `outputs/survival.svg`,
+`outputs/survival_tech.svg` and `data/documents_seen.csv`. Left unstaged, they made
+`git pull --rebase` refuse to run ("You have unstaged changes"), which git reports as 128. The bug
+had been latent since those files were first committed; this Monday was the first weekly run with a
+new CAISO run date since then, so it was the first run that reached the commit. The step now runs
+`git add -u` after the globs, prints `git status --short` so a future failure shows what it was
+holding, and rebases with `--autostash`. `tests/test_packaging.py` fails if either is removed.
+Nothing was published by the failed run: the deploy job was skipped.
+
 ## 1.7.1 — 2026-09-16 — fix the CI failure v1.7.0 introduced
 
 **The dependency audit could never pass.** `pip-audit --strict` was pointed at the installed
