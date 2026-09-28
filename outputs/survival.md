@@ -1,6 +1,6 @@
 # Queue-cohort survival — Kaplan–Meier by cluster
 
-Source: CAISO Public Queue Report (run date 2026-09-21) for C10–C14; CAISO Cluster 15 report for C15,
+Source: CAISO Public Queue Report (run date 2026-09-28) for C10–C14; CAISO Cluster 15 report for C15,
 censored at 2026-07-16 (its posting date, or the latest withdrawal the file records if CAISO has re-posted since) —
 that file cannot record a withdrawal after it was published.
 Event = withdrawal at `withdrawn_date`. ACTIVE rows are censored at the report run date; COMPLETED rows are
