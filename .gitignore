@@ -24,3 +24,9 @@ data/lct_2027.pdf
 # would make it permanent.
 notes/outreach/targets.csv
 notes/outreach/corrections.csv
+
+# Personal prep notes: interview script, learning log and outreach drafts. They stay on the
+# author's machine; the public repo carries the tool, not the person's job-search material.
+notes/portfolio-defense.md
+notes/what-i-learned.md
+notes/outreach/
