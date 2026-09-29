@@ -1,6 +1,6 @@
-# CAISO Node Watch — draft 2026-09-28
+# CAISO Node Watch — draft 2026-09-29
 
-Sources: CAISO Public Queue Report (run date 2026-09-28), CAISO Cluster 15 report (posted 2026-07-16),
+Sources: CAISO Public Queue Report (run date 2026-09-29), CAISO Cluster 15 report (posted 2026-07-16),
 CAISO notice "PG&E information on POI availability for Cluster 16" (2026-01-15), OpenStreetMap substations (ODbL).
 All MW are net-to-grid as filed. No figure below states a *cause*; the CAISO files carry none.
 
@@ -210,9 +210,9 @@ Heavily queued nodes the report names as OUTSIDE an area boundary — bulk stati
 | HASSAYAMPA                         | MARICOPA       |           700 | none            |        0.63 |
 | LUGO-PISGAH                        | SAN BERNARDINO |           700 | line-midpoint   |        1    |
 | MIRA LOMA SUBSTATION               | SAN BERNARDINO |           660 | ambiguous       |        0.5  |
-| MAGUNDEN-PASTORIA                  | KERN           |           600 | line-midpoint   |        1    |
 | TEHACHAPI CONCEPTUAL SUBSTATION #1 | KERN           |           600 | county-centroid |        0.3  |
 | WALNUT SUBSTATION                  | LOS ANGELES    |           600 | disputed        |      nan    |
+| MAGUNDEN-PASTORIA                  | KERN           |           600 | line-midpoint   |        1    |
 | OTAY MESA SWITCHYARD               | SAN DIEGO      |           550 | county-centroid |        0.3  |
 
 ## Caveats (say these out loud to any reader)
