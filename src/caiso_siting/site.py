@@ -26,6 +26,7 @@ from .config import OUT, RECENT_YEARS, SITE
 from .eia860 import EIA_JOIN_KM
 from .nodes import APPROX_METHODS, RECENT_FROM_YEAR
 from .tpd import GROUPS
+from .wdat import flag_ft_over_cap
 
 DISCLAIMER = ('No figure on this site states a cause. CAISO files carry no withdrawal reason beyond '
               '"IC Request".')
@@ -40,7 +41,7 @@ RELIANCE = ('Screening tool, not engineering advice. Built from public filings b
 
 WDAT_NOTE = "WDAT = distribution-level queue at the same substation, PG&E file today; not CAISO deliverability"
 WDAT_COLS = ["queue_position", "status_raw", "process", "gen_type", "net_mw", "request_received", "current_cod",
-             "ia_status"]
+             "ia_status", "ft_over_cap"]
 WDAT_CAP = 50
 
 # One-line definitions, copied from the docstring at the top of nodes.py (plus the three storage /
@@ -65,7 +66,9 @@ METRIC_DEFS = [
     ("p2_n", "projects behind p2_attrition"),
     ("eia_plants", "operable EIA-860 plants within 5 km of the node's mapped position (positioned nodes only)"),
     ("eia_nameplate_mw", "their nameplate MW, all technologies (EIA-860 Generator file, Operable sheet)"),
-    ("eia_storage_mwh", "battery energy capacity among them (EIA-860 Energy Storage file)"),
+    ("eia_storage_mwh", "battery energy capacity among them (EIA-860 Energy Storage file), as reported"),
+    ("eia_storage_1h_mw", "storage MW at units whose reported MWh is no more than their MW (one hour or less); "
+                          "shown with 'duration not established' because the value may reflect how the form was filled"),
     ("eia_proposed_mw", "nameplate MW in EIA-860's Proposed sheet within the same radius (planned / under construction)"),
     ("wd_alltime_mw", "every withdrawn MW since 2006 (includes dead wind/solar-era projects)"),
     ("storage_churn", "wd_recent_storage_mw / (active + operating storage MW) — the one to quote"),
@@ -101,6 +104,8 @@ METRIC_DEFS = [
                                "362 of their 479 MW is attributed as storage)."),
     ("wdat_inservice_mw", "WDAT MW already in service at that substation"),
     ("wdat_withdrawn_mw", "WDAT MW withdrawn at that substation (all-time in the file)"),
+    ("wdat_ft_over_cap_n", "active Fast Track requests above the 5 MW Fast Track ceiling — held out of wdat_active_*"),
+    ("wdat_ft_over_cap_mw", "MW of those held-out rows, as posted; cause not established"),
 ]
 
 TOP_COLS = ["poi_base", "county", "utility", "legacy_active_mw", "c15_active_mw", "operating_mw",
@@ -469,8 +474,10 @@ joined through all three sheets of the public report, so a node's TPD history ca
 since withdrawn. The CAISO file states no reason.</p>
 <h2>Distribution-level (WDAT) activity at CAISO nodes</h2>
 <p class="sub">Top 10 CAISO nodes by active MW in the wholesale distribution (WDAT) queue at the same substation.</p>
-{table(wdat_top, ['poi_base', 'county', 'utility', 'wdat_active_projects', 'wdat_active_mw', 'wdat_inservice_mw'], links)}
+{table(wdat_top, ['poi_base', 'county', 'utility', 'wdat_active_projects', 'wdat_active_mw', 'wdat_ft_over_cap_mw', 'wdat_inservice_mw'], links)}
 <p>WDAT requests connect below CAISO's transmission grid; they carry no CAISO deliverability unless separately studied.
+Rows posted as Fast Track but above the 5 MW Fast Track ceiling are held out of the active figures and shown
+separately (<code>wdat_ft_over_cap_mw</code>); the cause is not established.
 Source: PG&amp;E Wholesale Distribution Queue, as dated in the file.</p>
 <h2>Official Cluster 16 POI statements</h2>
 <p class="sub">Encoded only where a CAISO / PTO notice names the POI. Absence of a row is not availability.
@@ -554,8 +561,16 @@ def node_page(r: pd.Series, projects: pd.DataFrame, prov: dict, wdat: pd.DataFra
         yr = g("eia_first_year", float("nan"))
         parts = [f"{eia_n} plant{'s' if eia_n != 1 else ''}", f"{mw(g('eia_nameplate_mw'))} nameplate"]
         smwh = float(g("eia_storage_mwh"))
-        if smwh > 0:
-            parts.append(f"{mw(g('eia_storage_mw'))} / {smwh:,.0f} MWh storage")
+        smw = float(g("eia_storage_mw"))
+        s1h = float(g("eia_storage_1h_mw", 0) or 0)
+        if smwh > 0 and s1h >= smw - 0.05:
+            parts.append(f"{mw(smw)} storage (EIA reports {smwh:,.0f} MWh, i.e. one hour or less — this may reflect "
+                         f"how the form was filled; duration not established)")
+        elif smwh > 0 and s1h > 0:
+            parts.append(f"{mw(smw)} / {smwh:,.0f} MWh storage ({mw(s1h)} of it at units reporting one hour or less; "
+                         f"duration not established for those)")
+        elif smwh > 0:
+            parts.append(f"{mw(smw)} / {smwh:,.0f} MWh storage")
         if isinstance(yr, (int, float)) and not pd.isna(yr):
             parts.append(f"oldest unit {int(yr)}")
         prop = float(g("eia_proposed_mw"))
@@ -767,6 +782,8 @@ def load_wdat() -> dict[str, pd.DataFrame]:
         if c not in w:
             w[c] = ""
     w["net_mw"] = pd.to_numeric(w["net_mw"], errors="coerce")
+    # recomputed here so the flag is right even on a wdat_projects.csv written before the column existed
+    w["ft_over_cap"] = flag_ft_over_cap(w).map({True: "held out: >5 MW", False: ""})
     for c in ("request_received", "current_cod"):
         w[c] = w[c].map(date_only)
     w["_o"] = w.sheet_status.map({"ACTIVE": 0, "COMPLETED": 1, "WITHDRAWN": 2}).fillna(3)

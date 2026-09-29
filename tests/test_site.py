@@ -156,3 +156,10 @@ def test_built_map_loads_no_third_party_script():
     assert "unpkg.com" not in html, "the vendored-Leaflet rewrite stopped matching"
     assert "vendor/leaflet" in html
     assert "OpenStreetMap contributors, ODbL" in html, "the ODbL attribution the repo promises on every map"
+
+
+def test_one_hour_storage_is_not_stated_as_fact():
+    html = site.node_page(node(eia_plants=6, eia_nameplate_mw=706.0, eia_storage_mw=147.0, eia_storage_mwh=147.0,
+                               eia_storage_1h_mw=147.0), PROJECTS, PROV)
+    assert "duration not established" in html
+    assert "147 MW / 147 MWh storage" not in html

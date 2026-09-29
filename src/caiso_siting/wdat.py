@@ -122,16 +122,40 @@ def load_all() -> pd.DataFrame:
     return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
 
 
+# PG&E's Fast Track process is for small generators; its tariff ceiling is 5 MW. The posted file carries
+# Fast Track rows far above it (one is 157 MW at Milpitas), which a distribution feeder cannot carry. The
+# cause is not established, so the rows are not corrected — they are held out of the active totals, counted
+# separately, and flagged per row, so a reader sees them without them inflating a node's figure.
+FT_CAP_MW = 5.0
+PER_NODE_COLS = ["wdat_active_projects", "wdat_active_mw", "wdat_active_storage_mw", "wdat_inservice_mw",
+                 "wdat_withdrawn_mw", "wdat_ft_over_cap_n", "wdat_ft_over_cap_mw"]
+
+
+def flag_ft_over_cap(w: pd.DataFrame) -> pd.Series:
+    """True for a Fast Track row whose MW exceeds the Fast Track ceiling."""
+    if w.empty or "process" not in w:
+        return pd.Series(False, index=w.index)
+    mw = pd.to_numeric(w.get("net_mw"), errors="coerce").fillna(0)
+    return w.process.fillna("").astype(str).str.contains("fast", case=False) & (mw > FT_CAP_MW)
+
+
 def per_node(w: pd.DataFrame) -> pd.DataFrame:
     if w.empty:
-        return pd.DataFrame(columns=["wdat_active_projects", "wdat_active_mw", "wdat_active_storage_mw",
-                                     "wdat_inservice_mw", "wdat_withdrawn_mw"])
-    act = w[w.sheet_status == "ACTIVE"].groupby("node_key").agg(
+        return pd.DataFrame(columns=PER_NODE_COLS)
+    w = w.copy()
+    for c in ("net_mw", "storage_mw"):
+        w[c] = pd.to_numeric(w[c], errors="coerce").fillna(0)
+    over = flag_ft_over_cap(w)
+    active = w.sheet_status == "ACTIVE"
+    act = w[active & ~over].groupby("node_key").agg(
         wdat_active_projects=("queue_position", "count"), wdat_active_mw=("net_mw", "sum"),
         wdat_active_storage_mw=("storage_mw", "sum"))
+    held = w[active & over].groupby("node_key").agg(
+        wdat_ft_over_cap_n=("queue_position", "count"), wdat_ft_over_cap_mw=("net_mw", "sum"))
     ins = w[w.sheet_status == "COMPLETED"].groupby("node_key").net_mw.sum().rename("wdat_inservice_mw")
     wd = w[w.sheet_status == "WITHDRAWN"].groupby("node_key").net_mw.sum().rename("wdat_withdrawn_mw")
-    return act.join(ins, how="outer").join(wd, how="outer").fillna(0).round(1)
+    out = act.join(held, how="outer").join(ins, how="outer").join(wd, how="outer").fillna(0).round(1)
+    return out.reindex(columns=PER_NODE_COLS, fill_value=0.0)
 
 
 def main() -> None:
@@ -145,6 +169,7 @@ def main() -> None:
     w = load_all()
     if w.empty:
         sys.exit(f"no WDAT files in {DATA} (expected any of {list(FILES.values())})")
+    w["ft_over_cap"] = flag_ft_over_cap(w)
     csv_safe(w).to_csv(OUT / "wdat_projects.csv", index=False)
     for u, s in w.groupby("utility"):
         print(f"{u}: {len(s)} requests | active {(s.sheet_status == 'ACTIVE').sum()} / "

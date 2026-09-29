@@ -75,3 +75,14 @@ def test_the_real_registry_loads_and_every_row_resolves():
     for s in st.values():
         assert s.severity in (freshness.FRESH, freshness.STALE, freshness.EXPIRED,
                               freshness.UNDATED, freshness.MISSING)
+
+
+def test_csv_max_can_read_a_derived_file(tmp_path):
+    """WDAT's raw xlsx has no publication stamp, so its as-of comes from the parsed queue."""
+    (tmp_path / "data").mkdir()
+    (tmp_path / "outputs").mkdir()
+    (tmp_path / "data" / "wdat.xlsx").write_bytes(b"PK")
+    (tmp_path / "outputs" / "w.csv").write_text("request_received\n2026-07-01\n2026-08-19 15:05\n")
+    r = reg(artifact="data/wdat.xlsx", as_of_method="csv_max:request_received@outputs/w.csv", published="2026-01-01")
+    st = freshness.check("s", today=date(2026, 9, 29), registry=r, root=tmp_path)
+    assert st.published == "2026-08-19"

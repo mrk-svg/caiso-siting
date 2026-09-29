@@ -293,7 +293,8 @@ def join_tpd(nodes: pd.DataFrame, pq: pd.DataFrame, withheld: bool = False) -> p
     return nodes
 
 
-WDAT_COLS = ["wdat_active_projects", "wdat_active_mw", "wdat_active_storage_mw", "wdat_inservice_mw", "wdat_withdrawn_mw"]
+WDAT_COLS = ["wdat_active_projects", "wdat_active_mw", "wdat_active_storage_mw", "wdat_inservice_mw", "wdat_withdrawn_mw",
+             "wdat_ft_over_cap_n", "wdat_ft_over_cap_mw"]
 
 
 def join_wdat(nodes: pd.DataFrame, withheld: bool = False) -> pd.DataFrame:

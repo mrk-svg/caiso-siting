@@ -112,7 +112,7 @@ def org_only(names) -> tuple[list[str], int]:
     return keep, len(vals) - len(keep)
 
 
-EIA_COLS = ["eia_plants", "eia_nameplate_mw", "eia_storage_mw", "eia_storage_mwh", "eia_tech", "eia_operators",
+EIA_COLS = ["eia_plants", "eia_nameplate_mw", "eia_storage_mw", "eia_storage_mwh", "eia_storage_1h_mw", "eia_tech", "eia_operators",
             "eia_owners", "eia_pnodes", "eia_first_year", "eia_proposed_mw"]
 
 
@@ -275,6 +275,9 @@ def per_node(frames: dict[str, pd.DataFrame], nodes: pd.DataFrame, km: float = E
         "eia_nameplate_mw": g.nameplate_mw.sum().round(1) if len(gen) else empty,
         "eia_storage_mw": stor.groupby("node_key").storage_mw.sum().round(1),
         "eia_storage_mwh": stor.groupby("node_key").storage_mwh.sum().round(1),
+        # MW at units whose reported energy is no more than their power (<= 1 h). Such values may reflect how
+        # the form was filled rather than the battery; the page says duration is not established for them.
+        "eia_storage_1h_mw": stor[stor.storage_mwh <= stor.storage_mw + 1e-6].groupby("node_key").storage_mw.sum().round(1),
         "eia_tech": (gen.groupby("node_key")[["technology", "nameplate_mw"]].apply(tech_mix) if len(gen) else empty),
         "eia_operators": g.op.apply(uniq_org) if len(gen) else empty,
         "eia_owners": own[own.plant_code.isin(gen.plant_code)].groupby("node_key").owner_name.apply(uniq_org),
@@ -284,7 +287,7 @@ def per_node(frames: dict[str, pd.DataFrame], nodes: pd.DataFrame, km: float = E
         "eia_proposed_mw": prop.groupby("node_key").nameplate_mw.sum().round(1),
     })
     out = out.reindex(columns=EIA_COLS)
-    for c in ("eia_plants", "eia_nameplate_mw", "eia_storage_mw", "eia_storage_mwh", "eia_proposed_mw"):
+    for c in ("eia_plants", "eia_nameplate_mw", "eia_storage_mw", "eia_storage_mwh", "eia_storage_1h_mw", "eia_proposed_mw"):
         out[c] = pd.to_numeric(out[c], errors="coerce").fillna(0.0)
     for c in ("eia_tech", "eia_operators", "eia_owners", "eia_pnodes"):
         out[c] = out[c].fillna("")

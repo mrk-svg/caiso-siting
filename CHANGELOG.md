@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.8.1 — 2026-09-29 — the two numbers an engineer would catch first
+
+**Milpitas.** The home page's WDAT table led with Milpitas at 160 MW of distribution-level queue, 157
+MW of it a single request PG&E posts as "Fast Track" — a process whose ceiling is 5 MW. About 33
+such rows (~1,260 MW) were summed into `wdat_active_mw`. They are now held out of the active figures,
+counted separately (`wdat_ft_over_cap_n`, `wdat_ft_over_cap_mw`), and flagged per row. Nothing is
+corrected or deleted: the cause is not established. Milpitas now reads 3 MW active, 157 MW held out.
+
+**Whirlwind.** The example node page stated "147 MW / 147 MWh storage" — a one-hour battery, taken
+verbatim from EIA-860. Node pages now say "EIA reports 147 MWh, i.e. one hour or less — this may
+reflect how the form was filled; duration not established" wherever the reporting units are at one
+hour or less (`eia_storage_1h_mw`). The raw column is unchanged.
+
+**WDAT freshness was a hand-set date.** The registry held PG&E WDAT at a fixed 2026-07-17 and so
+reported it STALE at 73 days, while the parsed file's newest request is 2026-08-19. As-of is now read
+from `outputs/wdat_projects.csv` (`csv_max:request_received@…`), and date parsing uses
+`format="mixed"` so a column mixing dates and datetimes no longer drops half its values.
+
 ## 1.8.0 — 2026-09-29 — pre-announcement legal pass
 
 Closes the SHOULD-FIX items from the 2026-09-16 licensing review before the project is announced

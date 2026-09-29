@@ -99,10 +99,16 @@ def resolve_as_of(row: pd.Series, root: Path = ROOT) -> str:
             return "" if newest is None else datetime(*newest).date().isoformat()
         if method.startswith("csv_max:"):
             col = method.split(":", 1)[1]
-            df = pd.read_csv(path, comment="#", dtype=str)
+            # csv_max:<col>@<path> reads a derived file instead of the artifact (e.g. the parsed WDAT
+            # queue, whose raw xlsx carries no publication stamp)
+            if "@" in col:
+                col, rel = col.split("@", 1)
+                path = root / rel
+            df = pd.read_csv(path, comment="#", dtype=str, low_memory=False)
             if col not in df.columns:
                 return _iso(row.get("published", ""))
-            vals = pd.to_datetime(df[col], errors="coerce").dropna()
+            # format="mixed": a column holding both dates and datetimes must not coerce half of it to NaT
+            vals = pd.to_datetime(df[col], errors="coerce", format="mixed").dropna()
             return "" if vals.empty else vals.max().date().isoformat()
     except Exception:  # noqa: BLE001
         return _iso(row.get("published", ""))

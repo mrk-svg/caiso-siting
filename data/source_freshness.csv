@@ -15,7 +15,7 @@ caiso_public_queue,CAISO Public Queue Report,data/publicqueuereport.xlsx,weekly,
 caiso_cluster15,CAISO Cluster 15 Interconnection Requests report,data/cluster15.xlsx,ad-hoc,,manual,2026-07-16,,180,365,mark,c15_,The workbook carries no run date; this is the CAISO posting date and is maintained by hand
 caiso_tpd_2025,CAISO 2025 TPD allocation cycle results,data/tpd_2025.xlsx,annual,365,manual,2026-05-04,2025,425,550,mark,tpd25_,A dated record of a closed cycle: true forever provided the year is on the label
 caiso_tpd_2024,CAISO 2024 TPD allocation cycle results,data/tpd_2024.xlsx,archival,,manual,2025-05-06,2024,,,mark,tpd24_,Closed cycle; never expires
-pge_wdat,PG&E Wholesale Distribution Access Tariff queue,data/wdat_pge.xlsx,monthly,30,manual,2026-07-17,,60,120,withhold,wdat_,A claim about what is queued at the substation now
+pge_wdat,PG&E Wholesale Distribution Access Tariff queue,data/wdat_pge.xlsx,monthly,30,csv_max:request_received@outputs/wdat_projects.csv,2026-07-17,,60,120,withhold,wdat_,A claim about what is queued now. As-of is a floor: the newest request in the file
 eia860,EIA-860 annual generator census,data/eia860.zip,annual,365,zip_member_mtime,,2025,425,550,withhold,eia_,A claim about what operates near the node now
 caiso_lct,CAISO Final 2027 Local Capacity Technical Report,data/lcr_areas.csv,annual,365,csv_max:source_date,,2027,425,550,mark,lcr_,Hand-encoded from the report; withholding would blank the Resource Adequacy layer entirely
 caiso_poi_availability,CAISO and PTO Cluster 16 POI availability notices,data/poi_availability.csv,ad-hoc,,csv_max:date,,,270,540,withhold,c16_poi_,A statement about what CAISO will accept today; an old one is a false claim

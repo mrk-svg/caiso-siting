@@ -97,14 +97,23 @@ has. `Daggett 2` reports 131 MW against 4.6 MWh. Nodes showing exactly 1.00 h �
 capacity; this project has not confirmed the cause. Do not compute duration from these columns
 without checking the unit.
 
+*Mitigated 2026-09-29:* `eia_storage_1h_mw` counts storage MW at units reporting one hour or less, and
+node pages now print those as "EIA reports N MWh, i.e. one hour or less … duration not established"
+instead of stating an MWh figure as fact. The raw `eia_storage_mwh` column is unchanged.
+
 ## 6. PG&E WDAT columns include Fast Track rows above the tariff ceiling
 
 **Severity: medium.**
 
-32 rows flagged "Fast Track" exceed PG&E's 5 MW Fast Track ceiling, totalling 1,281 MW — one is a
-157 MW solar request at Milpitas, far above what a distribution feeder normally carries. The cause —
-a unit or categorisation issue in the posting, or something else — has not been confirmed by this project. They are summed into `wdat_active_mw`, so
-`MILPITAS`, `SAN LEANDRO U`, `STONE`, `SANGER`, `KERMAN` and `WESTPARK` are overstated. Also note
+About 33 active rows flagged "Fast Track" exceed PG&E's 5 MW Fast Track ceiling, totalling roughly
+1,260 MW — one is a 157 MW solar request at Milpitas, far above what a distribution feeder normally
+carries. The cause — a unit or categorisation issue in the posting, or something else — has not been
+confirmed by this project.
+
+*Mitigated 2026-09-29:* these rows are held out of `wdat_active_*`, counted separately in
+`wdat_ft_over_cap_n` / `wdat_ft_over_cap_mw`, and flagged per row (`ft_over_cap`) in
+`outputs/wdat_projects.csv` and on node pages. They are not corrected or deleted; if PG&E's figures
+are right and the process label is wrong, the held-out MW is real queue. Also note
 that only PG&E publishes a WDAT file: `wdat_*` is blank for every SCE and SDG&E node, which is
 absence of data, not absence of queue.
 
@@ -156,8 +165,8 @@ it cannot honour. Three gaps remain:
   as-of table; individual figures do not yet carry a badge when the single source behind them is
   stale.
 - **PG&E's WDAT as-of is a floor, not a publication date.** It is taken from the newest request in
-  the file, so the file can be newer than the date implies. It is currently STALE at 61 days
-  against a monthly cadence.
+  the parsed file, so the file can be newer than the date implies. (Until 2026-09-29 it was a
+  hand-set date that never moved, which made the source read STALE while PG&E was in fact updating.)
 
 ## 11. Dependencies float, and the floors are not ceilings
 

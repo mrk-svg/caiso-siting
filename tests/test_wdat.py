@@ -203,7 +203,9 @@ def test_per_node_aggregation(w):
     assert list(pn.columns) == nodes.WDAT_COLS
     assert pn.index.name == "node_key"
     wh = pn.loc["WHIRLWIND"]
-    assert wh.wdat_active_projects == 2 and wh.wdat_active_mw == 30 and wh.wdat_active_storage_mw == 10
+    # the fixture's 20 MW Fast Track row is above the 5 MW ceiling: held out and counted separately
+    assert wh.wdat_active_projects == 1 and wh.wdat_active_mw == 10 and wh.wdat_active_storage_mw == 10
+    assert wh.wdat_ft_over_cap_n == 1 and wh.wdat_ft_over_cap_mw == 20
     assert wh.wdat_inservice_mw == 0 and wh.wdat_withdrawn_mw == 0
     h = pn.loc["HERNDON"]
     assert h.wdat_active_projects == 1 and h.wdat_active_mw == 8 and h.wdat_active_storage_mw == 4
@@ -226,11 +228,12 @@ def test_join_wdat_synthetic(wdat_dir, capsys):
     n = pd.DataFrame({"node_key": ["WHIRLWIND", "HERNDON", "VINCENT"], "pipeline_mw": [1.0, 2.0, 3.0]})
     out = nodes.join_wdat(n)
     by = out.set_index("node_key")
-    assert by.loc["WHIRLWIND", "wdat_active_mw"] == 30 and by.loc["HERNDON", "wdat_withdrawn_mw"] == 5
+    assert by.loc["WHIRLWIND", "wdat_active_mw"] == 10 and by.loc["HERNDON", "wdat_withdrawn_mw"] == 5
+    assert by.loc["WHIRLWIND", "wdat_ft_over_cap_mw"] == 20                 # held out, not summed
     assert (by.loc["VINCENT", nodes.WDAT_COLS] == 0).all()
     assert out.pipeline_mw.tolist() == [1.0, 2.0, 3.0]
     msg = capsys.readouterr().out
-    assert "2 CAISO nodes also carry active WDAT requests (38 MW)" in msg
+    assert "2 CAISO nodes also carry active WDAT requests (18 MW)" in msg
     assert "2 WDAT-only substations" in msg                                 # WILLOW PASS, LUGO
 
 
@@ -300,3 +303,19 @@ def test_real_flags_are_internally_consistent(real_wdat):
     assert (w.is_standalone_storage <= w.has_storage).all()
     assert not (w.is_standalone_storage & w.has_solar).any()
     assert w.has_storage.sum() > 500 and w.has_solar.sum() > 2000
+
+
+def test_fast_track_rows_above_the_ceiling_are_held_out():
+    """PG&E posts Fast Track rows far above the 5 MW Fast Track ceiling (157 MW at Milpitas). They are
+    held out of the active totals and counted separately, not corrected and not silently summed."""
+    import pandas as pd
+
+    from caiso_siting import wdat as W
+    rows = [("ACTIVE", "Fast Track", 157.0, 0, "a"), ("ACTIVE", "Fast Track", 2.9, 0, "b"),
+            ("ACTIVE", "Detailed Study", 20.0, 5, "c"), ("COMPLETED", "Fast Track", 1.0, 0, "d")]
+    w = pd.DataFrame([dict(node_key="MILPITAS", sheet_status=s, process=p, net_mw=m, storage_mw=st, queue_position=q)
+                      for s, p, m, st, q in rows])
+    pn = W.per_node(w).loc["MILPITAS"]
+    assert pn.wdat_active_mw == 22.9 and pn.wdat_active_projects == 2
+    assert pn.wdat_ft_over_cap_n == 1 and pn.wdat_ft_over_cap_mw == 157.0
+    assert list(W.flag_ft_over_cap(w)) == [True, False, False, False]
