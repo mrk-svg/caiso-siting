@@ -37,7 +37,7 @@ live:
 | File | What it encodes | Source it was read from |
 |---|---|---|
 | `lcr_areas.csv` | substation → local capacity area, in/out relation | CAISO Local Capacity Technical Report |
-| `poi_overrides.csv` | corrected substation coordinates | operator knowledge, PTO maps |
+| `poi_overrides.csv` | corrected substation coordinates | CAISO / PTO market notices, OSM features (cited per row) |
 | `poi_pnodes.csv` | POI → OASIS pricing node | CAISO OASIS node list, hand-confirmed |
 | `poi_availability.csv` | POI availability statements | CAISO / PTO market notices |
 
@@ -66,7 +66,7 @@ House rules, non-negotiable, because they are the product:
 - **Unknown is a first-class value.** If the data does not support a figure, the page says
   "Not public" or "Not here yet" and explains which. It does not fall back to zero, blank or
   a guess.
-- **No names of private individuals.** Parcel owner names are never read. Owners in EIA-860
+- **No names of private individuals in any generated output.** Parcel owner names are never read. Owners in EIA-860
   that classify as people rather than organisations are counted, never named.
 - **Small-n figures are dimmed, not hidden or rounded away.** See `MIN_N` and
   `MIN_DENOM_MW` in `site.py`.
@@ -79,5 +79,7 @@ Do not open a public issue for a security problem. `SECURITY.md` has the reporti
 
 Code contributions are licensed under the MIT Licence, matching the repository. Contributions
 to the hand-built data files are contributed under ODbL 1.0, matching the derived database
-those files feed — see `LICENSE-DATA.md`. By opening a pull request you confirm you have the
-right to contribute the material and that it is not confidential to an employer or client.
+those files feed — see `LICENSE-DATA.md`. By opening a pull request **or an issue containing a correction**, you confirm you have the right to
+contribute the material; that it is not confidential to an employer or client; and that no employer or
+client has an ownership claim to it — including under any invention-assignment or work-for-hire agreement
+you are subject to. Both issue templates ask you to confirm this.

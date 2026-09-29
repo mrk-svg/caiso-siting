@@ -3,6 +3,18 @@ description: The pipeline crashes, produces malformed output, or behaves differe
 title: "bug: "
 labels: ["bug"]
 body:
+  - type: checkboxes
+    id: rights
+    attributes:
+      label: Rights and confidentiality
+      options:
+        - label: >-
+            Everything in this issue comes from a public source. It is not confidential to my
+            employer or a client, and it is not information my employer or a client owns or has a
+            claim to, including under an invention-assignment or work-for-hire agreement. I agree
+            that material I contribute here may be used in this project under the MIT licence
+            that covers its code.
+          required: true
   - type: textarea
     id: what
     attributes:

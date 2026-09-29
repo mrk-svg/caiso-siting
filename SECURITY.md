@@ -31,7 +31,9 @@ time, so the published site loads no third-party script at all: no CDN to be tam
 reader's browser to anyone but GitHub Pages and the map tile server. Output CSVs are escaped on write: `config.csv_safe` prefixes any string cell beginning `=`, `+`, `@`, tab or
 carriage return — and `-` followed by a non-digit — with a single quote, so a hostile CAISO or PG&E cell cannot
 become a live formula in a reader's spreadsheet. Numeric cells are untouched; a negative longitude is not a
-formula. Asserted in `tests/test_csv_safety.py`. No owner names, no credentials, no secrets anywhere in the tree.
+formula. Asserted in `tests/test_csv_safety.py`. No credentials and no secrets anywhere in the tree. No parcel owner names and no private individuals' names
+in any generated output. The two redistributed CAISO workbooks are byte-identical to CAISO's published files
+and carry CAISO's own document metadata, including author names, left intact deliberately rather than modified.
 
 ## 3. How it runs unattended
 

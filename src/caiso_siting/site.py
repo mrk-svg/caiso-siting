@@ -36,7 +36,7 @@ DISCLAIMER = ('No figure on this site states a cause. CAISO files carry no withd
 RELIANCE = ('Screening tool, not engineering advice. Built from public filings by an engineer who is '
             'not a licensed PE. Verify every figure against the source filing named in its row before '
             'you rely on it for any decision. No warranty of any kind. Not affiliated with CAISO, EIA, '
-            'or any utility.')
+            'or any utility. No engineering services are offered.')
 
 WDAT_NOTE = "WDAT = distribution-level queue at the same substation, PG&E file today; not CAISO deliverability"
 WDAT_COLS = ["queue_position", "status_raw", "process", "gen_type", "net_mw", "request_received", "current_cod",

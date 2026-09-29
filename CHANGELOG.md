@@ -1,5 +1,37 @@
 # Changelog
 
+## 1.8.0 — 2026-09-29 — pre-announcement legal pass
+
+Closes the SHOULD-FIX items from the 2026-09-16 licensing review before the project is announced
+publicly. No figure changes.
+
+**Privacy.** The individual-owner classifier matched names only in Title Case, so `JOHN SMITH` or
+`john smith` in a future EIA-860 vintage would have been published as an "organisation" by an
+unattended weekly run. It is now case-insensitive, with tests. `outputs/eia860_plants.csv` carried raw
+EIA `utility_name` and `td_owner` with no filter at all; the same rule now applies there
+(`redact_people`). No individual was named in any shipped output before this change.
+
+**Contributions.** The designed contribution path is an issue, not a pull request, and issues passed
+through no licence grant or confidentiality/ownership representation. Both issue templates now carry a
+required checkbox covering public source, confidentiality, employer ownership (including
+invention-assignment and work-for-hire) and the licence; a pull request template does the same.
+`CONTRIBUTING.md` no longer lists "operator knowledge" as a source for `poi_overrides.csv` — the file
+cites only public notices and OSM features, and the phrase invited exactly what the guide forbids.
+
+**Disclaimers.** `DISCLAIMER.md` claimed MIT "disclaims all warranties and all liability" and stretched
+that over the outputs; MIT covers the software, ODbL §8 covers the data, and the screening-aid
+disclaimer now stands on its own. It now also states that no engineering services are offered and no
+advisory relationship is created by corresponding with the author; the reliance line on every page says
+the same. `KNOWN_ISSUES.md` states that listing a defect is a disclosure, not an undertaking to fix it,
+and no longer asserts causes for third parties' data (EIA storage values, PG&E WDAT rows) that this
+project has not confirmed.
+
+**Accuracy of the repository's own claims.** README no longer names two commercial platforms in a
+pricing comparison, no longer states a stale test count, and `CITATION.cff` states the ODbL split.
+`SECURITY.md` and `CONTRIBUTING.md` no longer make absolute "no names anywhere" claims that the
+byte-identical CAISO workbook metadata contradicts. The document watch and OASIS clients identify as
+`caiso-siting` rather than as a browser.
+
 ## 1.7.3 — 2026-09-21 — pin the runner image
 
 Both workflows now run on `ubuntu-24.04` instead of `ubuntu-latest`. GitHub moves `ubuntu-latest` to

@@ -73,7 +73,7 @@ def extract_links(html: str, base_url: str) -> list[dict]:
 
 def fetch(url: str) -> str:
     import requests
-    r = requests.get(url, timeout=60, headers={"User-Agent": "Mozilla/5.0 (caiso-siting document watch)"})
+    r = requests.get(url, timeout=60, headers={"User-Agent": "caiso-siting (+https://github.com/mrk-svg/caiso-siting)"})
     r.raise_for_status()
     return r.text
 

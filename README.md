@@ -17,7 +17,7 @@
 -->
 
 Free-data pipeline for CAISO interconnection node intelligence. Target user: small/mid
-BESS developers and land brokers in the CAISO footprint who can't afford LandGate or Nira.
+BESS developers and land brokers in the CAISO footprint without access to a paid siting platform.
 
 Not a "Grid-Ready Score". Transparent, sourced layers — every number traceable to a CAISO row.
 
@@ -67,7 +67,7 @@ Every row carries `source_file`, `source_run_date`, `pipeline_commit`. `DATA.md`
     python3 -m venv .venv && source .venv/bin/activate   # Homebrew/Debian Python refuse system-wide installs (PEP 668)
     pip install -e ".[dev]"        # Python 3.10+; pandas, openpyxl, requests, tabulate
     caiso-siting --help
-    python -m pytest -q            # 337 tests, ~30 s
+    python -m pytest -q            # full suite, ~30 s
 
 ## Layout
 

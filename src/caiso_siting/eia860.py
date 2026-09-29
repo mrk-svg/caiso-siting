@@ -91,7 +91,18 @@ def is_org(name: str) -> bool:
     toks = n.split()
     if not 2 <= len(toks) <= 6:
         return True
-    return not all(_NAME_TOKEN.match(t) or t.lower() in _PARTICLES for t in toks)
+    # Case-insensitive on purpose: 'JOHN SMITH' and 'john smith' are the same person as 'John Smith'.
+    # Matching only Title Case let an all-caps individual through as an 'organisation'.
+    return not all(_NAME_TOKEN.match(t) or _NAME_TOKEN.match(t.capitalize()) or t.lower() in _PARTICLES
+                   for t in toks)
+
+
+WITHHELD = "individual (not named)"
+
+
+def redact_people(s: pd.Series) -> pd.Series:
+    """Replace any value that could be a private individual with a fixed placeholder."""
+    return s.map(lambda v: v if (not isinstance(v, str) or not v.strip() or is_org(v)) else WITHHELD)
 
 
 def org_only(names) -> tuple[list[str], int]:
@@ -301,6 +312,10 @@ def join(nodes: pd.DataFrame, withheld: bool = False, path: Path = ZIP) -> pd.Da
     OUT.mkdir(exist_ok=True)
     plant = frames["plant"].copy()
     plant["node_key"] = _join_plants_to_nodes(plant, nodes)
+    # The per-plant file carries raw EIA entity names; the same privacy rule applies here as on the pages.
+    for c in ("utility_name", "td_owner"):
+        if c in plant:
+            plant[c] = redact_people(plant[c])
     csv_safe(plant).to_csv(OUT / "eia860_plants.csv", index=False)
     csv_safe(pn.reset_index()).to_csv(OUT / "eia860_by_node.csv", index=False)
     nodes = nodes.drop(columns=EIA_COLS).merge(pn, left_on="node_key", right_index=True, how="left")

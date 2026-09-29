@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 title: "caiso-siting: node-level intelligence from CAISO interconnection filings"
-message: "If you use this software or its outputs in research or publication, please cite it and cite the upstream data sources separately."
+message: "If you use this software or its outputs in research or publication, please cite it and cite the upstream data sources separately. The software is MIT-licensed; nodes.csv and poi_geocode.csv are ODbL 1.0 (OpenStreetMap-derived); see LICENSE-DATA.md."
 type: software
 authors:
   - family-names: Karimov

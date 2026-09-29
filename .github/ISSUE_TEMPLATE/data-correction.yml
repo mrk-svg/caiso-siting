@@ -11,6 +11,18 @@ body:
         Please do not include information that is not in a public filing. If you know something
         because of your job and it has not been published, it cannot be used in this project and
         posting it may cause you a problem.
+  - type: checkboxes
+    id: rights
+    attributes:
+      label: Rights and confidentiality
+      options:
+        - label: >-
+            Everything in this issue comes from a public source. It is not confidential to my
+            employer or a client, and it is not information my employer or a client owns or has a
+            claim to, including under an invention-assignment or work-for-hire agreement. I agree
+            that material I contribute here may be used in this project under the ODbL 1.0 licence
+            that covers its data files.
+          required: true
   - type: input
     id: where
     attributes:

@@ -93,7 +93,7 @@ def unzip_csv(content: bytes) -> str:
 
 def download(url: str, timeout: int = 120) -> bytes:
     import requests
-    r = requests.get(url, timeout=timeout, headers={"User-Agent": "Mozilla/5.0 (caiso-siting oasis)"})
+    r = requests.get(url, timeout=timeout, headers={"User-Agent": "caiso-siting (+https://github.com/mrk-svg/caiso-siting)"})
     r.raise_for_status()
     return r.content
 

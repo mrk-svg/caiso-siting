@@ -7,10 +7,15 @@ published rather than tracked privately because a screening tool whose whole cla
 traceability cannot keep a private list of the places it is wrong. Fixed items move to the
 CHANGELOG; this file holds only what is still live.
 
+Publishing a defect here is a disclosure, **not an undertaking to fix it**. There is no schedule, no
+commitment and no service level attached to any entry. Items are fixed when they are fixed, and some
+may never be. Read this list before quoting any figure and verify against the source filing named in
+the figure's own row.
+
 Last review: **2026-09-16**, two independent passes — one checking `data/lcr_areas.csv` row by row
 against the Final 2027 Local Capacity Technical Report, one checking the outputs for physical and
 commercial plausibility. Both reviews were AI-run against the primary documents and have **not**
-been confirmed by a licensed engineer. That confirmation is the next step, not a completed one.
+been confirmed by a licensed engineer. That confirmation has not happened.
 
 ---
 
@@ -59,7 +64,7 @@ Nine nodes were published with a confident coordinate in the wrong half of the s
 (730 km), `WARNER` (980 km), `OLINDA` (820 km), `SAN MATEO` (630 km) — two of them with
 `geo_method = exact` and `geo_score = 1.0`. As of 2026-09-16 they are quarantined in
 `data/geo_quarantine.csv`: they carry no position, are marked `disputed`, and are excluded from
-the map and from the EIA distance join. **They still need correct coordinates**, each with a
+the map and from the EIA distance join. Restoring them would need correct coordinates, each with a
 source, in `data/poi_overrides.csv`.
 
 More broadly: of 949 nodes only 168 are `exact`, 402 are county centroids and 45 have no position.
@@ -81,23 +86,24 @@ was mispositioned. And a plant can only ever be attributed to a node that appear
 queue *and* has a real position, so `ETIWANDA` — which has no position — can never receive one,
 and everything there is silently credited to a neighbour.
 
-## 5. `eia_storage_mwh` carries EIA respondent errors
+## 5. `eia_storage_mwh` contains values inconsistent with typical storage durations
 
-**Severity: medium. Not a pipeline bug; the values are copied faithfully.**
+**Severity: medium. Not a pipeline bug; the values are copied faithfully from EIA-860.**
 
 28 of 146 operable California storage units of 20 MW or more report energy capacity equal to
 power capacity — a one-hour duration that no merchant battery built in California in 2021–2025
 has. `Daggett 2` reports 131 MW against 4.6 MWh. Nodes showing exactly 1.00 h — `WHIRLWIND`
-147/147, `GATES` 137/137 — are reporting artefacts. Do not compute duration from these columns
+147/147, `GATES` 137/137 — may reflect how the value was reported rather than the installed energy
+capacity; this project has not confirmed the cause. Do not compute duration from these columns
 without checking the unit.
 
-## 6. PG&E WDAT columns include impossible Fast Track requests
+## 6. PG&E WDAT columns include Fast Track rows above the tariff ceiling
 
 **Severity: medium.**
 
 32 rows flagged "Fast Track" exceed PG&E's 5 MW Fast Track ceiling, totalling 1,281 MW — one is a
-157 MW solar request at Milpitas, which cannot connect to a distribution feeder at all and is
-almost certainly kW entered as MW in PG&E's posting. They are summed into `wdat_active_mw`, so
+157 MW solar request at Milpitas, far above what a distribution feeder normally carries. The cause —
+a unit or categorisation issue in the posting, or something else — has not been confirmed by this project. They are summed into `wdat_active_mw`, so
 `MILPITAS`, `SAN LEANDRO U`, `STONE`, `SANGER`, `KERMAN` and `WESTPARK` are overstated. Also note
 that only PG&E publishes a WDAT file: `wdat_*` is blank for every SCE and SDG&E node, which is
 absence of data, not absence of queue.

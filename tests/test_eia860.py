@@ -193,3 +193,19 @@ def test_join_withheld_by_the_freshness_gate_blanks_columns(capsys):
     out = eia860.join(NODES.copy(), withheld=True)
     assert out.eia_plants.isna().all()
     assert "withheld by the freshness gate" in capsys.readouterr().out
+
+
+def test_is_org_is_case_insensitive_for_people():
+    """An all-caps or lowercase individual used to be classified as an organisation and published."""
+    for person in ("John Smith", "JOHN SMITH", "john smith", "SMITH, JOHN", "Pier Van Der Hoek", "JOHN A SMITH III"):
+        assert not eia860.is_org(person), person
+    for org in ("GSPPR LLC", "Pacific Gas & Electric Co", "KKR/GA", "TWC", "Sunrise Solar Farm"):
+        assert eia860.is_org(org), org
+
+
+def test_plant_level_names_are_redacted():
+    s = pd.Series(["Acme Solar LLC", "JANE DOE", "", float("nan"), "Jane Q. Doe"])
+    out = eia860.redact_people(s)
+    assert out[0] == "Acme Solar LLC"
+    assert out[1] == eia860.WITHHELD and out[4] == eia860.WITHHELD
+    assert out[2] == "" and pd.isna(out[3])

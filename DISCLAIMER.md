@@ -35,16 +35,23 @@ does not guess at them.
 
 ## No warranty
 
-The code is provided under the MIT Licence, which disclaims all warranties and all
-liability — read `LICENSE`. The same disclaimer extends to every figure, page, CSV and chart
-this project produces. The upstream data carries its own disclaimers: the California ISO
-publishes its materials "AS IS and without warranties of any kind, either express or
-implied," and disclaims liability for any damages arising from their use. Nothing here
-improves on that.
+The code is provided under the MIT Licence, which disclaims warranties and limits liability in
+respect of the software — read `LICENSE`. The outputs are provided under ODbL 1.0, whose section 8
+disclaims warranties and limits liability in respect of the data — read `LICENSE-DATA.md`.
+
+Independently of either licence: every figure, page, CSV and chart this project produces is offered
+as a screening aid only, with no warranty of accuracy, completeness or fitness for any purpose, and
+no liability is accepted for any decision taken in reliance on it. Known defects are published in
+`KNOWN_ISSUES.md` and should be read before any figure is quoted. The upstream data carries its own
+disclaimers: the California ISO publishes its materials "AS IS and without warranties of any kind,
+either express or implied," and disclaims liability for any damages arising from their use. Nothing
+here improves on that.
 
 The author is an energy engineer, not a licensed Professional Engineer, and holds no
 engineering licence in California or any other jurisdiction. Nothing in this repository is
-offered as, or should be relied upon as, the work of a licensed professional.
+offered as, or should be relied upon as, the work of a licensed professional. No engineering
+services are offered or provided through this repository, and no professional or advisory
+relationship is created by using it, opening an issue, or corresponding with the author about it.
 
 ## No investment or legal advice
 
