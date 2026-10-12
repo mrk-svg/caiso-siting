@@ -1,21 +1,21 @@
-# CAISO Node Watch — draft 2026-10-05
+# CAISO Node Watch — draft 2026-10-12
 
-Sources: CAISO Public Queue Report (run date 2026-10-05), CAISO Cluster 15 report (posted 2026-07-16),
+Sources: CAISO Public Queue Report (run date 2026-10-12), CAISO Cluster 15 report (posted 2026-07-16),
 CAISO notice "PG&E information on POI availability for Cluster 16" (2026-01-15), OpenStreetMap substations (ODbL).
 All MW are net-to-grid as filed. No figure below states a *cause*; the CAISO files carry none.
 
 ## The state of the queue in three numbers
 
-- **Legacy pipeline (Cluster 14 and earlier):** 262 active projects, 74,198 MW,
-  92% with storage, 211 already under executed IAs.
+- **Legacy pipeline (Cluster 14 and earlier):** 261 active projects, 73,848 MW,
+  92% with storage, 210 already under executed IAs.
 - **Cluster 15 today:** 86 active projects, 28,449 MW (21,513 MW storage).
   84 projects / 30,564 MW have withdrawn — 52%
   of the 59,013 MW this file records as entering the cluster.
   (CAISO's July 2025 briefing put the studied set at 145 projects / ~68 GW; that is a different population from the
   170 requests in this file, so the two are not differenced here.)
-- **Withdrawn 2022–2026 to date, both reports:** 108,618 MW,
-  of which 96,103 MW storage.
-  (All-time since 2006, both reports: 412,900 MW — a number that mostly describes
+- **Withdrawn 2022–2026 to date, both reports:** 108,968 MW,
+  of which 96,453 MW storage.
+  (All-time since 2006, both reports: 413,250 MW — a number that mostly describes
   dead wind and solar-era projects.)
 
 ## Official Cluster 16 POI statements (the layer no spreadsheet tool has)
@@ -130,11 +130,11 @@ The report names only the substations that *delineate* each area ("X is out, Y i
 | OTAY MESA SWITCHYARD       | SAN DIEGO      | SDGE      | San Diego-Imperial Valley |                        |                550 |               0 |           1201 |                                                                                                                                                                                                                                                                  |
 | CONTRA COSTA SUBSTATION    | CONTRA COSTA   | PGAE      | Greater Bay Area          |                        |                550 |               0 |            690 | Contra Costa P.P. in the report                                                                                                                                                                                                                                  |
 | PITTSBURG                  | CONTRA COSTA   | PGAE      | Greater Bay Area          |                        |                500 |               0 |             72 |                                                                                                                                                                                                                                                                  |
-| RIO OSO SUBSTATION         | SUTTER         | PGAE      | Sierra                    |                        |                  0 |             400 |              0 |                                                                                                                                                                                                                                                                  |
 | LAMBIE SWITCHING STATION   | SOLANO         | PGAE      | Greater Bay Area          |                        |                400 |               0 |              0 |                                                                                                                                                                                                                                                                  |
-| METCALF                    | SANTA CLARA    | PGAE      | Greater Bay Area          |                        |                350 |               0 |             75 |                                                                                                                                                                                                                                                                  |
+| RIO OSO SUBSTATION         | SUTTER         | PGAE      | Sierra                    |                        |                  0 |             400 |              0 |                                                                                                                                                                                                                                                                  |
 | MUSTANG SWITCHING STATION  | KINGS          | PGAE      | Greater Fresno            |                        |                300 |               0 |            450 |                                                                                                                                                                                                                                                                  |
 | SCHULTE                    | SAN JOAQUIN    | PGAE      | Stockton                  | Tesla-Bellota          |                220 |               0 |              0 |                                                                                                                                                                                                                                                                  |
+| WILSON                     | MERCED         | PGAE      | Greater Fresno            | Wilson                 |                200 |               0 |              0 |                                                                                                                                                                                                                                                                  |
 
 Heavily queued nodes the report names as OUTSIDE an area boundary — bulk stations with no local RA value from that area:
 
@@ -200,8 +200,8 @@ Heavily queued nodes the report names as OUTSIDE an area boundary — bulk stati
 | HOODOO WASH SWITCHYARD             | YUMA           |          1570 | county-centroid |        0.3  |
 | MIDWAY SUBSTATION                  | KERN           |          1385 | ambiguous       |        0.5  |
 | CIELO AZUL SUBSTATION              | LA PAZ         |          1350 | none            |        0.53 |
-| NORTH GILA - IMPERIAL VALLEY       | IMPERIAL       |          1150 | line-midpoint   |        1    |
 | MANNING-MIDWAY                     | FRESNO         |          1150 | line-one-end    |        0.7  |
+| NORTH GILA - IMPERIAL VALLEY       | IMPERIAL       |          1150 | line-midpoint   |        1    |
 | COLORADO RIVER - PALO VERDE        | LA PAZ         |          1000 | line-one-end    |        0.7  |
 | ARCO                               | KERN           |           915 | county-centroid |        0.3  |
 | CALCITE SUBSTATION                 | SAN BERNARDINO |           893 | county-centroid |        0.3  |
@@ -210,9 +210,9 @@ Heavily queued nodes the report names as OUTSIDE an area boundary — bulk stati
 | HASSAYAMPA                         | MARICOPA       |           700 | none            |        0.63 |
 | LUGO-PISGAH                        | SAN BERNARDINO |           700 | line-midpoint   |        1    |
 | MIRA LOMA SUBSTATION               | SAN BERNARDINO |           660 | ambiguous       |        0.5  |
-| MAGUNDEN-PASTORIA                  | KERN           |           600 | line-midpoint   |        1    |
-| TEHACHAPI CONCEPTUAL SUBSTATION #1 | KERN           |           600 | county-centroid |        0.3  |
 | WALNUT SUBSTATION                  | LOS ANGELES    |           600 | disputed        |      nan    |
+| TEHACHAPI CONCEPTUAL SUBSTATION #1 | KERN           |           600 | county-centroid |        0.3  |
+| MAGUNDEN-PASTORIA                  | KERN           |           600 | line-midpoint   |        1    |
 | OTAY MESA SWITCHYARD               | SAN DIEGO      |           550 | county-centroid |        0.3  |
 
 ## Caveats (say these out loud to any reader)
