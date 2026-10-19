@@ -1,6 +1,6 @@
-# CAISO Node Watch — draft 2026-10-12
+# CAISO Node Watch — draft 2026-10-19
 
-Sources: CAISO Public Queue Report (run date 2026-10-12), CAISO Cluster 15 report (posted 2026-07-16),
+Sources: CAISO Public Queue Report (run date 2026-10-19), CAISO Cluster 15 report (posted 2026-07-16),
 CAISO notice "PG&E information on POI availability for Cluster 16" (2026-01-15), OpenStreetMap substations (ODbL).
 All MW are net-to-grid as filed. No figure below states a *cause*; the CAISO files carry none.
 
@@ -130,8 +130,8 @@ The report names only the substations that *delineate* each area ("X is out, Y i
 | OTAY MESA SWITCHYARD       | SAN DIEGO      | SDGE      | San Diego-Imperial Valley |                        |                550 |               0 |           1201 |                                                                                                                                                                                                                                                                  |
 | CONTRA COSTA SUBSTATION    | CONTRA COSTA   | PGAE      | Greater Bay Area          |                        |                550 |               0 |            690 | Contra Costa P.P. in the report                                                                                                                                                                                                                                  |
 | PITTSBURG                  | CONTRA COSTA   | PGAE      | Greater Bay Area          |                        |                500 |               0 |             72 |                                                                                                                                                                                                                                                                  |
-| LAMBIE SWITCHING STATION   | SOLANO         | PGAE      | Greater Bay Area          |                        |                400 |               0 |              0 |                                                                                                                                                                                                                                                                  |
 | RIO OSO SUBSTATION         | SUTTER         | PGAE      | Sierra                    |                        |                  0 |             400 |              0 |                                                                                                                                                                                                                                                                  |
+| LAMBIE SWITCHING STATION   | SOLANO         | PGAE      | Greater Bay Area          |                        |                400 |               0 |              0 |                                                                                                                                                                                                                                                                  |
 | MUSTANG SWITCHING STATION  | KINGS          | PGAE      | Greater Fresno            |                        |                300 |               0 |            450 |                                                                                                                                                                                                                                                                  |
 | SCHULTE                    | SAN JOAQUIN    | PGAE      | Stockton                  | Tesla-Bellota          |                220 |               0 |              0 |                                                                                                                                                                                                                                                                  |
 | WILSON                     | MERCED         | PGAE      | Greater Fresno            | Wilson                 |                200 |               0 |              0 |                                                                                                                                                                                                                                                                  |
@@ -211,8 +211,8 @@ Heavily queued nodes the report names as OUTSIDE an area boundary — bulk stati
 | LUGO-PISGAH                        | SAN BERNARDINO |           700 | line-midpoint   |        1    |
 | MIRA LOMA SUBSTATION               | SAN BERNARDINO |           660 | ambiguous       |        0.5  |
 | WALNUT SUBSTATION                  | LOS ANGELES    |           600 | disputed        |      nan    |
-| TEHACHAPI CONCEPTUAL SUBSTATION #1 | KERN           |           600 | county-centroid |        0.3  |
 | MAGUNDEN-PASTORIA                  | KERN           |           600 | line-midpoint   |        1    |
+| TEHACHAPI CONCEPTUAL SUBSTATION #1 | KERN           |           600 | county-centroid |        0.3  |
 | OTAY MESA SWITCHYARD               | SAN DIEGO      |           550 | county-centroid |        0.3  |
 
 ## Caveats (say these out loud to any reader)

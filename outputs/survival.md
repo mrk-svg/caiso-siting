@@ -1,6 +1,6 @@
 # Queue-cohort survival — Kaplan–Meier by cluster
 
-Source: CAISO Public Queue Report (run date 2026-10-12) for C10–C14; CAISO Cluster 15 report for C15,
+Source: CAISO Public Queue Report (run date 2026-10-19) for C10–C14; CAISO Cluster 15 report for C15,
 censored at 2026-07-16 (its posting date, or the latest withdrawal the file records if CAISO has re-posted since) —
 that file cannot record a withdrawal after it was published.
 Event = withdrawal at `withdrawn_date`. ACTIVE rows are censored at the report run date; COMPLETED rows are
@@ -17,7 +17,7 @@ is the last month that holds). No figure states a cause; the CAISO files carry n
 
 | cohort                     |   n |   events |   censored |   mw_total |   follow_up_months |   median_survival_months |   s12 |   s24 |   s36 |   s48 |   s60 |   s12_mw |   s24_mw |   s36_mw |   s48_mw |   s60_mw |
 |:---------------------------|----:|---------:|-----------:|-----------:|-------------------:|-------------------------:|------:|------:|------:|------:|------:|---------:|---------:|---------:|---------:|---------:|
-| C10                        |  89 |       66 |         23 |     15,984 |                113 |                       12 |  0.45 |  0.45 |  0.33 |  0.29 |  0.28 |     0.60 |     0.60 |     0.49 |     0.44 |     0.43 |
+| C10                        |  89 |       66 |         23 |     15,984 |                114 |                       12 |  0.45 |  0.45 |  0.33 |  0.29 |  0.28 |     0.60 |     0.60 |     0.49 |     0.44 |     0.43 |
 | C11                        |  94 |       67 |         27 |     22,403 |                102 |                       12 |  0.38 |  0.37 |  0.35 |  0.34 |  0.33 |     0.32 |     0.31 |     0.28 |     0.27 |     0.27 |
 | C12                        | 136 |       99 |         37 |     42,108 |                 90 |                       12 |  0.38 |  0.38 |  0.35 |  0.34 |  0.32 |     0.38 |     0.38 |     0.36 |     0.35 |     0.34 |
 | C13                        | 147 |      108 |         39 |     42,129 |                 78 |                       13 |  0.51 |  0.44 |  0.43 |  0.37 |  0.33 |     0.51 |     0.40 |     0.40 |     0.33 |     0.29 |
