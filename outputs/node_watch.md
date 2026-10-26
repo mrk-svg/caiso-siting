@@ -1,6 +1,6 @@
-# CAISO Node Watch — draft 2026-10-19
+# CAISO Node Watch — draft 2026-10-26
 
-Sources: CAISO Public Queue Report (run date 2026-10-19), CAISO Cluster 15 report (posted 2026-07-16),
+Sources: CAISO Public Queue Report (run date 2026-10-26), CAISO Cluster 15 report (posted 2026-07-16),
 CAISO notice "PG&E information on POI availability for Cluster 16" (2026-01-15), OpenStreetMap substations (ODbL).
 All MW are net-to-grid as filed. No figure below states a *cause*; the CAISO files carry none.
 
