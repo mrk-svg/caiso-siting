@@ -1,41 +1,34 @@
-# CAISO queue diff — 2026-10-26 → 2026-11-02
+# CAISO queue diff — 2026-11-02 → 2026-11-09
 
-| | 2026-10-26 | 2026-11-02 | Δ |
+| | 2026-11-02 | 2026-11-09 | Δ |
 |---|---:|---:|---:|
 | Active projects | 347 | 347 | +0 |
 | Active MW | 102,297 | 102,297 | +0 |
-| Active storage MW | 84,392 | 83,949 | -443 |
+| Active storage MW | 83,949 | 83,949 | +0 |
 | Cluster 15 active projects | 86 | 86 | +0 |
 | Cluster 15 active MW | 28,449 | 28,449 | +0 |
 | Withdrawn projects (cumulative) | 1,849 | 1,849 | +0 |
 
-## Changes (6)
+## Changes (3)
 
-| change         |   n |
-|:---------------|----:|
-| COD_SLIP       |   5 |
-| STORAGE_CHANGE |   1 |
+| change   |   n |
+|:---------|----:|
+| COD_SLIP |   3 |
 
 ## By node (withdrawals, resizes, COD slips, new requests)
 
-| poi                       | change         |   count |   sum |
-|:--------------------------|:---------------|--------:|------:|
-| COLORADO RIVER SUBSTATION | STORAGE_CHANGE |       1 |   500 |
-| LATHROP WELLS SUBSTATION  | COD_SLIP       |       1 |   500 |
-| TROUT CANYON SUBSTATION   | COD_SLIP       |       1 |   300 |
-| LOS BANOS-PANOCHE #1      | COD_SLIP       |       1 |   200 |
-| VESTAL SUBSTATION         | COD_SLIP       |       1 |   200 |
-| MIDWAY-WHEELER RIDGE #2   | COD_SLIP       |       1 |   100 |
+| poi                                | change   |   count |   sum |
+|:-----------------------------------|:---------|--------:|------:|
+| TEHACHAPI CONCEPTUAL SUBSTATION #1 | COD_SLIP |       1 |   600 |
+| COLORADO RIVER SUBSTATION          | COD_SLIP |       1 |   500 |
+| WINDHUB SUBSTATION                 | COD_SLIP |       1 |   150 |
 
 ## Every change
 
-| change         | project              | poi                       | county    |   mw | detail                               |
-|:---------------|:---------------------|:--------------------------|:----------|-----:|:-------------------------------------|
-| COD_SLIP       | SILVER STAR SOLAR    | LATHROP WELLS SUBSTATION  | NYE       |  500 | 2028-12-01 -> 2031-12-01 (+1095 d)   |
-| COD_SLIP       | LARREA SOLAR         | TROUT CANYON SUBSTATION   | CLARK     |  300 | 2028-09-15 -> 2030-12-15 (+821 d)    |
-| COD_SLIP       | WRIGHT SOLAR         | LOS BANOS-PANOCHE #1      | MERCED    |  200 | 2026-10-21 -> 2026-11-30 (+40 d)     |
-| COD_SLIP       | REXFORD 2 SOLAR FARM | VESTAL SUBSTATION         | TULARE    |  200 | 2027-07-01 -> 2028-12-30 (+548 d)    |
-| COD_SLIP       | KYAN SOLAR           | MIDWAY-WHEELER RIDGE #2   | KERN      |  100 | 2027-03-02 -> 2027-06-30 (+119 d)    |
-| STORAGE_CHANGE | GRACE ENERGY CENTER  | COLORADO RIVER SUBSTATION | RIVERSIDE |  500 | storage 500 -> 57 MW (net unchanged) |
+| change   | project                 | poi                                | county    |   mw | detail                             |
+|:---------|:------------------------|:-----------------------------------|:----------|-----:|:-----------------------------------|
+| COD_SLIP | CPC WEST                | TEHACHAPI CONCEPTUAL SUBSTATION #1 | KERN      |  600 | 2026-07-05 -> 2033-12-22 (+2727 d) |
+| COD_SLIP | GRACE ENERGY CENTER     | COLORADO RIVER SUBSTATION          | RIVERSIDE |  500 | 2027-01-13 -> 2027-07-26 (+193 d)  |
+| COD_SLIP | BELLEFIELD 3 SOLAR FARM | WINDHUB SUBSTATION                 | KERN      |  150 | 2028-02-27 -> 2030-04-30 (+792 d)  |
 
 _Every line above is the difference between two CAISO rows. No reason is stated because CAISO states none._
