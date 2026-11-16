@@ -1,34 +1,32 @@
-# CAISO queue diff — 2026-11-02 → 2026-11-09
+# CAISO queue diff — 2026-11-09 → 2026-11-16
 
-| | 2026-11-02 | 2026-11-09 | Δ |
+| | 2026-11-09 | 2026-11-16 | Δ |
 |---|---:|---:|---:|
-| Active projects | 347 | 347 | +0 |
-| Active MW | 102,297 | 102,297 | +0 |
-| Active storage MW | 83,949 | 83,949 | +0 |
+| Active projects | 347 | 346 | -1 |
+| Active MW | 102,297 | 102,197 | -100 |
+| Active storage MW | 83,949 | 83,849 | -100 |
 | Cluster 15 active projects | 86 | 86 | +0 |
 | Cluster 15 active MW | 28,449 | 28,449 | +0 |
-| Withdrawn projects (cumulative) | 1,849 | 1,849 | +0 |
+| Withdrawn projects (cumulative) | 1,849 | 1,850 | +1 |
 
-## Changes (3)
+## Changes (2)
 
-| change   |   n |
-|:---------|----:|
-| COD_SLIP |   3 |
+| change       |   n |
+|:-------------|----:|
+| WITHDRAWN    |   1 |
+| DELIV_CHANGE |   1 |
 
 ## By node (withdrawals, resizes, COD slips, new requests)
 
-| poi                                | change   |   count |   sum |
-|:-----------------------------------|:---------|--------:|------:|
-| TEHACHAPI CONCEPTUAL SUBSTATION #1 | COD_SLIP |       1 |   600 |
-| COLORADO RIVER SUBSTATION          | COD_SLIP |       1 |   500 |
-| WINDHUB SUBSTATION                 | COD_SLIP |       1 |   150 |
+| poi    | change    |   count |   sum |
+|:-------|:----------|--------:|------:|
+| COTTLE | WITHDRAWN |       1 |   100 |
 
 ## Every change
 
-| change   | project                 | poi                                | county    |   mw | detail                             |
-|:---------|:------------------------|:-----------------------------------|:----------|-----:|:-----------------------------------|
-| COD_SLIP | CPC WEST                | TEHACHAPI CONCEPTUAL SUBSTATION #1 | KERN      |  600 | 2026-07-05 -> 2033-12-22 (+2727 d) |
-| COD_SLIP | GRACE ENERGY CENTER     | COLORADO RIVER SUBSTATION          | RIVERSIDE |  500 | 2027-01-13 -> 2027-07-26 (+193 d)  |
-| COD_SLIP | BELLEFIELD 3 SOLAR FARM | WINDHUB SUBSTATION                 | KERN      |  150 | 2028-02-27 -> 2030-04-30 (+792 d)  |
+| change       | project         | poi    | county     |   mw | detail                  |
+|:-------------|:----------------|:-------|:-----------|-----:|:------------------------|
+| DELIV_CHANGE | OAKDALE STORAGE | COTTLE | STANISLAUS |  100 | tpd_group: GROUP A -> — |
+| WITHDRAWN    | OAKDALE STORAGE | COTTLE | STANISLAUS |  100 | ACTIVE -> WITHDRAWN     |
 
 _Every line above is the difference between two CAISO rows. No reason is stated because CAISO states none._

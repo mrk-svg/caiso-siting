@@ -1,21 +1,21 @@
-# CAISO Node Watch — draft 2026-11-09
+# CAISO Node Watch — draft 2026-11-16
 
-Sources: CAISO Public Queue Report (run date 2026-11-09), CAISO Cluster 15 report (posted 2026-07-16),
+Sources: CAISO Public Queue Report (run date 2026-11-16), CAISO Cluster 15 report (posted 2026-07-16),
 CAISO notice "PG&E information on POI availability for Cluster 16" (2026-01-15), OpenStreetMap substations (ODbL).
 All MW are net-to-grid as filed. No figure below states a *cause*; the CAISO files carry none.
 
 ## The state of the queue in three numbers
 
-- **Legacy pipeline (Cluster 14 and earlier):** 261 active projects, 73,848 MW,
-  92% with storage, 210 already under executed IAs.
+- **Legacy pipeline (Cluster 14 and earlier):** 260 active projects, 73,748 MW,
+  92% with storage, 209 already under executed IAs.
 - **Cluster 15 today:** 86 active projects, 28,449 MW (21,513 MW storage).
   84 projects / 30,564 MW have withdrawn — 52%
   of the 59,013 MW this file records as entering the cluster.
   (CAISO's July 2025 briefing put the studied set at 145 projects / ~68 GW; that is a different population from the
   170 requests in this file, so the two are not differenced here.)
-- **Withdrawn 2022–2026 to date, both reports:** 108,968 MW,
-  of which 96,453 MW storage.
-  (All-time since 2006, both reports: 413,250 MW — a number that mostly describes
+- **Withdrawn 2022–2026 to date, both reports:** 109,068 MW,
+  of which 96,553 MW storage.
+  (All-time since 2006, both reports: 413,350 MW — a number that mostly describes
   dead wind and solar-era projects.)
 
 ## Official Cluster 16 POI statements (the layer no spreadsheet tool has)
@@ -75,7 +75,7 @@ Section 8.9.2.3 path. A 0 % in group D is the expected result for an uncontracte
 (`tpd25_denied_ppa_mw`) is a contracted project that did not get deliverability, and is the number to quote. Across the
 2025 file: group A: 5,574 MW requested, 3,656 denied; group B: 6,931 MW requested, 4,441 denied; group C: 570 MW requested, 470 denied; group D: 11,035 MW requested, 6,440 denied. These rows are joined through all three sheets
 of the public report, so a node's TPD history can include requests whose project has since withdrawn
-(5,505 MW requested / 450 MW allocated in the 2025 cycle across all nodes).
+(5,605 MW requested / 499 MW allocated in the 2025 cycle across all nodes).
 Allocation is CAISO's decision under Appendix DD; the file states no reason and neither does this table.
 
 ## Storage churn, 2022–2026 to date (nodes with >300 MW storage surviving and >300 MW storage withdrawn)
